@@ -28,10 +28,9 @@ jobs:
         with:
           packages: "platform-tools"
           log-accepted-android-sdk-licenses: false
-      - name: Instalar a plataforma existente do projeto (incluindo canais de preview)
+      - name: Instalar a plataforma existente do projeto
         run: |
-          sdkmanager --list --channel=3
-          sdkmanager --channel=3 "platforms;android-37" "build-tools;36.0.0"
+          sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - name: Compilar e verificar lint (sem testes unitários)
         run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
       - name: Disponibilizar APK de depuração
