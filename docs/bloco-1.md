@@ -62,7 +62,11 @@ A documentação atual da ComicVine não foi acessível no diagnóstico. Endpoin
 - Nenhum teste unitário novo. Exemplos do projeto original mantidos.
 - Tentativa de assembleDebug/lintDebug interrompida antes da configuração, no download do Gradle: Network is unreachable.
 - SDK/emulador não disponíveis localmente; aplicativo não executado. Sem captura real de tela do aplicativo neste ambiente.
-- Workflow de build/lint incluído para validação no GitHub Actions; consultar o resultado efetivo do run. Ter o workflow não equivale a compilação aprovada.
+- assembleDebug e lintDebug aprovados no [GitHub Actions, run 37160936084](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37160936084), commit 2d64b45c06a62c3d2ac42bac7d1e040391b1bb2f. BUILD SUCCESSFUL em 1m53s. Alterações posteriores desta entrega são somente de documentação.
+- Relatório lint inspecionado: zero erros, 13 avisos — 11 sobre versões mais novas disponíveis (Gradle/dependências) e dois sobre cores black/white do projeto original sem uso. As versões estruturais foram preservadas; não houve supressão de avisos.
+- O compilador registrou uso de API obsoleta em MainActivity, sem erro de compilação; a compatibilidade da navegação ainda requer verificação manual.
+- Corrigido no CI o nome do pacote SDK para platforms;android-37.0, observado na listagem do SDK Manager; compileSdk/targetSdk 37 preservados.
+- APK app-marvel-debug e relatórios android-lint publicados como artifacts desse run, com retenção de sete dias (até 10/10/2026). Nenhum teste unitário foi executado; a tarefa lint analisa também fontes dos testes originais.
 
 ## Checklist
 
@@ -70,7 +74,7 @@ A documentação atual da ComicVine não foi acessível no diagnóstico. Endpoin
 |---|---|---|
 | 1. Fidelidade e consistência | Pendente validação visual | Contexto Login/Home, recursos originais e tema aplicado; home de conteúdo ainda fora do bloco |
 | 2. Navegação e hierarquia | Implementado; validação manual pendente | NavHost, NavigationUI e cinco destinos |
-| 3. Ausência de regressões | Pendente | Inspeção/checagens estáticas; build e aparelho precisam confirmar |
+| 3. Ausência de regressões | Build/lint aprovados; validação manual pendente | APK gerado, lint sem erros; comportamento no aparelho ainda não verificado |
 | 4. Telas e fontes ampliadas | Pendente validação manual | maxWidth, sp, wrap_content e scroll; sem emulador |
 | 5. Java/MVVM/Fragments/XML | Atendido por inspeção | Sem Compose ou fontes Kotlin do aplicativo |
 | 6. Decisões confirmadas | Atendido | Bloco 1 aprovado; inclusão do Marv autorizada |
@@ -95,4 +99,4 @@ A documentação atual da ComicVine não foi acessível no diagnóstico. Endpoin
 
 ## Pendências e próximo bloco
 
-Build/lint e validação no aparelho devem passar antes do aceite. Próximo bloco proposto: splash e autenticação Firebase, incluindo botões Entrar/Criar conta e apoio pontual do Marv. A configuração Firebase será orientada naquele bloco. Provedor de tradução, backend, orçamento/modelo de geração e regras de exclusão não bloqueiam esta fundação.
+Build/lint aprovados; validação no aparelho permanece necessária antes do aceite. Próximo bloco proposto: splash e autenticação Firebase, incluindo botões Entrar/Criar conta e apoio pontual do Marv. A configuração Firebase será orientada naquele bloco. Provedor de tradução, backend, orçamento/modelo de geração e regras de exclusão não bloqueiam esta fundação.
