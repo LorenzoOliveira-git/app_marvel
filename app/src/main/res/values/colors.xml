@@ -9,6 +9,7 @@
     <color name="marvel_text_secondary">#C5C6D3</color>
     <color name="marvel_border">#68697D</color>
     <color name="marvel_nav">#181824</color>
+    <color name="marvel_nav_overlay">#B8181824</color>
     <color name="marvel_ripple">#33FFFFFF</color>
     <color name="marvel_primary_disabled">#705057</color>
     <color name="marvel_focus">#FFB8BB</color>
