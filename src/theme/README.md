@@ -1,0 +1,19 @@
+# Referência visual — Marvel - Mobile
+
+Arquivo: avJ7cq3FyO5XOIueiqaYrb. Esta pasta documenta o design; o Android usa app/src/main/res.
+Frames analisados no diagnóstico: Login (30:296) e Tela Inicial (19:102).
+A consulta get_variable_defs em Login retornou {}. Os valores observados foram extraídos do contexto dos frames; valores normalizados foram escolhidos para o aplicativo. Não representam uma biblioteca completa de variáveis do Figma.
+
+O bloco 1 estabelece a identidade e a navegação. A home de recepção é provisória para a fundação: os cards de notícias, destaque e curiosidade serão implementados com dados reais no bloco de conteúdo. O fundo usa um gradiente Android em lugar dos brilhos decorativos; não é uma reprodução pixel a pixel. Os ícones e o logo foram exportados dos próprios nós, sem modificar o arquivo.
+
+## Marv
+
+- Recepção/home: pose frontal sorrindo.
+- Avisos de indisponibilidade: pensativo.
+- Componente de estado: preparado para carregamento, vazio e erro; não simula esses estados no bloco 1.
+- Login/cadastro futuros: orientação curta, sem cobrir campos ou teclado.
+- Conteúdo futuro: dicas contextualizadas e avisos de ausência; imagens de personagens continuam vindas da ComicVine.
+- Criação futura: orientação de campos, revisão e etapas reais; expressões de sucesso/falha deverão corresponder ao resultado.
+- Perfil futuro: avatar selecionável apenas entre imagens aprovadas; não há conta fictícia neste bloco.
+
+Os dois PNGs foram preparados pelo ImageGen a partir do guia anexado. São assets derivados da referência, não recortes determinísticos. Não foi configurada geração paga de heróis.

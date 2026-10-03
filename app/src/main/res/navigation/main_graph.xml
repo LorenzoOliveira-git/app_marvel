@@ -1,0 +1,16 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph" app:startDestination="@id/homeFragment">
+    <fragment android:id="@id/homeFragment" android:name="com.example.app_marvel.ui.home.HomeFragment" android:label="@string/nav_home" />
+    <fragment android:id="@id/charactersFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_characters">
+        <argument android:name="feature" app:argType="string" android:defaultValue="CHARACTERS" />
+    </fragment>
+    <fragment android:id="@id/storiesFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_stories">
+        <argument android:name="feature" app:argType="string" android:defaultValue="STORIES" />
+    </fragment>
+    <fragment android:id="@id/createHeroFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_create">
+        <argument android:name="feature" app:argType="string" android:defaultValue="CREATE_HERO" />
+    </fragment>
+    <fragment android:id="@id/profileFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_profile">
+        <argument android:name="feature" app:argType="string" android:defaultValue="PROFILE" />
+    </fragment>
+</navigation>

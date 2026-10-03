@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">App_Marvel</string>
+    <string name="nav_home">Início</string><string name="nav_characters">Personagens</string>
+    <string name="nav_stories">Histórias</string><string name="nav_create">Criar herói</string><string name="nav_profile">Perfil</string>
+    <string name="brand_caption">Seu universo</string><string name="brand_content_description">Sua Marvel</string>
+    <string name="home_eyebrow">EXPLORE. DESCUBRA. CRIE.</string>
+    <string name="home_title">Seu universo começa aqui</string>
+    <string name="marv_welcome_title">Olá, eu sou o Marv!</string>
+    <string name="marv_welcome_body">Sou seu guia no universo Marvel. Vamos descobrir histórias e imaginar novos heróis juntos?</string>
+    <string name="marv_content_description">Marv, o mascote robô do aplicativo, sorrindo</string>
+    <string name="home_explore_title">Escolha seu caminho</string>
+    <string name="home_characters_description">Conheça personagens e suas histórias.</string>
+    <string name="home_stories_description">Explore quadrinhos, filmes, séries e arcos.</string>
+    <string name="home_create_description">Dê forma à sua ideia com a ajuda do Marv.</string>
+    <string name="home_profile_description">Encontre sua coleção de heróis personalizados.</string>
+    <string name="home_availability_notice">As áreas abaixo ainda não estão disponíveis. O Marv avisa o que você pode encontrar em cada uma.</string>
+    <string name="open_section_description">Abrir %1$s. %2$s</string>
+    <string name="unavailable_title">Esta área ainda não está disponível</string>
+    <string name="characters_unavailable">O catálogo de personagens ainda não está disponível. Volte ao início para conhecer os caminhos do aplicativo.</string>
+    <string name="stories_unavailable">As histórias ainda não estão disponíveis. Aqui você encontrará quadrinhos, filmes, séries e arcos.</string>
+    <string name="create_unavailable">A criação de heróis ainda não está disponível. Eu vou acompanhar você quando chegar a hora de dar forma à sua ideia.</string>
+    <string name="profile_unavailable">Seu perfil e sua coleção ainda não estão disponíveis. Seus heróis personalizados terão um espaço aqui.</string>
+    <string name="state_loading_title">Só um instante…</string><string name="state_loading_body">Estou buscando as informações para você.</string>
+    <string name="state_empty_title">Nada por aqui ainda</string><string name="state_empty_body">Nenhum resultado foi encontrado.</string>
+    <string name="state_error_title">Não consegui carregar</string><string name="state_error_body">Tente novamente em instantes.</string>
+    <string name="retry">Tentar novamente</string><string name="return_home">Voltar ao início</string><string name="card_arrow">→</string>
 </resources>
