@@ -26,7 +26,12 @@ jobs:
           cache: gradle
       - uses: android-actions/setup-android@v4
         with:
-          packages: "platform-tools platforms;android-37 build-tools;36.0.0"
+          packages: "platform-tools"
+          log-accepted-android-sdk-licenses: false
+      - name: Instalar a plataforma existente do projeto (incluindo canais de preview)
+        run: |
+          sdkmanager --list --channel=3
+          sdkmanager --channel=3 "platforms;android-37" "build-tools;36.0.0"
       - name: Compilar e verificar lint (sem testes unitários)
         run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
       - name: Disponibilizar APK de depuração
