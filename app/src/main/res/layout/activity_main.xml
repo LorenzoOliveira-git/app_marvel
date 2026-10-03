@@ -9,10 +9,10 @@
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                 android:orientation="vertical" android:layout_marginEnd="@dimen/space_md">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"
+                <TextView android:id="@+id/brand_caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"
                     android:textAppearance="@style/TextAppearance.Marvel.Caption" />
                 <TextView android:id="@+id/screen_title" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" />
+                    android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" />
             </LinearLayout>
             <ImageView android:layout_width="76dp" android:layout_height="33dp" android:scaleType="fitCenter"
                 android:src="@drawable/logo_marvel" android:contentDescription="@string/brand_content_description" />
@@ -20,7 +20,7 @@
         <androidx.fragment.app.FragmentContainerView android:id="@+id/nav_host" android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp" android:layout_height="0dp" android:background="@drawable/background_panel"
             app:defaultNavHost="true" app:navGraph="@navigation/main_graph" app:layout_constraintTop_toBottomOf="@id/header"
-            app:layout_constraintBottom_toTopOf="@id/bottom_navigation" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
         <com.google.android.material.bottomnavigation.BottomNavigationView android:id="@+id/bottom_navigation"
             android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="@dimen/navigation_min_height"
             android:layout_marginStart="@dimen/space_md" android:layout_marginEnd="@dimen/space_md"

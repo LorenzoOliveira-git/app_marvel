@@ -24,4 +24,34 @@
     <string name="state_empty_title">Nada por aqui ainda</string><string name="state_empty_body">Nenhum resultado foi encontrado.</string>
     <string name="state_error_title">Não consegui carregar</string><string name="state_error_body">Tente novamente em instantes.</string>
     <string name="retry">Tentar novamente</string><string name="return_home">Voltar ao início</string><string name="card_arrow">→</string>
+    <string name="auth_login_title">Faça login</string>
+    <string name="auth_register_title">Crie sua conta</string>
+    <string name="auth_login_intro">Entre para guardar seus futuros heróis em um só lugar.</string>
+    <string name="auth_register_intro">O Marv acompanha você desde o primeiro passo.</string>
+    <string name="auth_name">Nome</string><string name="auth_email">E-mail</string>
+    <string name="auth_password">Senha</string><string name="auth_confirmation">Confirmar senha</string>
+    <string name="auth_password_help">Use pelo menos 6 caracteres.</string>
+    <string name="auth_sign_in">Entrar</string><string name="auth_sign_up">Criar conta</string>
+    <string name="auth_go_register">Não tem conta? Cadastre-se</string>
+    <string name="auth_go_login">Já tem conta? Faça login</string>
+    <string name="auth_browse">Explorar sem entrar</string>
+    <string name="auth_unavailable">O acesso à conta ainda não está disponível. Você pode explorar o aplicativo enquanto isso.</string>
+    <string name="auth_loading_login">Conferindo seu acesso…</string>
+    <string name="auth_loading_register">Criando sua conta…</string>
+    <string name="auth_error_network">Não consegui conectar. Confira sua internet e tente novamente.</string>
+    <string name="auth_error_credentials">Confira seu e-mail e sua senha e tente novamente.</string>
+    <string name="auth_error_email_used">Não foi possível criar a conta com esse e-mail. Se já tiver conta, faça login.</string>
+    <string name="auth_error_weak">A senha não atende aos requisitos da conta. Escolha uma senha mais forte.</string>
+    <string name="auth_error_rate">Muitas tentativas. Aguarde um pouco antes de tentar novamente.</string>
+    <string name="auth_error_unknown">Não consegui concluir. Tente novamente em instantes.</string>
+    <string name="auth_error_required">Preencha este campo.</string>
+    <string name="auth_error_email">Informe um e-mail válido.</string>
+    <string name="auth_error_short_password">Use pelo menos 6 caracteres.</string>
+    <string name="auth_error_confirmation">As senhas precisam ser iguais.</string>
+    <string name="auth_name_not_saved">Sua conta foi criada, mas seu nome não pôde ser salvo. Você já pode entrar.</string>
+    <string name="account_title">Sua conta</string><string name="account_signed_out">Você ainda não entrou</string>
+    <string name="account_sign_in_body">Entre ou crie uma conta para começar sua coleção quando a criação de heróis estiver disponível.</string>
+    <string name="account_collection_notice">Sua coleção de heróis estará disponível em um próximo bloco.</string>
+    <string name="account_sign_out">Sair da conta</string>
+    <string name="brand_sua">SUA</string>
 </resources>

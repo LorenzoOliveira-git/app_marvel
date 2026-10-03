@@ -28,6 +28,13 @@ jobs:
         with:
           packages: "platform-tools"
           log-accepted-android-sdk-licenses: false
+      - name: Aplicar configuração Firebase quando fornecida
+        env:
+          FIREBASE_CONFIG: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$FIREBASE_CONFIG" ]; then
+            printf '%s' "$FIREBASE_CONFIG" > app/google-services.json
+          fi
       - name: Instalar a plataforma existente do projeto
         run: |
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
@@ -39,6 +46,30 @@ jobs:
           name: app-marvel-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
+      - name: Capturar login, cadastro e painel no emulador
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          sudo chmod a+rw /dev/kvm
+          sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
+          printf 'no\n' | avdmanager create avd -n MarvPreview -k "system-images;android-35;google_apis;x86_64" --force
+          emulator -avd MarvPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > /tmp/marv-emulator.log 2>&1 &
+          timeout 180 adb wait-for-device
+          for attempt in $(seq 1 90); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
+            sleep 2
+          done
+          adb shell input keyevent 82
+          adb install -r app/build/outputs/apk/debug/app-debug.apk
+          python3 .github/scripts/capture-preview.py
+      - name: Disponibilizar capturas do emulador
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-preview
+          path: app/build/previews/*.png
+          if-no-files-found: ignore
           retention-days: 7
       - name: Disponibilizar relatórios de lint
         if: always()

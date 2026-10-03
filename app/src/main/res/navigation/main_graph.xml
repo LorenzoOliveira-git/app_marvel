@@ -1,5 +1,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_graph" app:startDestination="@id/homeFragment">
+    android:id="@+id/main_graph" app:startDestination="@id/loginFragment">
+    <fragment android:id="@+id/loginFragment" android:name="com.example.app_marvel.ui.auth.AuthFragment" android:label="@string/auth_login_title">
+        <argument android:name="register" app:argType="boolean" android:defaultValue="false" />
+    </fragment>
+    <fragment android:id="@+id/registerFragment" android:name="com.example.app_marvel.ui.auth.AuthFragment" android:label="@string/auth_register_title">
+        <argument android:name="register" app:argType="boolean" android:defaultValue="true" />
+    </fragment>
     <fragment android:id="@id/homeFragment" android:name="com.example.app_marvel.ui.home.HomeFragment" android:label="@string/nav_home" />
     <fragment android:id="@id/charactersFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_characters">
         <argument android:name="feature" app:argType="string" android:defaultValue="CHARACTERS" />
@@ -10,7 +16,7 @@
     <fragment android:id="@id/createHeroFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_create">
         <argument android:name="feature" app:argType="string" android:defaultValue="CREATE_HERO" />
     </fragment>
-    <fragment android:id="@id/profileFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_profile">
+    <fragment android:id="@id/profileFragment" android:name="com.example.app_marvel.ui.auth.AccountFragment" android:label="@string/nav_profile">
         <argument android:name="feature" app:argType="string" android:defaultValue="PROFILE" />
     </fragment>
 </navigation>
