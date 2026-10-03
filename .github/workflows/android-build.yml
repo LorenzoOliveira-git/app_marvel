@@ -54,8 +54,8 @@ jobs:
           sudo chmod a+rw /dev/kvm
           sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
           printf 'no\n' | avdmanager create avd -n MarvPreview -k "system-images;android-35;google_apis;x86_64" --force
-          emulator -avd MarvPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > /tmp/marv-emulator.log 2>&1 &
-          timeout 180 adb wait-for-device
+          "$ANDROID_HOME/emulator/emulator" -avd MarvPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader > /tmp/marv-emulator.log 2>&1 &
+          timeout 180 adb wait-for-device || { tail -100 /tmp/marv-emulator.log; exit 1; }
           for attempt in $(seq 1 90); do
             if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
             sleep 2
