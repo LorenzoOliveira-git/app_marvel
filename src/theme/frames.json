@@ -1,0 +1,57 @@
+{
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb",
+  "frames": [
+    {
+      "nodeId": "19:102",
+      "name": "Tela Inicial"
+    },
+    {
+      "nodeId": "38:428",
+      "name": "Personagens"
+    },
+    {
+      "nodeId": "64:632",
+      "name": "Histórias"
+    },
+    {
+      "nodeId": "62:338",
+      "name": "Séries"
+    },
+    {
+      "nodeId": "62:542",
+      "name": "Quadrinhos"
+    },
+    {
+      "nodeId": "62:480",
+      "name": "Filmes"
+    },
+    {
+      "nodeId": "59:126",
+      "name": "Detalhes Personagem História"
+    },
+    {
+      "nodeId": "42:478",
+      "name": "Detalhes Personagem"
+    },
+    {
+      "nodeId": "26:33",
+      "name": "Splash 01"
+    },
+    {
+      "nodeId": "30:49",
+      "name": "Splash 02"
+    },
+    {
+      "nodeId": "30:61",
+      "name": "Splash 03"
+    },
+    {
+      "nodeId": "30:296",
+      "name": "Login"
+    },
+    {
+      "nodeId": "34:321",
+      "name": "Cadastro"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "figma": [
+    {
+      "path": "app/src/main/res/drawable-nodpi/ic_home.png",
+      "nodeId": "8:24",
+      "widthDp": 25,
+      "heightDp": 25,
+      "exportScale": 4
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/ic_characters.png",
+      "nodeId": "8:26",
+      "widthDp": 35,
+      "heightDp": 25,
+      "exportScale": 4
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/ic_stories.png",
+      "nodeId": "8:28",
+      "widthDp": 35,
+      "heightDp": 25,
+      "exportScale": 4
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/ic_create.png",
+      "nodeId": "8:30",
+      "widthDp": 21,
+      "heightDp": 25,
+      "exportScale": 4
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/ic_profile.png",
+      "nodeId": "8:32",
+      "widthDp": 25,
+      "heightDp": 25,
+      "exportScale": 4
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/logo_marvel.png",
+      "nodeId": "36:402",
+      "widthDp": 76,
+      "heightDp": 33,
+      "exportScale": 4
+    }
+  ],
+  "marv": [
+    {
+      "path": "app/src/main/res/drawable-nodpi/marv_welcome.png",
+      "role": "Recepção",
+      "source": "Guia de Identidade do Mascote MARV(1).png",
+      "method": "ImageGen; asset derivado; transparência alfa"
+    },
+    {
+      "path": "app/src/main/res/drawable-nodpi/marv_thinking.png",
+      "role": "Feedback de estado",
+      "source": "Guia de Identidade do Mascote MARV(1).png",
+      "method": "ImageGen; asset derivado; transparência alfa"
+    }
+  ],
+  "fonts": {
+    "source": "https://github.com/google/fonts",
+    "inter": "Instâncias estáticas 400 e 600; opsz 14, para minSdk 24",
+    "licenses": "docs/licenses"
+  }
+}

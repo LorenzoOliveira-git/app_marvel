@@ -1,0 +1,25 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/home_eyebrow" android:textAppearance="@style/TextAppearance.Marvel.Caption" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_lg" android:id="@+id/home_heading" android:text="@string/home_title" android:textAppearance="@style/TextAppearance.Marvel.Display" />
+        <com.google.android.material.card.MaterialCardView style="@style/Widget.Marvel.Card" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal" android:padding="@dimen/space_lg">
+                <ImageView android:layout_width="148dp" android:layout_height="176dp" android:src="@drawable/marv_welcome" android:scaleType="fitCenter" android:contentDescription="@string/marv_content_description" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md"
+                    android:gravity="center" android:id="@+id/marv_heading" android:text="@string/marv_welcome_title" android:textAppearance="@style/TextAppearance.Marvel.Title" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
+                    android:gravity="center" android:text="@string/marv_welcome_body" android:textAppearance="@style/TextAppearance.Marvel.Body" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xl" android:layout_marginBottom="@dimen/space_sm"
+            android:id="@+id/explore_heading" android:text="@string/home_explore_title" android:textAppearance="@style/TextAppearance.Marvel.Title" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="@dimen/space_md"
+            android:text="@string/home_availability_notice" android:textAppearance="@style/TextAppearance.Marvel.Caption" />
+        <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/characters_card" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/stories_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" />
+        <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/create_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" />
+        <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/profile_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

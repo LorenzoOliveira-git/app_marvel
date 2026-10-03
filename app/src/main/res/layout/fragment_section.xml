@@ -1,0 +1,9 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/section_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+        android:padding="@dimen/screen_padding" android:gravity="center_vertical">
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/state_view" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/return_home" style="@style/Widget.Marvel.Button.Secondary"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_lg" android:text="@string/return_home" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

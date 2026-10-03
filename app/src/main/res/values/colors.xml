@@ -1,5 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="marvel_background">#545573</color>
+    <color name="marvel_surface">#242434</color>
+    <color name="marvel_surface_raised">#343448</color>
+    <color name="marvel_primary">#ED1D24</color>
+    <color name="marvel_primary_strong">#D71920</color>
+    <color name="marvel_on_primary">#FFFFFF</color>
+    <color name="marvel_text">#FAFAFA</color>
+    <color name="marvel_text_secondary">#C5C6D3</color>
+    <color name="marvel_border">#68697D</color>
+    <color name="marvel_nav">#181824</color>
+    <color name="marvel_ripple">#33FFFFFF</color>
+    <color name="marvel_primary_disabled">#705057</color>
+    <color name="marvel_focus">#FFB8BB</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,9 +1,18 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.App_Marvel" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <style name="Base.Theme.App_Marvel" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/marvel_primary</item>
+        <item name="colorOnPrimary">@color/marvel_on_primary</item>
+        <item name="colorSecondary">@color/marvel_primary</item>
+        <item name="colorSurface">@color/marvel_surface</item>
+        <item name="colorOnSurface">@color/marvel_text</item>
+        <item name="colorOnSurfaceVariant">@color/marvel_text_secondary</item>
+        <item name="android:windowBackground">@color/marvel_background</item>
+        <item name="android:fontFamily">@font/inter</item><item name="fontFamily">@font/inter</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/marvel_nav</item>
+        <item name="materialButtonStyle">@style/Widget.Marvel.Button.Primary</item>
+        <item name="textInputStyle">@style/Widget.Marvel.TextInput</item>
     </style>
-
     <style name="Theme.App_Marvel" parent="Base.Theme.App_Marvel" />
 </resources>
