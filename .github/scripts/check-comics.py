@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import struct
+import zlib
 import time
 import xml.etree.ElementTree as ET
 
@@ -12,7 +14,13 @@ PREVIEW = Path('app/build/previews')
 OUT.mkdir(parents=True,exist_ok=True)
 PREVIEW.mkdir(parents=True,exist_ok=True)
 def adb(*args,check=True):
-    return subprocess.run(['adb',*args],check=check,capture_output=True)
+    for attempt in range(3):
+        result = subprocess.run(['adb',*args],capture_output=True)
+        if not check or result.returncode == 0:return result
+        if attempt < 2:
+            subprocess.run(['adb','wait-for-device'],capture_output=True,timeout=20)
+            time.sleep(1)
+    result.check_returncode()
 def run(name):
     adb('shell','am','force-stop',PACKAGE)
     adb('shell','run-as',PACKAGE,'rm','-f',f'files/diagnostics/{name}.json')
@@ -66,7 +74,25 @@ def top(width=430,height=932):
     for i in range(4):adb('shell','input','swipe',str(width//2),str(height//3),str(width//2),str(height*4//5),'300')
     time.sleep(1)
 def capture(name):
-    time.sleep(2); (PREVIEW/(name+'.png')).write_bytes(adb('exec-out','screencap','-p').stdout)
+    time.sleep(2)
+    for attempt in range(4):
+        data = adb('exec-out','screencap','-p').stdout
+        if valid_png(data):
+            (PREVIEW/(name+'.png')).write_bytes(data);return
+        time.sleep(1)
+    raise RuntimeError('Captura incompleta do emulador: '+name)
+def valid_png(data):
+    if not data.startswith(b'\x89PNG\r\n\x1a\n'):return False
+    offset=8
+    while offset+12<=len(data):
+        length=struct.unpack('>I',data[offset:offset+4])[0]
+        end=offset+12+length
+        if end>len(data):return False
+        chunk=data[offset+4:offset+8+length]
+        if (zlib.crc32(chunk)&0xffffffff) != struct.unpack('>I',data[offset+8+length:end])[0]:return False
+        if chunk[:4]==b'IEND':return end==len(data)
+        offset=end
+    return False
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(3)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_comics');wait('comics_featured_heading');capture('comics-top')
