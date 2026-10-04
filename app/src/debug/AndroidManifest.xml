@@ -2,5 +2,6 @@
     <application>
         <!-- Verificação ADB somente em debug; não aparece na navegação do aplicativo. -->
         <activity android:name=".diagnostics.DataCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.CatalogCheckActivity" android:exported="true" />
     </application>
 </manifest>

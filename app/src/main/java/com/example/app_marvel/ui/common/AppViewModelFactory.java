@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.app_marvel.data.model.AppFeature;
 import com.example.app_marvel.data.repository.FeatureRepository;
-import com.example.app_marvel.ui.home.HomeViewModel;
 import com.example.app_marvel.ui.section.SectionViewModel;
 
 public final class AppViewModelFactory implements ViewModelProvider.Factory {
@@ -20,9 +19,6 @@ public final class AppViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass == HomeViewModel.class) {
-            return modelClass.cast(new HomeViewModel(repository));
-        }
         if (modelClass == SectionViewModel.class) {
             return modelClass.cast(new SectionViewModel(repository, feature));
         }
