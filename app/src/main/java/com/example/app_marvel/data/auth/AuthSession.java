@@ -1,6 +1,6 @@
 package com.example.app_marvel.data.auth;
 
-/** Somente identidade devolvida pelo provedor; nunca contém senha ou token. */
+/** Identidade devolvida pelo repositório da variante; nunca contém senha ou token. */
 public final class AuthSession {
     private final boolean configured;
     private final String uid, name, email;

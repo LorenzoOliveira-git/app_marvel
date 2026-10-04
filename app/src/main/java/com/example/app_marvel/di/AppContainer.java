@@ -2,7 +2,7 @@ package com.example.app_marvel.di;
 
 import android.content.Context;
 import com.example.app_marvel.data.auth.AuthRepository;
-import com.example.app_marvel.data.auth.FirebaseAuthRepository;
+import com.example.app_marvel.data.auth.AuthRepositoryProvider;
 import com.example.app_marvel.data.comicvine.ComicVineClient;
 import com.example.app_marvel.data.translation.MlKitTranslationRepository;
 import com.example.app_marvel.data.translation.TranslationRepository;
@@ -17,7 +17,7 @@ public final class AppContainer {
     private final TranslationRepository translations;
     private final ComicVineClient comicVine;
     public AppContainer(Context context) {
-        auth = new FirebaseAuthRepository(context);
+        auth = AuthRepositoryProvider.create(context);
         translations = new MlKitTranslationRepository(context);
         comicVine = new ComicVineClient(context);
     }

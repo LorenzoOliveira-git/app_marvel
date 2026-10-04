@@ -16,7 +16,7 @@ import com.example.app_marvel.R;
 import com.example.app_marvel.data.auth.AuthRepository;
 import com.example.app_marvel.databinding.FragmentAccountBinding;
 
-/** Somente conta real do Firebase; coleção/avatares serão acrescentados no bloco de perfil. */
+/** Identidade da sessão; coleção/avatares serão acrescentados no bloco de perfil. */
 public final class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle saved) {

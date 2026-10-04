@@ -39,13 +39,50 @@ jobs:
         run: |
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - name: Compilar e verificar lint (sem testes unitários)
-        run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
+        run: bash gradlew :app:assembleDebug :app:lintDebug :app:assemblePreview :app:lintPreview :app:compileReleaseJavaWithJavac --no-daemon --console=plain
       - name: Disponibilizar APK de depuração
         uses: actions/upload-artifact@v7
         with:
           name: app-marvel-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
+      - name: Preparar APK de demonstração para download
+        run: |
+          mkdir -p app/build/preview-download
+          cp app/build/outputs/apk/preview/app-preview.apk app/build/preview-download/app-marvel-preview.apk
+          cd app/build/preview-download
+          sha256sum app-marvel-preview.apk > app-marvel-preview.sha256
+          split -b 20M app-marvel-preview.apk app-marvel-preview.apk.part-
+      - name: Disponibilizar APK de demonstração
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-marvel-preview
+          path: app/build/preview-download/app-marvel-preview.apk
+          if-no-files-found: error
+          retention-days: 7
+      - name: Disponibilizar primeira parte do APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-marvel-preview-part-1
+          path: |
+            app/build/preview-download/app-marvel-preview.apk.part-aa
+            app/build/preview-download/app-marvel-preview.sha256
+          if-no-files-found: error
+          retention-days: 7
+      - name: Disponibilizar segunda parte do APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-marvel-preview-part-2
+          path: app/build/preview-download/app-marvel-preview.apk.part-ab
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Disponibilizar terceira parte do APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-marvel-preview-part-3
+          path: app/build/preview-download/app-marvel-preview.apk.part-ac
+          if-no-files-found: ignore
           retention-days: 7
       - name: Capturar login, cadastro e painel no emulador
         continue-on-error: true
@@ -74,6 +111,19 @@ jobs:
           path: app/build/data-check/*.json
           if-no-files-found: ignore
           retention-days: 7
+      - name: Verificar demonstração offline no emulador
+        timeout-minutes: 6
+        run: |
+          adb install -r app/build/outputs/apk/preview/app-preview.apk
+          python3 .github/scripts/check-preview.py
+      - name: Disponibilizar capturas e resultado da demonstração
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-preview-offline
+          path: app/build/preview-check/*
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Disponibilizar capturas do emulador
         if: always()
         uses: actions/upload-artifact@v7
@@ -87,6 +137,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: android-lint
-          path: app/build/reports/lint-results-debug.*
+          path: app/build/reports/lint-results-*.*
           if-no-files-found: ignore
           retention-days: 7

@@ -5,6 +5,8 @@ plugins {
 // A configuração Firebase é fornecida localmente ou pelo ambiente de compilação.
 if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
+    // A demonstração usa identidade local e um applicationId próprio.
+    tasks.matching { it.name == "processPreviewGoogleServices" }.configureEach { enabled = false }
 }
 
 android {
@@ -24,6 +26,12 @@ android {
     }
 
     buildTypes {
+        create("preview") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".preview"
+            versionNameSuffix = "-preview"
+            matchingFallbacks += listOf("debug")
+        }
         release {
             optimization {
                 enable = false
