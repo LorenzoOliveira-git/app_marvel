@@ -14,3 +14,7 @@
 .cxx
 local.properties
 /app/google-services.json
+/comicvine-inspection.json
+**/comicvine-api-key
+**/comicvine-api-key.tmp
+__pycache__/

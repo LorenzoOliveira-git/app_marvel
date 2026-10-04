@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
-// Sem configuração, as telas continuam inspecionáveis e o acesso informa indisponibilidade.
+// A configuração Firebase é fornecida localmente ou pelo ambiente de compilação.
 if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
 }
@@ -43,6 +43,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.core.splashscreen)
+    implementation(libs.mlkit.translate)
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

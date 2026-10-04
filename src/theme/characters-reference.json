@@ -1,0 +1,34 @@
+{
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb",
+  "nodeId": "38:428",
+  "capturedAt": "2026-10-04",
+  "scope": "Personagens — contexto completo e screenshot retornado pela mesma chamada",
+  "referenceSizePx": { "width": 430, "height": 932 },
+  "observed": {
+    "headerTitle": { "font": "Inter", "weight": "bold", "sizePx": 20 },
+    "mainPanel": { "x": 3, "y": 93, "width": 423, "height": 836 },
+    "filterHeading": { "font": "Bebas Neue", "sizePx": 20 },
+    "filters": ["Origem", "Times", "Perfil"],
+    "filterOutline": "#FFFFFF",
+    "filterRadiusPx": 5,
+    "portraitRadiusPx": 10,
+    "portraitCenter": { "width": 240.831, "height": 365.819 },
+    "portraitAdjacent": { "width": 244, "height": 271 },
+    "portraitBacking": "#302E46",
+    "name": { "font": "Bebas Neue", "sizePx": 40 },
+    "metadata": { "font": "Bebas Neue", "sizePx": 24, "color": "#C5C6D3" },
+    "detailAction": { "font": "Bebas Neue", "sizePx": 24 },
+    "bottomNavigation": { "color": "#181824", "alpha": 0.72, "radiusPx": 20 }
+  },
+  "implementationConstraints": [
+    "Preservar hierarquia e proporções usando layouts Android responsivos, sem posições absolutas.",
+    "Retratos e textos fictícios do Figma são excluídos; dados dependem de respostas reais Marvel.",
+    "O painel principal continua até a borda inferior, atrás do menu sobreposto.",
+    "Filtros exigem validação de catálogo, relações e semântica antes de habilitar opções.",
+    "Ampliar alvos de toque dos filtros para pelo menos 48 dp.",
+    "Reutilizar marca empilhada Sua/Marvel, fontes e ícones existentes.",
+    "Marv será usado em carregamento, vazio e falha com os assets existentes."
+  ],
+  "apiVerified": false,
+  "appScreenImplemented": false
+}
