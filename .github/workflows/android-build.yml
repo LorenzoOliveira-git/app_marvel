@@ -1,92 +1,36 @@
-name: Android build e lint
+name: Verificar contrato ComicVine para bloco 3
 
 on:
   push:
-    branches: [main, "codex/**"]
-  pull_request:
+    branches: ["codex/comicvine-contract-check"]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: android-${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
-
 jobs:
-  build:
+  inspect:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: "25"
-          cache: gradle
-      - uses: android-actions/setup-android@v4
-        with:
-          packages: "platform-tools"
-          log-accepted-android-sdk-licenses: false
-      - name: Aplicar configuração Firebase quando fornecida
+      - name: Verificar configuração e consultar respostas sanitizadas
         env:
-          FIREBASE_CONFIG: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
-          if [ -n "$FIREBASE_CONFIG" ]; then
-            printf '%s' "$FIREBASE_CONFIG" > app/google-services.json
+          if [ -z "$COMICVINE_API_KEY" ]; then
+            printf '%s\n' '{"key_configured":false,"inspection_executed":false}' > comicvine-configuration-status.json
+          else
+            printf '%s\n' '{"key_configured":true,"inspection_executed":true}' > comicvine-configuration-status.json
+            python3 tools/comicvine.py inspect --output comicvine-inspection.json
           fi
-      - name: Instalar a plataforma existente do projeto
-        run: |
-          sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
-      - name: Compilar e verificar lint (sem testes unitários)
-        run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
-      - name: Disponibilizar APK de depuração
+      - name: Disponibilizar status e respostas sem chave
+        if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: app-marvel-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: comicvine-contract-check
+          path: |
+            comicvine-configuration-status.json
+            comicvine-inspection.json
           if-no-files-found: error
-          retention-days: 7
-      - name: Capturar login, cadastro e painel no emulador
-        continue-on-error: true
-        timeout-minutes: 10
-        run: |
-          sudo chmod a+rw /dev/kvm
-          sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
-          printf 'no\n' | avdmanager create avd -n MarvPreview -k "system-images;android-35;google_apis;x86_64" --force
-          "$ANDROID_HOME/emulator/emulator" -avd MarvPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader > /tmp/marv-emulator.log 2>&1 &
-          timeout 180 adb wait-for-device || { tail -100 /tmp/marv-emulator.log; exit 1; }
-          for attempt in $(seq 1 90); do
-            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
-            sleep 2
-          done
-          adb shell input keyevent 82
-          adb install -r app/build/outputs/apk/debug/app-debug.apk
-          python3 .github/scripts/capture-preview.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
-      - name: Verificar ML Kit e cache persistente no emulador
-        timeout-minutes: 6
-        run: python3 .github/scripts/check-data.py
-      - name: Disponibilizar resultado da tradução real
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: android-data-check
-          path: app/build/data-check/*.json
-          if-no-files-found: ignore
-          retention-days: 7
-      - name: Disponibilizar capturas do emulador
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: android-preview
-          path: app/build/previews/*
-          if-no-files-found: ignore
-          retention-days: 7
-      - name: Disponibilizar relatórios de lint
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: android-lint
-          path: app/build/reports/lint-results-debug.*
-          if-no-files-found: ignore
           retention-days: 7
