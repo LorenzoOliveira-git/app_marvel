@@ -18,8 +18,8 @@ def adb(*args,check=True):
         if attempt<2:
             subprocess.run(['adb','wait-for-device'],capture_output=True,check=True,timeout=20);time.sleep(1)
     result.check_returncode()
-def run(name):
-    adb('shell','am','force-stop',PACKAGE);adb('shell','run-as',PACKAGE,'rm','-f',f'files/diagnostics/{name}.json')
+def run_once(name):
+    adb('shell','am','force-stop',PACKAGE);adb('logcat','-c');adb('shell','run-as',PACKAGE,'rm','-f',f'files/diagnostics/{name}.json')
     adb('shell','am','start','-n',PACKAGE+'/.diagnostics.ArcsCheckActivity','--es','check',name)
     deadline=time.monotonic()+200
     while time.monotonic()<deadline:
@@ -30,11 +30,22 @@ def run(name):
             return report
         time.sleep(2)
     raise RuntimeError('Arcos reais não terminaram.')
+def run(name):
+    for attempt in range(3 if name=='arcs' else 1):
+        try:return run_once(name)
+        except AssertionError:
+            logs=adb('logcat','-d','-s','ComicVine:W').stdout.decode(errors='replace')
+            failures=re.findall(r'Falha: ([A-Z_]+); HTTP=(\d+)',logs)
+            if attempt==2 or not failures or any(kind!='NETWORK' or code!='0' for kind,code in failures):raise
+            print('Falha NETWORK explícita: repetir o diagnóstico real após reconectar.',flush=True)
+            time.sleep(5);network_ready()
 def network_ready():
     deadline=time.monotonic()+60
+    stable=0
     while time.monotonic()<deadline:
         state=adb('shell','dumpsys','connectivity').stdout.decode(errors='replace')
-        if re.search(r'Capabilities:.*\bVALIDATED\b',state):return
+        stable=stable+1 if re.search(r'Capabilities:.*\bVALIDATED\b',state) else 0
+        if stable>=3:return
         time.sleep(1)
     raise RuntimeError('Rede do emulador não validada após modo offline.')
 network_ready()
