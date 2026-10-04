@@ -6,7 +6,7 @@ A revisão atual restaura SUA centralizado sobre o símbolo MARVEL no Login/Cada
 
 Avisos de desenvolvimento removidos das telas. Formulários começam em READY; validação continua ativa. Erros operacionais aparecem somente após tentativa de envio. Firebase sem configuração nunca autentica ficticiamente. Seções sem dados mantêm apenas apresentação/navegação; o estado interno de integração não vira aviso ou lista fictícia.
 
-A verificação da versão anterior está registrada abaixo; a compilação/prévia desta revisão será registrada ao concluir.
+Revisão verificada no [run 37166914245](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245), código ed1f450f. Splash inteira confirmada em captura do início a frio; Login/Cadastro, validação de campos vazios, cinco destinos do menu e fonte ampliada executados e inspecionados. Lint: zero erros, 14 avisos (11 versões disponíveis, 2 recursos originais sem uso e 1 recomendação genérica de dimensão de vetor). O vetor da splash usa o canvas nativo de 288dp com a marca dentro da área segura; o PNG original permanece inalterado. Nenhuma nova consulta ao Figma.
 
 ## Resultado
 
@@ -43,9 +43,12 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 ## Verificações
 
 - Sintaxe dos 25 arquivos Java e 31 XMLs analisados localmente; git diff --check aprovado.
-- assembleDebug/lintDebug aprovados no [run 37163811030](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37163811030), código 666f18b2. Relatório inspecionado: zero erros e 13 avisos sobre atualizações disponíveis/recursos sem uso.
-- App instalado e aberto em emulador Android 35, tela física 320 × 640 px. Capturas de Login, Cadastro, Início, rolagem e fonte 200% inspecionadas: títulos Bebas, painel contínuo e menu translúcido sobre o conteúdo. Cadastro e Explorar foram acessados por rolagem em tela pequena. As primeiras tentativas de captura falharam; a execução citada concluiu o roteiro ADB.
-- Essa prévia não cobre todos os destinos, a última posição de rolagem, paisagem, tablet, teclado, TalkBack ou rotação. Esses itens permanecem no roteiro manual.
+- assembleDebug/lintDebug aprovados no [run 37166914245](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245), código ed1f450f. Relatório inspecionado: zero erros e 14 avisos, descritos acima.
+- App instalado e aberto em emulador Android 35. Início a frio capturado: splash nativa com marca completa, sem recortar o símbolo.
+- Referência 430 × 932 px: Login, Cadastro, rolagem, Início, Personagens, Histórias, Criar herói e Perfil inspecionados. Envio de Login vazio mostrou erros por campo. Volta do cadastro, Explorar, retorno ao Início e Perfil → Login executados.
+- Tela de 320 × 640 px e fonte 200%: Início, Login e Cadastro inspecionados. O roteiro alcançou o link de Cadastro rolando o Login ampliado. O último card do Início foi alcançado na prévia de 430px. Conteúdo permanece sobre painel contínuo e sob menu translúcido.
+- Ausência de avisos de desenvolvimento conferida no código e no roteiro ADB. Isso não acrescenta integrações de catálogo/criação de heróis aos blocos já entregues.
+- Paisagem, tablet, teclado, TalkBack e rotação não foram verificados; permanecem no roteiro manual.
 - Cadastro/login/logout e restauração com conta real ainda não verificados: falta configuração Firebase.
 - Nenhum teste unitário adicionado/executado.
 
@@ -54,9 +57,9 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 | Item | Situação | Evidência / limite |
 |---|---|---|
 | 1. Fidelidade e componentes | Pendente aceite visual | Login/Home em cache, correção do painel e componentes reutilizados; cadastro/splash adaptados |
-| 2. Navegação/hierarquia | Parcialmente verificado | Login → Cadastro → voltar → Explorar → Home executado; pilhas de autenticação real pendentes |
+| 2. Navegação/hierarquia | Parcialmente verificado | Login/Cadastro, cinco destinos e Perfil → Login executados; pilhas de autenticação real pendentes |
 | 3. Regressões | Build/lint aprovados; uso completo pendente | App instalado/aberto e roteiro de prévia concluído |
-| 4. Telas/fontes | Parcialmente verificado | Tela pequena e fonte 200% inspecionadas; paisagem/tablet/teclado pendentes |
+| 4. Telas/fontes | Parcialmente verificado | 430px, 320px e fonte 200% em Início/Login/Cadastro inspecionados; paisagem/tablet/teclado pendentes |
 | 5. Java/MVVM/Fragments/XML | Atendido por inspeção | Interface e dados separados; sem Compose |
 | 6. Decisões | Atendido | Bloco 2 aprovado; overlay solicitado; configuração pendente explícita |
 | 7. Estados/recuperação | Atendido na implementação; teste real pendente | Operações reais, campos preservados em falha, sem percentual fictício |

@@ -53,6 +53,6 @@ O workflow Android build e lint executa essas mesmas tarefas e publica APK/relat
 - [Prompts dos assets do Marv](src/theme/marv-prompts.md)
 - Licenças das fontes em docs/licenses.
 
-A compilação `assembleDebug` e o `lintDebug` do bloco 2 passaram no [GitHub Actions](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37163811030). O run disponibiliza o APK `app-marvel-debug`, os relatórios `android-lint` e capturas `android-preview` por sete dias. Lint: zero erros e 13 avisos (atualizações disponíveis e dois recursos originais sem uso).
+A compilação `assembleDebug` e o `lintDebug` do bloco 2 passaram no [GitHub Actions](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245). O run disponibiliza o APK `app-marvel-debug`, os relatórios `android-lint` e capturas `android-preview` por sete dias. Lint: zero erros e 14 avisos (atualizações disponíveis, dois recursos originais sem uso e uma recomendação genérica para dimensão de vetor na splash).
 
-A tentativa local foi bloqueada no download do Gradle por Network is unreachable. No CI, o aplicativo foi instalado e aberto em emulador Android 35, com capturas de Login, Cadastro, Início, rolagem e fonte 200% inspecionadas. Autenticação com conta real ainda depende da configuração Firebase. Execute as verificações restantes do roteiro manual antes de aprovar o bloco.
+A tentativa local foi bloqueada no download do Gradle por Network is unreachable. No CI, o aplicativo foi instalado e aberto em emulador Android 35, com capturas da splash, Login, Cadastro, cinco destinos do menu, validação, rolagem e fonte 200% inspecionadas. Autenticação com conta real ainda depende da configuração Firebase. Execute as verificações restantes do roteiro manual antes de aprovar o bloco.
