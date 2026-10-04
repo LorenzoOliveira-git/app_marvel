@@ -47,7 +47,9 @@ finally:
 network_ready()
 def nodes():
     adb('shell','uiautomator','dump','/sdcard/issue-window.xml')
-    return list(ET.fromstring(adb('exec-out','cat','/sdcard/issue-window.xml').stdout).iter('node'))
+    data=adb('exec-out','cat','/sdcard/issue-window.xml').stdout
+    (PREVIEW/'arcs-window.xml').write_bytes(data)
+    return list(ET.fromstring(data).iter('node'))
 def top(width=430,height=932):
     for _ in range(10):adb('shell','input','swipe',str(width//2),str(height//3),str(width//2),str(height*4//5),'300')
     time.sleep(.5)
@@ -93,6 +95,16 @@ def capture(name):
         if valid_png(data):(PREVIEW/(name+'.png')).write_bytes(data);return
         time.sleep(1)
     raise RuntimeError('PNG incompleto: '+name)
+def show_arc(expected):
+    top()
+    for _ in range(16):
+        for node in nodes():
+            if node.get('resource-id','').endswith('/arc_name') and node.get('text')==expected:
+                y1=int(re.findall(r'\d+',node.get('bounds'))[1])
+                if 110<=y1<=560:return
+        # Movimento curto e lento: não lança o primeiro card para fora da tela.
+        adb('shell','input','swipe','215','760','215','640','1000')
+    raise RuntimeError('Card esperado não apareceu: '+expected)
 def replace_search(value):
     top();tap(resource='arc_search');adb('shell','input','keycombination','113','29');adb('shell','input','keyevent','67')
     if value:adb('shell','input','text',value)
@@ -102,16 +114,16 @@ adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell'
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_arcs')
 wait('arcs_count','12');capture('arcs-top')
-heading(resource='arc_name');wait('arc_name',online['first'][0]['name']);capture('arcs-first')
+show_arc(online['first'][0]['name']);wait('arc_name',online['first'][0]['name']);capture('arcs-first')
 # Paginação até o final da lista, sem esperar por um controle fora da área visível.
 for _ in range(20):
     adb('shell','input','swipe','215','740','215','250','150')
 tap(resource='arcs_more');top();wait('arcs_count','24');capture('arcs-next-page')
-replace_search('Civil%sWar');wait('arcs_count');heading(resource='arc_name');wait('arc_name','Civil War');capture('arcs-search')
+replace_search('Civil%sWar');wait('arcs_count');show_arc(online['search'][0]['name']);wait('arc_name','Civil War');capture('arcs-search')
 # Voltar à origem e reabrir preserva busca, ordem e conteúdo do ViewModel.
-tap(resource='header_back');tap(resource='open_arcs');top();wait('arc_search','Civil War');heading(resource='arc_name');wait('arc_name','Civil War');capture('arcs-restored')
+tap(resource='header_back');tap(resource='open_arcs');top();wait('arc_search','Civil War');show_arc(online['search'][0]['name']);wait('arc_name','Civil War');capture('arcs-restored')
 replace_search('marv-no-such-arc-918237');wait('status_title','Nenhum arco encontrado');capture('arcs-empty')
-top();tap(resource='arcs_clear');wait('arcs_count','12');tap(resource='arcs_descending');wait('arcs_order_label','Z–A');heading(resource='arc_name');wait('arc_name',online['descending'][0]['name']);capture('arcs-descending')
+top();tap(resource='arcs_clear');wait('arcs_count','12');tap(resource='arcs_descending');wait('arcs_order_label','Z–A');show_arc(online['descending'][0]['name']);wait('arc_name',online['descending'][0]['name']);capture('arcs-descending')
 for width,height,font,label in [(320,640,'1.0','small'),(640,1000,'1.0','large'),(430,932,'2.0','font200')]:
     adb('shell','wm','size',f'{width}x{height}');adb('shell','settings','put','system','font_scale',font);time.sleep(2);top(width,height)
     wait('arcs_heading');capture('arcs-'+label+'-top')
