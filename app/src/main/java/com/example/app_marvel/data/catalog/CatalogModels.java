@@ -74,6 +74,14 @@ public final class CatalogModels {
             this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
         }
     }
+    public static final class ComicsPage {
+        public final List<Issue> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public ComicsPage(List<Issue> items, int nextOffset, boolean hasMore) {
+            this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
+        }
+    }
     private static <T> List<T> immutable(List<T> items) { return Collections.unmodifiableList(new ArrayList<>(items)); }
     public static final class Page {
         public final List<Character> characters;

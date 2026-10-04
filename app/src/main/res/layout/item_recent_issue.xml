@@ -6,6 +6,7 @@
             <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/catalog_issue" />
             <TextView android:id="@+id/issue_title" style="@style/TextAppearance.Marvel.CatalogTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
             <TextView android:id="@+id/issue_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+            <TextView android:id="@+id/issue_volume" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:visibility="gone" />
             <com.google.android.material.button.MaterialButton android:id="@+id/issue_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/catalog_more" />
         </LinearLayout>
     </LinearLayout>

@@ -439,6 +439,61 @@ public final class MarvelRepository {
         });
     }
 
+    public void volumes(Callback<List<Reference>> callback) {
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            index(pub.data, "volumes", result -> deliver(callback, result));
+        });
+    }
+
+    public void comics(int volumeId, boolean oldest, int offset, Callback<ComicsPage> callback) {
+        if (volumeId < 0 || offset < 0) { deliver(callback, Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            index(pub.data, "volumes", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Map<Integer, Reference> volumes = new HashMap<>();
+                for (Reference ref : indexed.data) volumes.put(ref.id, ref);
+                if (volumeId != 0 && !volumes.containsKey(volumeId)) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(new Date());
+                comicsPage(volumes, volumeId, oldest, today, offset, 0, callback);
+            });
+        });
+    }
+    private void comicsPage(Map<Integer, Reference> volumes, int volumeId, boolean oldest, String today,
+            int offset, int attempt, Callback<ComicsPage> callback) {
+        int limit = volumeId == 0 ? 100 : 12;
+        String filter = (volumeId == 0 ? "" : "volume:" + volumeId + ",") + "store_date:1900-01-01|" + today;
+        request("issues/", params("filter", filter, "sort", "store_date:" + (oldest ? "asc" : "desc"),
+                "offset", String.valueOf(offset), "limit", String.valueOf(limit), "field_list", ISSUE_FIELDS + ",api_detail_url"), DAY, result -> {
+            JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+            if (rows == null || !result.data.has("number_of_total_results")) {
+                deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+            }
+            List<Issue> items = new ArrayList<>(); Set<Integer> ids = new HashSet<>(); String previous = null;
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.optJSONObject(i); if (row == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                int id = row.optInt("id"); JSONObject volume = row.optJSONObject("volume");
+                String path = resourcePath(text(row, "api_detail_url"), "issue"), date = text(row, "store_date");
+                if (id <= 0 || path == null || !path.endsWith("-" + id + "/") || !ids.add(id)
+                        || !date.matches("\\d{4}-\\d{2}-\\d{2}") || date.compareTo("1900-01-01") < 0 || date.compareTo(today) > 0
+                        || (previous != null && (oldest ? date.compareTo(previous) < 0 : date.compareTo(previous) > 0))) {
+                    deliver(callback, Result.failed(Failure.DATA)); return;
+                }
+                previous = date;
+                if (volumeId != 0 && (volume == null || volume.optInt("id") != volumeId)) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                Reference known = volume == null ? null : volumes.get(volume.optInt("id"));
+                if (known == null || !known.path.equals(resourcePath(text(volume, "api_detail_url"), "volume")) || text(volume, "name").isEmpty()) continue;
+                String name = text(volume, "name"), number = text(row, "issue_number");
+                items.add(new Issue(id, known.id, name + (number.isEmpty() ? "" : " #" + number), name,
+                        date, image(row), website(text(row, "site_detail_url"))));
+            }
+            int next = offset + rows.length(); boolean more = rows.length() > 0 && next < result.data.optInt("number_of_total_results");
+            if (items.isEmpty() && more && attempt < 2) comicsPage(volumes, volumeId, oldest, today, next, attempt + 1, callback);
+            else deliver(callback, Result.success(new ComicsPage(items, next, more)));
+        });
+    }
+
     public void recent(Callback<List<Issue>> callback) {
         publisher(pub -> {
             if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }

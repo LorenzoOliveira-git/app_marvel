@@ -1,0 +1,21 @@
+<resources>
+    <string name="comics_title">Quadrinhos</string>
+    <string name="comics_open">Explorar quadrinhos →</string>
+    <string name="comics_featured">Destaque</string>
+    <string name="comics_recent">Recentes</string>
+    <string name="comics_oldest">Antigos</string>
+    <string name="comics_volume">Volume</string>
+    <string name="comics_order_selected">Selecionado</string>
+    <item name="comics_volume_search" type="id" />
+    <string name="comics_search">Buscar volume</string>
+    <string name="comics_volume_meta">Volume: %1$s</string>
+    <string name="comics_store_date">Data de venda: %1$s</string>
+    <string name="comics_previous">Quadrinho anterior</string>
+    <string name="comics_next">Próximo quadrinho</string>
+    <string name="comics_source">Fonte: ComicVine. Edições ordenadas pela data de venda.</string>
+    <string name="comics_empty_title">Nenhuma edição nesta seleção</string>
+    <string name="comics_empty_body">Escolha outro volume ou continue para a próxima página.</string>
+    <style name="Widget.Marvel.ComicsOrder" parent="Widget.Marvel.CatalogFilter">
+        <item name="icon">@null</item><item name="android:gravity">center</item>
+    </style>
+</resources>
