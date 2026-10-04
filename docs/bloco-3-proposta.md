@@ -36,8 +36,11 @@ Não cole a chave em chat, arquivos de código, issues ou PRs. O APK e o relató
 ### Inspecionar a API no computador — caminho imediato
 
 1. Abra um terminal na raiz do projeto com Python 3 instalado.
-2. Execute `python tools/comicvine.py inspect`. Digite a chave somente na entrada oculta.
-3. O script gera `comicvine-inspection.json` sanitizado. Esse relatório pode ser fornecido para validar Marvel, os campos disponíveis e as sondagens de filtros. Falhas HTTP/API são registradas como falhas reais, sem fabricar respostas.
+2. Copie `.env.example` para `.env`, na mesma pasta de `gradlew` e `settings.gradle.kts`, e preencha `COMICVINE_API_KEY` na cópia local. O `.env` é ignorado pelo Git e não deve ser anexado a relatórios. O script usa primeiro a variável de ambiente, depois o `.env` da raiz e, se ambos estiverem vazios, solicita entrada oculta.
+3. Execute `python tools/comicvine.py inspect`. Sem `.env` ou variável de ambiente, digite a chave somente na entrada oculta.
+4. O script gera `comicvine-inspection.json` sanitizado. Esse relatório pode ser fornecido para validar Marvel, os campos disponíveis e as sondagens de filtros. Falhas HTTP/API são registradas como falhas reais, sem fabricar respostas.
+
+O `.env` serve somente às ferramentas Python locais: o Android não o lê automaticamente, ele não é incluído no APK e não configura os Secrets do GitHub Actions. Valores podem ser literais sem aspas ou entre aspas simples/duplas; não há execução de comandos ou expansão de variáveis.
 
 ### Inspecionar pelo GitHub — após incorporar o workflow à main
 
@@ -50,7 +53,7 @@ Não cole a chave em chat, arquivos de código, issues ou PRs. O APK e o relató
 
 1. Instale o APK de depuração e abra o app uma vez; habilite depuração USB e autorize o computador no aparelho.
 2. Com ADB disponível, execute `python tools/comicvine.py device` na raiz do projeto. Se houver vários aparelhos, acrescente `--serial ID_DO_APARELHO`.
-3. Digite a chave na entrada oculta. O script grava somente na área privada dessa instalação; desinstalar apaga a configuração.
+3. O script lê a chave da variável de ambiente ou do `.env` local; na ausência desses valores, solicita entrada oculta. Ele grava somente na área privada dessa instalação; desinstalar apaga a configuração.
 
 ## Referência visual e dados pendentes
 
