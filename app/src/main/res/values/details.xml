@@ -1,4 +1,5 @@
 <resources>
+    <string name="details_source_caption">Fonte: ComicVine · Tradução automática com revisão de rótulos</string>
     <string name="details_back">Voltar à tela anterior</string>
     <string name="details_description">Descrição</string>
     <string name="details_first_appearance">Primeira aparição</string>

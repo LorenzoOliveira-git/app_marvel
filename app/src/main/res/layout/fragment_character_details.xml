@@ -41,7 +41,7 @@
                 <include android:id="@+id/teams_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" />
                 <include android:id="@+id/friends_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" />
                 <include android:id="@+id/enemies_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" />
-                <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/catalog_source" />
+                <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/details_source_caption" />
                 <com.google.android.material.button.MaterialButton android:id="@+id/details_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_external" />
             </LinearLayout>
         </LinearLayout>

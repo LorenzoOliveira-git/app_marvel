@@ -15,13 +15,20 @@ public final class CatalogDescriptions {
     private CatalogDescriptions() { }
     /** Contexto evita interpretar um rótulo curto de poder como verbo/nome comum isolado. */
     public static void translatePower(TranslationRepository repository, CatalogModels.Reference power, TranslationRepository.Callback callback) {
-        repository.translate("power:" + power.id, "name-context-v1", "Superpower: " + power.name, result -> {
+        repository.translate("power:" + power.id, "name-context-reviewed-v2", "Superpower: " + power.name, result -> {
             if (result.getFailure() != null) { callback.complete(result); return; }
             String text = result.getText(); int colon = text.indexOf(':');
             if (colon < 0 || colon > 32 || text.substring(colon + 1).trim().isEmpty()) {
                 callback.complete(TranslationRepository.Result.failed(TranslationRepository.Failure.TRANSLATION)); return;
             }
-            callback.complete(TranslationRepository.Result.content(text.substring(colon + 1).trim(), result.isFromCache()));
+            String label = text.substring(colon + 1).trim();
+            // Traduções revisadas de rótulos genéricos, com ID e texto original observados.
+            // Não são nomes oficiais localizados nem fatos adicionados ao personagem.
+            if (power.id == 35 && power.name.equals("Gadgets")) label = "Dispositivos";
+            if (power.id == 38 && power.name.equals("Siphon Abilities")) label = "Absorção de habilidades";
+            if (power.id == 54 && power.name.equals("Wall Clinger")) label = "Aderência a paredes";
+            if (power.id == 138 && power.name.equals("Webslinger")) label = "Lançamento de teias";
+            callback.complete(TranslationRepository.Result.content(label, result.isFromCache()));
         });
     }
     public static void translate(TranslationRepository repository, CatalogModels.Character item, TranslationRepository.Callback callback) {
@@ -32,7 +39,7 @@ public final class CatalogDescriptions {
         for (String alias : item.aliases.split("[\\r\\n]+")) if (!alias.trim().isEmpty()) known.add(alias.trim());
         List<String> names = new ArrayList<>(known); names.sort(Comparator.comparingInt(String::length).reversed());
         names.replaceAll(Pattern::quote);
-        Matcher matches = Pattern.compile(String.join("|", names), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(source);
+        Matcher matches = Pattern.compile("(?<![\\p{L}\\p{N}])(?:" + String.join("|", names) + ")(?![\\p{L}\\p{N}])").matcher(source);
         List<String> parts = new ArrayList<>(); List<Boolean> protectedPart = new ArrayList<>(); int cursor = 0;
         while (matches.find()) {
             parts.add(source.substring(cursor, matches.start())); protectedPart.add(false);
@@ -49,7 +56,7 @@ public final class CatalogDescriptions {
             if (translated[i] != null) continue;
             int position = i; String part = parts.get(i), text = part.trim();
             int start = part.indexOf(text), end = start + text.length();
-            repository.translate("character:" + item.id, "deck-proper-names-v3:" + i, text, result -> {
+            repository.translate("character:" + item.id, "deck-proper-names-v4:" + i, text, result -> {
                 if (failed[0]) return;
                 if (result.getFailure() != null) { failed[0] = true; callback.complete(TranslationRepository.Result.failed(result.getFailure())); return; }
                 translated[position] = part.substring(0, start) + result.getText().trim() + part.substring(end);

@@ -32,6 +32,8 @@ def run(name):
             assert set(x['id'] for x in report['details_friends']).isdisjoint(x['id'] for x in report['details_friends_next']), 'Relações duplicadas'
             assert report['details']['id'] == report['featured']['id'] and report['details']['publisher_id'] == owner
             assert report['invalid_character_rejected'] and report['foreign_publisher_rejected']
+            reviewed = {35:'Dispositivos',38:'Absorção de habilidades',54:'Aderência a paredes',138:'Lançamento de teias'}
+            assert all(row['translated'] == reviewed[row['id']] for row in report['powers'] if row['id'] in reviewed)
             assert all('Spider-Man' in x['name'] for x in report['search']), 'Busca incoerente'
             assert [x['store_date'] for x in report['issues']] == sorted([x['store_date'] for x in report['issues']], reverse=True)
             return report
@@ -125,7 +127,7 @@ adb('shell','wm','size','640x1000'); time.sleep(2); capture('details-large')
 adb('shell','wm','size','320x640'); time.sleep(2); capture('details-small')
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('details-font-200')
 adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(2)
-tap(resource='header_back'); wait('search_name','Spider-Man'); wait('character_name','Spider-Man')
+tap(resource='header_back'); top(); wait('search_name','Spider-Man'); wait('character_name','Spider-Man')
 tap(resource='gender_filter'); tap('Feminino'); time.sleep(4); capture('catalog-gender')
 tap(resource='clear_filters'); wait('character_name','Spider-Man')
 tap('Início'); tap('Personagens'); wait('search_name','Spider-Man'); wait('character_name','Spider-Man'); capture('catalog-restored')

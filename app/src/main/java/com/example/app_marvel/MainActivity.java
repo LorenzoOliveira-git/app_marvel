@@ -44,6 +44,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setAccessibilityHeading(binding.screenTitle, true);
+        ViewCompat.setAccessibilityHeading(binding.expandedScreenTitle, true);
         ViewCompat.setAccessibilityHeading(binding.userName, true);
         applySafeInsets();
 
@@ -81,7 +82,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
             binding.headerBack.setContentDescription(getString(details ? R.string.details_back : R.string.catalog_back));
             boolean home = destination.getId() == R.id.homeFragment;
-            binding.titleHeader.setVisibility(home ? View.GONE : View.VISIBLE);
+            boolean expanded = catalog && getResources().getConfiguration().fontScale > 1.3f;
+            binding.titleHeader.setVisibility(home || expanded ? View.GONE : View.VISIBLE);
+            binding.headerExpandedSpacer.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            binding.expandedScreenTitle.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            binding.expandedScreenTitle.setText(destination.getLabel());
             binding.userHeader.setVisibility(home ? View.VISIBLE : View.GONE);
             binding.headerBack.setVisibility(catalog ? View.VISIBLE : View.GONE);
             binding.brandCaption.setVisibility(catalog ? View.GONE : View.VISIBLE);
