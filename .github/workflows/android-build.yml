@@ -53,7 +53,9 @@ jobs:
           cp app/build/outputs/apk/preview/app-preview.apk app/build/preview-download/app-marvel-preview.apk
           cd app/build/preview-download
           sha256sum app-marvel-preview.apk > app-marvel-preview.sha256
-          split -b 20M app-marvel-preview.apk app-marvel-preview.apk.part-
+          gzip -c -9 app-marvel-preview.apk > app-marvel-preview.apk.gz
+          split -b 20M app-marvel-preview.apk.gz app-marvel-preview.apk.gz.part-
+          test ! -f app-marvel-preview.apk.gz.part-ad
       - name: Disponibilizar APK de demonstração
         uses: actions/upload-artifact@v7
         with:
@@ -66,7 +68,7 @@ jobs:
         with:
           name: app-marvel-preview-part-1
           path: |
-            app/build/preview-download/app-marvel-preview.apk.part-aa
+            app/build/preview-download/app-marvel-preview.apk.gz.part-aa
             app/build/preview-download/app-marvel-preview.sha256
           if-no-files-found: error
           retention-days: 7
@@ -74,14 +76,14 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: app-marvel-preview-part-2
-          path: app/build/preview-download/app-marvel-preview.apk.part-ab
+          path: app/build/preview-download/app-marvel-preview.apk.gz.part-ab
           if-no-files-found: ignore
           retention-days: 7
       - name: Disponibilizar terceira parte do APK
         uses: actions/upload-artifact@v7
         with:
           name: app-marvel-preview-part-3
-          path: app/build/preview-download/app-marvel-preview.apk.part-ac
+          path: app/build/preview-download/app-marvel-preview.apk.gz.part-ac
           if-no-files-found: ignore
           retention-days: 7
       - name: Capturar login, cadastro e painel no emulador
