@@ -128,7 +128,10 @@ public final class ComicsFragment extends Fragment {
         ViewCompat.setStateDescription(binding.comicsRecent, !model.oldest() ? getString(R.string.comics_order_selected) : null);
         ViewCompat.setStateDescription(binding.comicsOldest, model.oldest() ? getString(R.string.comics_order_selected) : null);
         binding.comicsRecent.setStrokeWidth(dp(!model.oldest() ? 2 : 1)); binding.comicsOldest.setStrokeWidth(dp(model.oldest() ? 2 : 1));
-        binding.comicsVolume.setText(model.volumeId() == 0 ? getString(R.string.comics_volume) : model.volumeLabel());
+        binding.selectedVolume.setVisibility(model.volumeId() == 0 ? View.GONE : View.VISIBLE);
+        binding.selectedVolume.setText(getString(R.string.comics_volume_meta,model.volumeLabel()));
+        binding.comicsVolume.setContentDescription(model.volumeId() == 0 ? getString(R.string.comics_volume)
+                : getString(R.string.comics_volume_meta,model.volumeLabel()));
     }
     private void paging() {
         boolean loading = Boolean.TRUE.equals(model.loadingMore().getValue()); binding.pageProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
