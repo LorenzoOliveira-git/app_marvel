@@ -1,0 +1,24 @@
+name: Contrato real de quadrinhos ComicVine
+on:
+  push:
+    branches: ["codex/bloco-5-quadrinhos"]
+    paths: ["tools/comicvine_comics_contract.py", ".github/workflows/comicvine-comics-contract.yml"]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Conferir filtros e vínculos reais
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: python3 tools/comicvine_comics_contract.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: comicvine-comics-contract
+          path: comicvine-comics-contract.json
+          if-no-files-found: error
+          retention-days: 7
