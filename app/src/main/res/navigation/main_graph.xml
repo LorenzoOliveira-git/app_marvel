@@ -19,6 +19,7 @@
     <fragment android:id="@+id/issueDetailsFragment" android:name="com.example.app_marvel.ui.issues.IssueDetailsFragment" android:label="@string/issue_details_title">
         <argument android:name="issueId" app:argType="integer" />
     </fragment>
+    <fragment android:id="@+id/arcsFragment" android:name="com.example.app_marvel.ui.arcs.ArcsFragment" android:label="@string/arcs_title" />
     <fragment android:id="@+id/comicsFragment" android:name="com.example.app_marvel.ui.comics.ComicsFragment" android:label="@string/comics_title" />
     <fragment android:id="@+id/characterHistoryFragment" android:name="com.example.app_marvel.ui.history.CharacterHistoryFragment" android:label="@string/nav_stories">
         <argument android:name="characterId" app:argType="integer" />
