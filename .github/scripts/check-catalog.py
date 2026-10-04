@@ -14,7 +14,14 @@ OUT.mkdir(parents=True, exist_ok=True)
 PREVIEW.mkdir(parents=True, exist_ok=True)
 
 def adb(*args, check=True):
-    return subprocess.run(['adb', *args], check=check, capture_output=True)
+    for attempt in range(3):
+        result = subprocess.run(['adb', *args], capture_output=True, timeout=30)
+        if not check or result.returncode == 0:
+            return result
+        if attempt < 2:
+            subprocess.run(['adb', 'wait-for-device'], check=True, capture_output=True, timeout=20)
+            time.sleep(1)
+    result.check_returncode()
 
 def run(name):
     adb('shell', 'am', 'force-stop', PACKAGE)
