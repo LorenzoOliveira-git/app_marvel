@@ -163,7 +163,7 @@ adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','siz
 tap(resource='header_back'); tap('Personagens'); top(); wait('search_name','Spider-Man'); wait('character_name','Spider-Man')
 selected = wait('character_name').get('text'); tap(resource='character_more'); wait('details_name',selected)
 tap(resource='details_history'); wait('identity_name',selected); capture('history-from-catalog')
-tap(resource='header_back'); wait('details_name',selected); tap(resource='header_back'); top(); wait('search_name','Spider-Man'); wait('character_name',selected)
+tap(resource='header_back'); top(); wait('details_name',selected); tap(resource='header_back'); top(); wait('search_name','Spider-Man'); wait('character_name',selected)
 tap('Início'); time.sleep(2)
 # Ausência de chave em instalação nova: ícone comum, sem aviso técnico.
 adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')

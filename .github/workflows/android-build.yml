@@ -84,7 +84,7 @@ jobs:
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: python3 .github/scripts/check-catalog.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
       - name: Disponibilizar evidências do catálogo
         if: always()

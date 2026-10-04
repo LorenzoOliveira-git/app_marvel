@@ -11,11 +11,15 @@
     <string name="history_empty_body">Nenhuma edição Marvel foi encontrada nesta consulta.</string>
     <string name="history_next_body">Continue para consultar as próximas edições.</string>
     <string name="history_cover_date">Data da capa: %1$s</string>
-    <string name="history_volume">Volume: %1$s</string>
     <string name="history_external">Na ComicVine ↗</string>
     <string name="history_external_issue">Abrir %1$s na ComicVine</string>
     <string name="history_source">Fonte: ComicVine. Resumo e origem com tradução automática.</string>
     <string name="history_profile">Ver perfil →</string>
     <string name="history_appearances">Ver aparições →</string>
     <style name="TextAppearance.Marvel.HistoryHeading" parent="TextAppearance.Marvel.CatalogTitle"><item name="android:textSize">32sp</item></style>
+    <style name="Widget.Marvel.HistoryButton" parent="Widget.Marvel.Button.Primary">
+        <item name="android:background">@drawable/background_recent_issue</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:paddingStart">12dp</item><item name="android:paddingEnd">12dp</item>
+    </style>
 </resources>
