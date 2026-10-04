@@ -54,13 +54,19 @@ def nodes():
     return list(ET.fromstring(result).iter('node'))
 
 def tap(text=None, resource=None):
-    for node in nodes():
-        if ((text is not None and (node.get('text') == text or node.get('content-desc','').split(',')[0] == text))
-                or (resource is not None and node.get('resource-id','').endswith('/'+resource))):
-            x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
-            if x2>x1 and y2>y1:
-                adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)); time.sleep(1); return
+    for attempt in range(6):
+        for node in nodes():
+            if ((text is not None and (node.get('text') == text or node.get('content-desc','').split(',')[0] == text))
+                    or (resource is not None and node.get('resource-id','').endswith('/'+resource))):
+                x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
+                if x2>x1 and y2>y1:
+                    adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)); time.sleep(1); return
+        adb('shell','input','swipe','215','730','215','250','500'); time.sleep(1)
     raise RuntimeError('Controle não encontrado: '+str(text or resource))
+
+def top():
+    for attempt in range(3): adb('shell','input','swipe','215','300','215','780','400')
+    time.sleep(1)
 
 def wait(resource, contains=None):
     deadline = time.monotonic()+90
@@ -82,7 +88,7 @@ adb('shell','input','swipe','215','730','215','250','600'); wait('featured_name'
 adb('shell','input','swipe','215','730','215','250','600'); wait('fact_text'); capture('catalog-home-fact')
 tap('Personagens'); wait('character_name','Spider-Man'); capture('catalog-characters')
 tap(resource='next_character'); time.sleep(3); capture('catalog-characters-next')
-tap(resource='search_name'); adb('shell','input','text','Spider-Man'); adb('shell','input','keyevent','66'); wait('character_name','Spider-Man'); capture('catalog-search')
+top(); tap(resource='search_name'); adb('shell','input','text','Spider-Man'); adb('shell','input','keyevent','66'); wait('character_name','Spider-Man'); capture('catalog-search')
 tap(resource='gender_filter'); tap('Feminino'); time.sleep(4); capture('catalog-gender')
 tap(resource='clear_filters'); wait('character_name','Spider-Man')
 adb('shell','wm','size','320x640'); time.sleep(2); capture('catalog-small')
@@ -92,6 +98,7 @@ tap('Início'); time.sleep(2)
 # Ausência de chave em instalação nova: falha comum com Marv, sem aviso técnico.
 adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')
 adb('shell','run-as',PACKAGE,'rm','-f','databases/comicvine-cache.db','databases/comicvine-cache.db-wal','databases/comicvine-cache.db-shm')
+adb('shell','run-as',PACKAGE,'rm','-rf','files/comicvine-responses')
 adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(2); tap('Explorar sem entrar')
 time.sleep(4); capture('catalog-error')
 print('Catálogo real, filtros, páginas, tradução/cache offline e navegação conferidos no Android.')

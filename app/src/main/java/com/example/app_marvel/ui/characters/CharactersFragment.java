@@ -97,6 +97,7 @@ public final class CharactersFragment extends Fragment {
         binding.retryOrigin.setOnClickListener(v -> model.retryOrigin());
         model.getState().observe(getViewLifecycleOwner(), state -> {
             binding.catalogState.render(state.getStatus(), model::reload);
+            if (state.getStatus() == UiState.Status.EMPTY) binding.catalogState.emptyMessage(R.string.catalog_selection_empty_title, R.string.catalog_selection_empty_body);
             binding.catalogContent.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) {
                 portraits.submit(state.getData());

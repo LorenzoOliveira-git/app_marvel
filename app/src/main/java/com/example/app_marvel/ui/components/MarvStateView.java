@@ -29,6 +29,10 @@ public final class MarvStateView extends LinearLayout {
         ViewCompat.setAccessibilityHeading(binding.statusTitle, true);
     }
 
+    public void emptyMessage(int title, int body) {
+        binding.statusTitle.setText(title); binding.statusBody.setText(body);
+    }
+
     public void render(UiState.Status status, @Nullable Runnable retry) {
         // Sempre limpar o callback anterior antes de alterar o estado.
         binding.retryButton.setOnClickListener(null);

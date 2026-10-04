@@ -25,3 +25,7 @@ Sem novas chamadas ao Figma. Login/Home reutilizados do cache. Painel até o rod
 ## Correção da marca e autenticação
 
 Marca restaurada: SUA (Bebas Neue) centralizado acima do símbolo MARVEL, usando o asset original. No Login/Cadastro, o slot de 169×73dp preserva o conteúdo de aproximadamente 149×69dp da referência (o export inclui margem transparente); no cabeçalho principal, slot original de 76×33dp. Splash nativa compõe os contornos do mesmo símbolo em vetor Android com SUA derivado da fonte local, para preservar a marca dentro da máscara do sistema. O PNG original continua inalterado no cabeçalho. Login reutiliza título 40sp, rótulos 32sp, campos de borda branca e links 20sp. Nenhuma nova consulta Figma. Mensagens sobre etapas de implementação ficam na documentação, fora da UI.
+
+## Bloco 3 — Home e personagens
+
+Referências em cache de Home e Personagens reutilizadas. Carrossel com retrato central maior, seções de publicações/destaque/curiosidade, busca e filtros reais. Geometria e adaptações em characters-reference.json; mapeamento de dados/trechos factuais em docs/bloco-3-home-personagens.md. Marv aparece em estados operacionais e junto à curiosidade; retratos vêm exclusivamente da ComicVine.

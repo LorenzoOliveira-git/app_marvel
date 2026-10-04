@@ -50,6 +50,7 @@ public final class HomeFragment extends Fragment {
         binding.recentList.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> { if (r - l > 0 && r - l != or - ol) issues.width(r - l - dp(8)); });
         model.getRecent().observe(getViewLifecycleOwner(), state -> {
             binding.recentState.render(state.getStatus(), model::loadRecent);
+            if (state.getStatus() == UiState.Status.EMPTY) binding.recentState.emptyMessage(R.string.catalog_selection_empty_title, R.string.catalog_recent_empty_body);
             binding.recentList.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) issues.submit(state.getData());
         });

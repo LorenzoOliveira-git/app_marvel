@@ -1,4 +1,7 @@
 <resources>
+    <string name="catalog_selection_empty_title">Nenhum resultado nesta seleção</string>
+    <string name="catalog_selection_empty_body">Ajuste a busca ou os filtros. Se houver mais páginas, continue carregando.</string>
+    <string name="catalog_recent_empty_body">Não há quadrinhos publicados nesta seleção.</string>
     <string name="catalog_recent">Últimas atualizações</string>
     <string name="catalog_featured">Personagem em destaque</string>
     <string name="catalog_did_you_know">Você sabia?</string>

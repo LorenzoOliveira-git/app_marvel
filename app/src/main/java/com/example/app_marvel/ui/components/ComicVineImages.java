@@ -53,7 +53,7 @@ public final class ComicVineImages {
     private Bitmap load(String url) {
         HttpsURLConnection connection = null;
         try {
-            if (!directory.exists() && !directory.mkdirs()) return null;
+            if (!directory.exists() && !directory.mkdirs() && !directory.exists()) return null;
             StringBuilder name = new StringBuilder();
             for (byte value : MessageDigest.getInstance("SHA-256").digest(url.getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 name.append(String.format(Locale.ROOT, "%02x", value & 255));

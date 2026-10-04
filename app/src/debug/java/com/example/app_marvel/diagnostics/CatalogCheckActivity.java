@@ -36,7 +36,11 @@ public final class CatalogCheckActivity extends Activity {
     }
     private void recent() {
         repository.recent(result -> {
-            if (result.failure != null || result.data.isEmpty()) { fail("recent"); return; }
+            if (result.failure != null || result.data.isEmpty()) {
+                put("recent_failure", result.failure == null ? "EMPTY" : result.failure.name());
+                put("device_date", new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT).format(new java.util.Date()));
+                fail("recent"); return;
+            }
             JSONArray rows = new JSONArray();
             for (var issue : result.data) {
                 JSONObject row = new JSONObject();

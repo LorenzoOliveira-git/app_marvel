@@ -6,20 +6,15 @@ Aplicativo Android em **Java, XML, Fragments e MVVM** para explorar o universo M
 
 Login/cadastro com Firebase Authentication real, estados e sessão, além do painel contínuo com menu sobreposto. Os formulários abrem sem avisos de desenvolvimento; use Explorar sem entrar para avaliar o painel. O Firebase precisa ser configurado para as operações de conta real. [Entrega do bloco 2](docs/bloco-2.md) e [configuração Firebase](docs/firebase-auth.md).
 
-## Bloco 1 — fundação
+## Bloco 3 — Home e personagens
 
-- Uma Activity com NavHost e cinco destinos: Início, Personagens, Histórias, Criar herói e Perfil.
-- View Binding, ViewModels/LiveData e repositório local de disponibilidade.
-- Tema escuro inspirado em Marvel - Mobile, com Bebas Neue e fontes estáticas derivadas de Inter.
-- Cards, campos/botões estilizados e componente de feedback com o Marv.
-- Home de recepção; destinos mantêm sua apresentação sem avisos de desenvolvimento.
-- **Sem dados fictícios, autenticação simulada, chamadas à ComicVine ou geração paga de heróis.**
+HQs recém-publicadas, Spider-Man em destaque, resumo/curiosidade traduzidos e catálogo com carrossel, busca, filtros e paginação. Relações Marvel verificadas antes da exibição; respostas, imagens e traduções têm cache. [Entrega e mapeamento](docs/bloco-3-home-personagens.md).
 
-O bloco não implementa ainda a home de notícias, destaques e curiosidades do Figma. Essa área depende de dados reais e será construída no bloco de conteúdo.
+Configure a chave ComicVine fora do APK: `.env` local na raiz → `python tools/comicvine.py device` com instalação debug conectada via ADB. O Secret do GitHub configura somente o emulador de CI. [Configuração detalhada](docs/bloco-3-proposta.md).
 
 ## Abrir e executar
 
-1. Clone o repositório e selecione a branch `codex/bloco-2-auth-marv`.
+1. Clone o repositório e selecione a branch `codex/bloco-3-home-personagens` (ou `main` após incorporar o PR).
 2. Abra a raiz no Android Studio.
 3. Mantenha os SDKs existentes: minSdk 24, compileSdk/targetSdk 37. Instale a plataforma Android 37.0 (pacote `platforms;android-37.0`) e Build Tools 36.0.0.
 4. Disponibilize um JDK 25, conforme gradle/gradle-daemon-jvm.properties, e sincronize o Gradle.
@@ -43,6 +38,7 @@ O workflow Android build e lint executa essas mesmas tarefas e publica APK/relat
 
 ## Documentação
 
+- [Entrega e mapeamento do bloco 3](docs/bloco-3-home-personagens.md)
 - [Entrega, checklist e roteiro manual do bloco 2](docs/bloco-2.md)
 - [Configuração Firebase](docs/firebase-auth.md)
 - [Entrega do bloco 1](docs/bloco-1.md)

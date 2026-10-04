@@ -3,22 +3,61 @@
   "nodeId": "38:428",
   "capturedAt": "2026-10-04",
   "scope": "Personagens — contexto completo e screenshot retornado pela mesma chamada",
-  "referenceSizePx": { "width": 430, "height": 932 },
+  "referenceSizePx": {
+    "width": 430,
+    "height": 932
+  },
   "observed": {
-    "headerTitle": { "font": "Inter", "weight": "bold", "sizePx": 20 },
-    "mainPanel": { "x": 3, "y": 93, "width": 423, "height": 836 },
-    "filterHeading": { "font": "Bebas Neue", "sizePx": 20 },
-    "filters": ["Origem", "Times", "Perfil"],
+    "headerTitle": {
+      "font": "Inter",
+      "weight": "bold",
+      "sizePx": 20
+    },
+    "mainPanel": {
+      "x": 3,
+      "y": 93,
+      "width": 423,
+      "height": 836
+    },
+    "filterHeading": {
+      "font": "Bebas Neue",
+      "sizePx": 20
+    },
+    "filters": [
+      "Origem",
+      "Times",
+      "Perfil"
+    ],
     "filterOutline": "#FFFFFF",
     "filterRadiusPx": 5,
     "portraitRadiusPx": 10,
-    "portraitCenter": { "width": 240.831, "height": 365.819 },
-    "portraitAdjacent": { "width": 244, "height": 271 },
+    "portraitCenter": {
+      "width": 240.831,
+      "height": 365.819
+    },
+    "portraitAdjacent": {
+      "width": 244,
+      "height": 271
+    },
     "portraitBacking": "#302E46",
-    "name": { "font": "Bebas Neue", "sizePx": 40 },
-    "metadata": { "font": "Bebas Neue", "sizePx": 24, "color": "#C5C6D3" },
-    "detailAction": { "font": "Bebas Neue", "sizePx": 24 },
-    "bottomNavigation": { "color": "#181824", "alpha": 0.72, "radiusPx": 20 }
+    "name": {
+      "font": "Bebas Neue",
+      "sizePx": 40
+    },
+    "metadata": {
+      "font": "Bebas Neue",
+      "sizePx": 24,
+      "color": "#C5C6D3"
+    },
+    "detailAction": {
+      "font": "Bebas Neue",
+      "sizePx": 24
+    },
+    "bottomNavigation": {
+      "color": "#181824",
+      "alpha": 0.72,
+      "radiusPx": 20
+    }
   },
   "implementationConstraints": [
     "Preservar hierarquia e proporções usando layouts Android responsivos, sem posições absolutas.",
@@ -29,6 +68,13 @@
     "Reutilizar marca empilhada Sua/Marvel, fontes e ícones existentes.",
     "Marv será usado em carregamento, vazio e falha com os assets existentes."
   ],
-  "apiVerified": false,
-  "appScreenImplemented": false
+  "apiVerified": true,
+  "appScreenImplemented": true,
+  "deliveryDocument": "docs/bloco-3-home-personagens.md",
+  "functionalAdaptations": [
+    "Busca por nome do registro",
+    "Perfil corresponde a gênero, confirmado pelo usuário",
+    "Alvos de toque 48 dp e botões anterior/próximo",
+    "Carregamento progressivo e estados com Marv"
+  ]
 }
