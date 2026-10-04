@@ -27,7 +27,9 @@
     "Identidade empilhada em largura menor que 360dp ou fonte maior que 130%.",
     "Capas completas na lista de aparições, com fitCenter.",
     "Menu sobreposto; painel principal até o rodapé.",
-    "Categorias completas e arcos/mídias separados dos perfis e aparições neste subbloco."
+    "Categorias completas e arcos/mídias separados dos perfis e aparições neste subbloco.",
+    "Botões de história usam o gradiente compartilhado background_recent_issue."
   ],
-  "dataOrder": "issue_credits preservado; datas de capa; não afirma ordem de leitura ou cronologia global."
+  "dataOrder": "issue_credits preservado; datas de capa; não afirma ordem de leitura ou cronologia global.",
+  "assetLimit": "Export do nó 60:242 retornou URLs PNG/SVG cujo download respondeu Site Unavailable. Marcador representado por forma Android de 24dp."
 }
