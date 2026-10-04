@@ -49,6 +49,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Iniciar emulador para verificar a aplicação
+        id: emulator
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         timeout-minutes: 10
@@ -69,6 +70,7 @@ jobs:
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
         timeout-minutes: 10
         run: python3 .github/scripts/check-catalog.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
       - name: Disponibilizar evidências do catálogo

@@ -30,7 +30,15 @@ def run_check(name):
     raise RuntimeError("O SDK não concluiu a verificação; não declarar tradução verificada.")
 
 
-first = run_check("translation")
+for attempt in range(3):
+    try:
+        first = run_check("translation")
+        break
+    except RuntimeError as failure:
+        if "MODEL_DOWNLOAD" not in str(failure) or attempt == 2:
+            raise
+        print("Download do modelo falhou; nova tentativa real do SDK.")
+        time.sleep(5)
 if first["from_cache"]:
     raise RuntimeError("A verificação inicial precisa executar o tradutor real.")
 try:

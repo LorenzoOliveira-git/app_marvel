@@ -15,6 +15,17 @@ public final class DataCheckActivity extends Activity {
         super.onCreate(savedState);
         String check = getIntent().getStringExtra("check");
         if (!"translation".equals(check) && !"cache".equals(check)) { finish(); return; }
+        if ("translation".equals(check)) awaitInternet(check, 0); else translate(check);
+    }
+    private void awaitInternet(String check, int attempt) {
+        if (isFinishing() || isDestroyed()) return;
+        android.net.ConnectivityManager connectivity = getSystemService(android.net.ConnectivityManager.class);
+        android.net.NetworkCapabilities capabilities = connectivity.getNetworkCapabilities(connectivity.getActiveNetwork());
+        if ((capabilities != null && capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED)) || attempt >= 60) {
+            translate(check);
+        } else new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> awaitInternet(check, attempt + 1), 500);
+    }
+    private void translate(String check) {
         TranslationRepository repository = ((MarvelApplication) getApplication()).getContainer().getTranslations();
         // Texto de orientação usado apenas para verificar o tradutor; não é conteúdo/mocks da ComicVine.
         String source = "Welcome! Explore stories and characters.";
