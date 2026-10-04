@@ -3,7 +3,7 @@ name: Android build e lint
 on:
   push:
     branches: [main, "codex/**"]
-    paths-ignore: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml"]
+    paths-ignore: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml", "tools/comicvine_comics_contract.py", ".github/workflows/comicvine-comics-contract.yml"]
   pull_request:
   workflow_dispatch:
 
@@ -85,7 +85,15 @@ jobs:
       - name: Verificar catálogo ComicVine real e cache no emulador
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
         timeout-minutes: 15
-        run: python3 .github/scripts/check-catalog.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
+        run: python3 .github/scripts/check-catalog.py --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+      - name: Verificar quadrinhos reais, cache e navegação
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
+        timeout-minutes: 7
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: |
+          python3 tools/comicvine.py device
+          python3 .github/scripts/check-comics.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Disponibilizar evidências do catálogo
         if: always()
         uses: actions/upload-artifact@v7

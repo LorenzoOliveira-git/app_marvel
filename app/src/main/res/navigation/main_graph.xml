@@ -16,6 +16,7 @@
     <fragment android:id="@id/storiesFragment" android:name="com.example.app_marvel.ui.history.StoriesFragment" android:label="@string/nav_stories">
         <argument android:name="feature" app:argType="string" android:defaultValue="STORIES" />
     </fragment>
+    <fragment android:id="@+id/comicsFragment" android:name="com.example.app_marvel.ui.comics.ComicsFragment" android:label="@string/comics_title" />
     <fragment android:id="@+id/characterHistoryFragment" android:name="com.example.app_marvel.ui.history.CharacterHistoryFragment" android:label="@string/nav_stories">
         <argument android:name="characterId" app:argType="integer" />
     </fragment>

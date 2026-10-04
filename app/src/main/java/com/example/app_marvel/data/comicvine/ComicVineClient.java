@@ -73,6 +73,9 @@ public final class ComicVineClient {
     }
 
     private void execute(String path, Map<String, String> parameters, Callback callback) {
+        execute(path, parameters, callback, 0);
+    }
+    private void execute(String path, Map<String, String> parameters, Callback callback, int attempt) {
         String key;
         try { key = credentials.read(); }
         catch (IOException absent) { deliver(callback, new Result(null, Failure.CREDENTIAL_REQUIRED, 0)); return; }
@@ -101,6 +104,9 @@ public final class ComicVineClient {
             connection.setRequestProperty("User-Agent", "SuaMarvel-Android/1.0 (personal non-commercial app)");
             int status = connection.getResponseCode();
             if (status != 200) {
+                if (attempt == 0 && (status == 408 || status == 502 || status == 503 || status == 504)) {
+                    network.execute(() -> execute(path, parameters, callback, 1)); return;
+                }
                 // Corpos/URLs/exceções de rede não chegam ao log ou à interface.
                 deliver(callback, new Result(null, status == 429 ? Failure.RATE_LIMIT : Failure.HTTP, status)); return;
             }
@@ -123,7 +129,8 @@ public final class ComicVineClient {
         } catch (InterruptedException interrupted) {
             Thread.currentThread().interrupt(); deliver(callback, new Result(null, Failure.NETWORK, 0));
         } catch (IOException failure) {
-            deliver(callback, new Result(null, Failure.NETWORK, 0));
+            if (attempt == 0) network.execute(() -> execute(path, parameters, callback, 1));
+            else deliver(callback, new Result(null, Failure.NETWORK, 0));
         } finally { if (connection != null) connection.disconnect(); }
     }
 

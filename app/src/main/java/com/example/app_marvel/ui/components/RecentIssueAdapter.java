@@ -18,10 +18,13 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
     private final ComicVineImages images;
     private List<Issue> items = Collections.emptyList();
     private int width;
-    private final boolean coverDates, explicitExternal;
+    private final boolean coverDates, explicitExternal, showVolume;
     public RecentIssueAdapter(ComicVineImages images) { this(images, false, false); }
     public RecentIssueAdapter(ComicVineImages images, boolean coverDates, boolean explicitExternal) {
-        this.images = images; this.coverDates = coverDates; this.explicitExternal = explicitExternal; setHasStableIds(true);
+        this(images, coverDates, explicitExternal, false);
+    }
+    public RecentIssueAdapter(ComicVineImages images, boolean coverDates, boolean explicitExternal, boolean showVolume) {
+        this.images = images; this.coverDates = coverDates; this.explicitExternal = explicitExternal; this.showVolume = showVolume; setHasStableIds(true);
     }
     public void submit(List<Issue> value) { if (items.equals(value)) return; items = value; notifyDataSetChanged(); }
     public void width(int value) { if (width != value) { width = value; notifyDataSetChanged(); } }
@@ -42,6 +45,8 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
         ViewGroup.LayoutParams params = view.getRoot().getLayoutParams();
         params.width = width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT; view.getRoot().setLayoutParams(params);
         view.issueTitle.setText(item.title);
+        view.issueVolume.setVisibility(showVolume ? View.VISIBLE : View.GONE);
+        if (showVolume) view.issueVolume.setText(view.getRoot().getContext().getString(R.string.comics_volume_meta, item.volume));
         try {
             SimpleDateFormat source = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); source.setLenient(false);
             String date = new SimpleDateFormat("dd MMM yyyy", new Locale("pt", "BR")).format(source.parse(item.publicationDate));

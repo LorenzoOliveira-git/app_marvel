@@ -1,0 +1,33 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/comics_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
+            <TextView android:id="@+id/comics_featured_heading" style="@style/TextAppearance.Marvel.HistoryHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/comics_featured" />
+            <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/comics_featured_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/comics_featured_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:nestedScrollingEnabled="false" />
+            <TextView style="@style/TextAppearance.Marvel.CatalogFilter" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="64dp" android:text="@string/catalog_filter_by" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                <com.google.android.material.button.MaterialButton android:id="@+id/comics_recent" style="@style/Widget.Marvel.ComicsOrder" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/comics_recent" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/comics_oldest" style="@style/Widget.Marvel.ComicsOrder" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/comics_oldest" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/comics_volume" style="@style/Widget.Marvel.CatalogFilter" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/comics_volume" />
+            </LinearLayout>
+            <TextView android:id="@+id/selected_volume" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:visibility="gone" />
+        </LinearLayout>
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/comics_state" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" />
+        <LinearLayout android:id="@+id/comics_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/covers" android:layout_width="match_parent" android:layout_height="400dp" android:layout_marginTop="20dp" android:clipToPadding="false" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
+            <TextView android:id="@+id/comic_title" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:paddingHorizontal="20dp" android:gravity="center" />
+            <TextView android:id="@+id/comic_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:paddingHorizontal="20dp" android:textColor="@color/marvel_text_secondary" android:gravity="center" />
+
+            <com.google.android.material.button.MaterialButton android:id="@+id/comic_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="20dp" android:text="@string/history_external" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:paddingHorizontal="20dp">
+                <com.google.android.material.button.MaterialButton android:id="@+id/previous_comic" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="48dp" android:layout_height="48dp" android:padding="0dp" android:text="@string/catalog_previous_arrow" android:contentDescription="@string/comics_previous" />
+                <TextView android:id="@+id/selection_count" style="@style/TextAppearance.Marvel.Caption" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:gravity="center" android:paddingHorizontal="8dp" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/next_comic" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="48dp" android:layout_height="48dp" android:padding="0dp" android:text="@string/catalog_next_arrow" android:contentDescription="@string/comics_next" />
+            </LinearLayout>
+        </LinearLayout>
+        <ProgressBar android:id="@+id/page_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/load_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:text="@string/catalog_load_more" android:visibility="gone" />
+        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:padding="20dp" android:gravity="center" android:text="@string/comics_source" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

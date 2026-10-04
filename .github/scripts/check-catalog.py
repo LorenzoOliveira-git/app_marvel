@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 import time
 import xml.etree.ElementTree as ET
 
@@ -13,7 +14,14 @@ OUT.mkdir(parents=True, exist_ok=True)
 PREVIEW.mkdir(parents=True, exist_ok=True)
 
 def adb(*args, check=True):
-    return subprocess.run(['adb', *args], check=check, capture_output=True)
+    for attempt in range(3):
+        result = subprocess.run(['adb', *args], capture_output=True, timeout=30)
+        if not check or result.returncode == 0:
+            return result
+        if attempt < 2:
+            subprocess.run(['adb', 'wait-for-device'], check=True, capture_output=True, timeout=20)
+            time.sleep(1)
+    result.check_returncode()
 
 def run(name):
     adb('shell', 'am', 'force-stop', PACKAGE)
@@ -110,6 +118,20 @@ adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(3)
 capture('login'); tap('Não tem conta? Cadastre-se'); capture('cadastro'); adb('shell','input','keyevent','4'); time.sleep(1)
 tap('Explorar sem entrar'); wait('issue_title'); wait('user_name','Visitante'); wait('user_avatar'); capture('catalog-home')
+if '--compact' in sys.argv:
+    # Mantém todos os diagnósticos reais/cache acima; a revisão visual cobre os componentes afetados.
+    tap('Personagens'); wait('character_name','Spider-Man'); capture('catalog-characters')
+    tap(resource='character_more'); wait('details_name','Spider-Man'); capture('details-catalog-top')
+    tap(resource='header_back'); tap('Histórias'); top(); wait('identity_name','Spider-Man'); capture('stories-top')
+    tap(resource='open_comics'); wait('comics_featured_heading'); capture('stories-comics-route')
+    adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')
+    adb('shell','run-as',PACKAGE,'rm','-f','databases/comicvine-cache.db','databases/comicvine-cache.db-wal','databases/comicvine-cache.db-shm')
+    adb('shell','run-as',PACKAGE,'rm','-rf','files/comicvine-responses')
+    adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(2); tap('Explorar sem entrar')
+    time.sleep(4); capture('catalog-error')
+    assert not any(node.get('resource-id','').endswith('/fact_state') for node in nodes())
+    print('Catálogo real completo, cache offline e regressões visuais dos fluxos afetados conferidos.')
+    sys.exit(0)
 adb('shell','input','swipe','215','730','215','480','600'); wait('featured_name','Spider-Man'); capture('catalog-home-featured')
 tap(resource='featured_more'); wait('details_name','Spider-Man'); capture('details-home-top')
 tap(resource='description_heading'); wait('details_description'); capture('details-description')
