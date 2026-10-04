@@ -229,6 +229,89 @@ public final class MarvelRepository {
             });
         });
     }
+    public void issueRelations(IssueDetails details, String kind, int offset, Callback<RelationPage> callback) {
+        if (offset < 0 || !(kind.equals("characters") || kind.equals("teams"))) {
+            deliver(callback, Result.failed(Failure.DATA)); return;
+        }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            if (pub.data.id != details.publisherId) { deliver(callback, Result.failed(Failure.DATA)); return; }
+            index(pub.data, kind, indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Map<Integer, Reference> canonical = new HashMap<>();
+                for (Reference ref : indexed.data) canonical.put(ref.id, ref);
+                List<Reference> verified = new ArrayList<>();
+                for (Reference ref : details.relations(kind)) {
+                    Reference known = canonical.get(ref.id);
+                    if (known != null && known.path.equals(ref.path)) verified.add(known);
+                }
+                relationPage(pub.data, kind, verified, offset, 0, new ArrayList<>(), callback);
+            });
+        });
+    }
+
+    public void issueDetails(int issueId, Callback<IssueDetails> callback) {
+        if (issueId <= 0) { deliver(callback, Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            index(pub.data, "volumes", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Map<Integer, Reference> canonical = new HashMap<>();
+                for (Reference ref : indexed.data) canonical.put(ref.id, ref);
+                request("issues/", params("filter", "id:" + issueId, "limit", "100", "field_list", "id,api_detail_url,volume"), DAY, lookup -> {
+                    JSONArray rows = lookup.data == null ? null : lookup.data.optJSONArray("results");
+                    JSONObject ref = rows == null || rows.length() != 1 ? null : rows.optJSONObject(0);
+                    String path = ref == null ? null : resourcePath(text(ref, "api_detail_url"), "issue");
+                    JSONObject sourceVolume = ref == null ? null : ref.optJSONObject("volume");
+                    if (ref == null || ref.optInt("id") != issueId || path == null || !path.endsWith("-" + issueId + "/")
+                            || sourceVolume == null || !canonical.containsKey(sourceVolume.optInt("id"))) {
+                        deliver(callback, Result.failed(lookup.failure == null ? Failure.DATA : lookup.failure)); return;
+                    }
+                    String fields = ISSUE_FIELDS + ",api_detail_url,cover_date,deck,description,character_credits,team_credits,person_credits,story_arc_credits,location_credits,object_credits,concept_credits";
+                    request(path, params("field_list", fields), DAY, result -> {
+                        JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
+                        JSONObject volume = row == null ? null : row.optJSONObject("volume");
+                        Reference known = volume == null ? null : canonical.get(volume.optInt("id"));
+                        if (row == null || row.optInt("id") != issueId || !path.equals(resourcePath(text(row,"api_detail_url"),"issue"))
+                                || known == null || known.id != sourceVolume.optInt("id")
+                                || !known.path.equals(resourcePath(text(volume,"api_detail_url"),"volume"))) {
+                            deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+                        }
+                        request(known.path, params("field_list", "id,name,publisher,site_detail_url"), DAY, owner -> {
+                            JSONObject volumeRow = owner.data == null ? null : owner.data.optJSONObject("results");
+                            JSONObject publisher = volumeRow == null ? null : volumeRow.optJSONObject("publisher");
+                            if (volumeRow == null || volumeRow.optInt("id") != known.id || text(volumeRow,"name").isEmpty()
+                                    || publisher == null || publisher.optInt("id") != pub.data.id) {
+                                deliver(callback, Result.failed(owner.failure == null ? Failure.DATA : owner.failure)); return;
+                            }
+                            String name = text(volumeRow,"name"), number = text(row,"issue_number");
+                            Issue item = new Issue(issueId, known.id, name + (number.isEmpty() ? "" : " #" + number), name,
+                                    text(row,"store_date"), image(row), website(text(row,"site_detail_url")));
+                            deliver(callback, Result.success(new IssueDetails(item, pub.data.id, text(row,"name"), text(row,"cover_date"),
+                                    text(row,"deck"), text(row,"description"), website(text(volumeRow,"site_detail_url")),
+                                    references(row.optJSONArray("character_credits"),"character"), references(row.optJSONArray("team_credits"),"team"),
+                                    credits(row.optJSONArray("person_credits"),"person"), credits(row.optJSONArray("story_arc_credits"),"story_arc"),
+                                    credits(row.optJSONArray("location_credits"),"location"), credits(row.optJSONArray("object_credits"),"object"),
+                                    credits(row.optJSONArray("concept_credits"),"concept"))));
+                        });
+                    });
+                });
+            });
+        });
+    }
+    private static List<Credit> credits(JSONArray rows, String resource) {
+        Map<Integer, Credit> result = new LinkedHashMap<>();
+        if (rows != null) for (int i = 0; i < rows.length(); i++) {
+            JSONObject row = rows.optJSONObject(i); if (row == null) continue;
+            int id = row.optInt("id"); String path = resourcePath(text(row,"api_detail_url"),resource), name = text(row,"name");
+            String url = website(text(row,"site_detail_url"));
+            if (id <= 0 || name.isEmpty() || path == null || !path.endsWith("-" + id + "/")) continue;
+            if (!url.isEmpty() && !Uri.parse(url).getPath().endsWith("/" + path.split("/")[1] + "/")) url = "";
+            result.put(id,new Credit(new Reference(id,name,path),text(row,"role"),url));
+        }
+        return new ArrayList<>(result.values());
+    }
+
     private void relationPage(Publisher publisher, String kind, List<Reference> refs, int offset, int attempt,
             List<RelatedItem> items, Callback<RelationPage> callback) {
         if (offset >= refs.size() || attempt >= 3 || !items.isEmpty()) {

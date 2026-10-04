@@ -61,6 +61,7 @@ public final class ComicsFragment extends Fragment {
             }
         }).get(ComicsViewModel.class);
         RecentIssueAdapter highlight = new RecentIssueAdapter(container.getImages(), false, true, true);
+        highlight.openWith(id -> ((MainActivity) requireActivity()).openIssue(id));
         binding.comicsFeaturedList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.comicsFeaturedList.setAdapter(highlight);
         model.featured().observe(getViewLifecycleOwner(), state -> {
@@ -84,7 +85,7 @@ public final class ComicsFragment extends Fragment {
         binding.previousComic.setOnClickListener(v -> move(model.position()-1));
         binding.nextComic.setOnClickListener(v -> move(model.position()+1));
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.comicMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ComicVineNavigation.open(requireContext(), item.siteUrl); });
+        binding.comicMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ((MainActivity) requireActivity()).openIssue(item.id); });
         model.state().observe(getViewLifecycleOwner(), state -> {
             binding.comicsState.render(state.getStatus(), model::reload);
             if (state.getStatus() == UiState.Status.EMPTY) binding.comicsState.emptyMessage(R.string.comics_empty_title, R.string.comics_empty_body);
@@ -119,7 +120,7 @@ public final class ComicsFragment extends Fragment {
             String date = new SimpleDateFormat("dd MMM yyyy", new Locale("pt","BR")).format(source.parse(item.publicationDate));
             binding.comicDate.setText(getString(R.string.comics_store_date,date));
         } catch (Exception invalid) { binding.comicDate.setText(""); }
-        binding.comicMore.setEnabled(!item.siteUrl.isEmpty()); binding.comicMore.setContentDescription(getString(R.string.history_external_issue,item.title));
+        binding.comicMore.setText(R.string.issue_open); binding.comicMore.setEnabled(true); binding.comicMore.setContentDescription(getString(R.string.issue_open_named,item.title));
         int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
         binding.previousComic.setEnabled(position > 0); binding.nextComic.setEnabled(position+1 < covers.getItemCount());
     }

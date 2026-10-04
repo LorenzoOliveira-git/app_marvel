@@ -37,6 +37,26 @@ public final class CatalogDescriptions {
         if (!item.name.isEmpty()) known.add(item.name);
         if (!item.realName.isEmpty()) known.add(item.realName);
         for (String alias : item.aliases.split("[\\r\\n]+")) if (!alias.trim().isEmpty()) known.add(alias.trim());
+        translateProtected(repository, "character:" + item.id, "deck-proper-names-v4", source, known, callback);
+    }
+    public static void translateIssue(TranslationRepository repository, CatalogModels.IssueDetails item, String field,
+            TranslationRepository.Callback callback) {
+        String html = field.equals("deck") ? item.originalDeck : item.originalDescription;
+        Set<String> known = new LinkedHashSet<>();
+        known.add(item.issue.volume); known.add(item.issue.title);
+        for (CatalogModels.Reference ref : item.characters) known.add(ref.name);
+        for (CatalogModels.Reference ref : item.teams) known.add(ref.name);
+        for (List<CatalogModels.Credit> credits : Arrays.asList(item.creators,item.arcs,item.locations,item.objects,item.concepts))
+            for (CatalogModels.Credit credit : credits) known.add(credit.reference.name);
+        // Os nomes de links vêm do próprio campo original, sem aliases inventados.
+        Matcher anchors = Pattern.compile("(?is)<a\\b[^>]*>(.*?)</a>").matcher(html);
+        while (anchors.find()) { String name = MarvelRepository.plain(anchors.group(1)); if (!name.isEmpty()) known.add(name); }
+        translateProtected(repository, "issue:" + item.issue.id, field + "-proper-names-v1", MarvelRepository.plain(html), known, callback);
+    }
+    private static void translateProtected(TranslationRepository repository, String entity, String field, String source,
+            Set<String> known, TranslationRepository.Callback callback) {
+        known.removeIf(String::isEmpty);
+        if (known.isEmpty()) { repository.translate(entity,field,source,callback); return; }
         List<String> names = new ArrayList<>(known); names.sort(Comparator.comparingInt(String::length).reversed());
         names.replaceAll(Pattern::quote);
         Matcher matches = Pattern.compile("(?<![\\p{L}\\p{N}])(?:" + String.join("|", names) + ")(?![\\p{L}\\p{N}])").matcher(source);
@@ -56,7 +76,7 @@ public final class CatalogDescriptions {
             if (translated[i] != null) continue;
             int position = i; String part = parts.get(i), text = part.trim();
             int start = part.indexOf(text), end = start + text.length();
-            repository.translate("character:" + item.id, "deck-proper-names-v4:" + i, text, result -> {
+            repository.translate(entity, field + ":" + i, text, result -> {
                 if (failed[0]) return;
                 if (result.getFailure() != null) { failed[0] = true; callback.complete(TranslationRepository.Result.failed(result.getFailure())); return; }
                 translated[position] = part.substring(0, start) + result.getText().trim() + part.substring(end);

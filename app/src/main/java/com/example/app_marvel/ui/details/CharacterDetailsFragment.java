@@ -105,8 +105,8 @@ public final class CharacterDetailsFragment extends Fragment {
                 String date = new SimpleDateFormat("dd/MM/yyyy", new Locale("pt", "BR")).format(source.parse(issue.publicationDate));
                 binding.firstDate.setText(getString(R.string.details_cover_date, date)); binding.firstDate.setVisibility(View.VISIBLE);
             } catch (Exception invalidDate) { binding.firstDate.setText(""); }
-            binding.firstMore.setVisibility(issue.siteUrl.isEmpty() ? View.GONE : View.VISIBLE);
-            binding.firstMore.setOnClickListener(v -> ComicVineNavigation.open(requireContext(), issue.siteUrl));
+            binding.firstMore.setVisibility(View.VISIBLE); binding.firstMore.setText(R.string.issue_open); binding.firstMore.setContentDescription(getString(R.string.issue_open_named,issue.title));
+            binding.firstMore.setOnClickListener(v -> ((MainActivity) requireActivity()).openIssue(issue.id));
         });
         relations(container, "teams", binding.teamsSection, R.string.details_teams, R.string.details_more_teams);
         relations(container, "friends", binding.friendsSection, R.string.details_friends, R.string.details_more_friends);
