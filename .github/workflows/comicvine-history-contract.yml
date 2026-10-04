@@ -1,0 +1,24 @@
+name: Contrato real de aparições ComicVine
+on:
+  push:
+    branches: ["codex/bloco-4-historias-aparicoes"]
+    paths: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml"]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Consultar contrato público sem expor credenciais
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: python3 tools/comicvine_history_contract.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: comicvine-history-contract
+          path: comicvine-history-contract.json
+          if-no-files-found: error
+          retention-days: 7
