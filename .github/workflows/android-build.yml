@@ -63,6 +63,17 @@ jobs:
           adb shell input keyevent 82
           adb install -r app/build/outputs/apk/debug/app-debug.apk
           python3 .github/scripts/capture-preview.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
+      - name: Verificar ML Kit e cache persistente no emulador
+        timeout-minutes: 6
+        run: python3 .github/scripts/check-data.py
+      - name: Disponibilizar resultado da tradução real
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-data-check
+          path: app/build/data-check/*.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Disponibilizar capturas do emulador
         if: always()
         uses: actions/upload-artifact@v7

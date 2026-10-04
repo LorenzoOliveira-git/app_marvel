@@ -3,6 +3,9 @@ package com.example.app_marvel.di;
 import android.content.Context;
 import com.example.app_marvel.data.auth.AuthRepository;
 import com.example.app_marvel.data.auth.FirebaseAuthRepository;
+import com.example.app_marvel.data.comicvine.ComicVineClient;
+import com.example.app_marvel.data.translation.MlKitTranslationRepository;
+import com.example.app_marvel.data.translation.TranslationRepository;
 import com.example.app_marvel.data.repository.FeatureRepository;
 import com.example.app_marvel.data.repository.LocalFeatureRepository;
 
@@ -11,8 +14,16 @@ public final class AppContainer {
     private final FeatureRepository features = new LocalFeatureRepository();
 
     private final AuthRepository auth;
-    public AppContainer(Context context) { auth = new FirebaseAuthRepository(context); }
+    private final TranslationRepository translations;
+    private final ComicVineClient comicVine;
+    public AppContainer(Context context) {
+        auth = new FirebaseAuthRepository(context);
+        translations = new MlKitTranslationRepository(context);
+        comicVine = new ComicVineClient(context);
+    }
     public AuthRepository getAuth() { return auth; }
+    public TranslationRepository getTranslations() { return translations; }
+    public ComicVineClient getComicVine() { return comicVine; }
 
     public FeatureRepository getFeatures() {
         return features;

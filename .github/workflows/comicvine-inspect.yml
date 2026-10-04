@@ -1,0 +1,25 @@
+name: Inspecionar ComicVine sem incluir chave no APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Consultar respostas reais e remover credenciais
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: python3 tools/comicvine.py inspect --output comicvine-inspection.json
+      - name: Disponibilizar relatório sanitizado
+        uses: actions/upload-artifact@v7
+        with:
+          name: comicvine-inspection
+          path: comicvine-inspection.json
+          if-no-files-found: error
+          retention-days: 7
