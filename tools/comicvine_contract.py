@@ -42,6 +42,7 @@ def main():
     report['marvel'] = publisher
     probe('publisher_identity', path, {'field_list': 'id,name'})
     volume_index = probe('publisher_volumes', path, {'field_list': 'id,name,volumes'}, max_bytes=8_000_000)
+    character_index = probe('publisher_characters', path, {'field_list': 'id,name,characters'}, max_bytes=8_000_000)
     characters = probe('characters_popular', 'characters/', {'limit': 50,
         'sort': 'count_of_issue_appearances:desc',
         'field_list': 'id,name,real_name,publisher,origin,gender,image,deck,site_detail_url,api_detail_url,count_of_issue_appearances'}) or []
@@ -53,8 +54,8 @@ def main():
         detail = resource_path(character.get('api_detail_url'), 'character')
         if detail:
             probe('featured_detail', detail, {'field_list': 'id,name,real_name,publisher,origin,image,deck,description,teams,powers,first_appeared_in_issue,site_detail_url'})
-    if characters:
-        ids = [str(c['id']) for c in characters if (c.get('publisher') or {}).get('id') == publisher['id']][:2]
+    if heroes:
+        ids = [str(c['id']) for c in heroes if (c.get('publisher') or {}).get('id') == publisher['id']][:2]
         if ids:
             probe('characters_id_filter', 'characters/', {'limit': 10, 'filter': 'id:' + '|'.join(ids),
                 'field_list': 'id,name,publisher'})
@@ -68,11 +69,23 @@ def main():
             'field_list': 'id,name,publisher'})
     probe('volumes_publisher_filter', 'volumes/', {'limit': 20, 'filter': 'publisher:' + str(publisher['id']),
         'field_list': 'id,name,publisher'})
+    if isinstance(character_index, dict) and isinstance(character_index.get('characters'), list):
+        refs = sorted(character_index['characters'], key=lambda c: str(c.get('name', '')).casefold())[:20]
+        ids = [str(c['id']) for c in refs if isinstance(c.get('id'), int)]
+        probe('characters_batch_from_marvel_index', 'characters/', {'limit': 100, 'filter': 'id:' + '|'.join(ids),
+            'field_list': 'id,name,real_name,publisher,origin,gender,image,deck,site_detail_url,api_detail_url,teams'})
     if isinstance(volume_index, dict):
         refs = volume_index.get('volumes')
         if isinstance(refs, list):
             ids = {v.get('id') for v in refs}
             verified_issues = [i for i in issues if (i.get('volume') or {}).get('id') in ids]
+            for page in range(3):
+                if verified_issues:
+                    break
+                rows = probe('issues_next_' + str(page), 'issues/', {'limit': 100, 'offset': 30 + page * 100,
+                    'sort': 'store_date:desc', 'filter': 'store_date:1900-01-01|' + today,
+                    'field_list': 'id,name,issue_number,volume,image,store_date,cover_date,site_detail_url,api_detail_url'}) or []
+                verified_issues.extend(i for i in rows if (i.get('volume') or {}).get('id') in ids)
             report['recent_marvel_issue_ids'] = [i.get('id') for i in verified_issues]
             samples = list(dict.fromkeys((i.get('volume') or {}).get('api_detail_url') for i in verified_issues))[:2]
             for index, url in enumerate(samples):
