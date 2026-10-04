@@ -73,7 +73,7 @@ def sanitized(value, key):
     return value
 
 
-def fetch(path, params, key):
+def fetch(path, params, key, max_bytes=2_000_000):
     # Parâmetros e campos desta inspeção são sondagens; não afirmam suporte de filtros.
     url = BASE + path + "?" + urllib.parse.urlencode({**params, "format": "json", "api_key": key})
     request = urllib.request.Request(url, headers={
@@ -85,10 +85,10 @@ def fetch(path, params, key):
     opener = urllib.request.build_opener(NoRedirect)
     try:
         with opener.open(request, timeout=25) as response:
-            body = response.read(2_000_001)
-            if len(body) > 2_000_000:
+            body = response.read(max_bytes + 1)
+            if len(body) > max_bytes:
                 return {"failure": "response_too_large"}
-            return {"http_status": response.status, "response": sanitized(json.loads(body), key)}
+            return {"http_status": response.status, "body_bytes": len(body), "response": sanitized(json.loads(body), key)}
     except urllib.error.HTTPError as error:
         return {"http_status": error.code, "failure": "http"}
     except (OSError, ValueError):
