@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content"
     android:orientation="vertical" android:gravity="center_horizontal" android:padding="@dimen/space_md">
-    <ImageView android:id="@+id/mascot" android:layout_width="128dp" android:layout_height="144dp" android:src="@drawable/marv_thinking"
+    <ImageView android:id="@+id/mascot" android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_state_error"
         android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
     <com.google.android.material.progressindicator.CircularProgressIndicator android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_md" android:indeterminate="true" android:visibility="gone" />
     <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center"
-        android:layout_marginTop="@dimen/space_lg" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
+        android:layout_marginTop="@dimen/space_md" android:textAppearance="@style/TextAppearance.Marvel.Body" android:fontFamily="@font/inter_semibold" app:fontFamily="@font/inter_semibold" />
     <TextView android:id="@+id/status_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
         android:gravity="center" android:accessibilityLiveRegion="polite" android:textAppearance="@style/TextAppearance.Marvel.Body" />
     <com.google.android.material.button.MaterialButton android:id="@+id/retry_button" android:layout_width="match_parent" android:layout_height="wrap_content"

@@ -44,7 +44,8 @@ public final class MarvStateView extends LinearLayout {
         }
         int title;
         String body;
-        int mascot = R.drawable.marv_thinking;
+        binding.mascot.setVisibility(status == UiState.Status.LOADING ? GONE : VISIBLE);
+        int icon = R.drawable.ic_state_empty;
         switch (status) {
             case LOADING:
                 title = R.string.state_loading_title;
@@ -55,6 +56,7 @@ public final class MarvStateView extends LinearLayout {
                 body = getContext().getString(R.string.state_empty_body);
                 break;
             case ERROR:
+                icon = R.drawable.ic_state_error;
                 title = R.string.state_error_title;
                 body = getContext().getString(R.string.state_error_body);
                 if (retry != null) {
@@ -65,7 +67,7 @@ public final class MarvStateView extends LinearLayout {
             default:
                 throw new IllegalArgumentException("Estado desconhecido");
         }
-        binding.mascot.setImageResource(mascot);
+        binding.mascot.setImageResource(icon);
         binding.statusTitle.setText(title);
         binding.statusBody.setText(body);
     }

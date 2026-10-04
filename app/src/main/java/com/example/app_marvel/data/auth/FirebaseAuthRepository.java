@@ -23,7 +23,8 @@ public final class FirebaseAuthRepository implements AuthRepository {
     private void publish() {
         FirebaseUser user = auth == null ? null : auth.getCurrentUser();
         session.setValue(new AuthSession(auth != null, user == null ? null : user.getUid(),
-                user == null ? null : user.getDisplayName(), user == null ? null : user.getEmail()));
+                user == null ? null : user.getDisplayName(), user == null ? null : user.getEmail(),
+                user == null || user.getPhotoUrl() == null ? null : user.getPhotoUrl().toString()));
     }
     @Override public LiveData<AuthSession> getSession() { return session; }
     @Override public void signIn(String email, String password, Callback callback) {

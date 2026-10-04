@@ -69,7 +69,7 @@ public final class HomeFragment extends Fragment {
         model.getFact().observe(getViewLifecycleOwner(), state -> {
             binding.factState.render(state.getStatus(), model::translate);
             binding.featuredDescription.setText(""); binding.factText.setText("");
-            binding.factHeader.setVisibility(state.getStatus() == UiState.Status.EMPTY ? View.GONE : View.VISIBLE);
+            binding.factHeader.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) {
                 // Dois trechos do mesmo resumo factual; nenhum fato ou tradução oficial é inventado.
                 String text = state.getData(); int sentence = text.indexOf(". ");
