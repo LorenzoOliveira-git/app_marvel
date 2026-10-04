@@ -55,11 +55,16 @@ def nodes():
 
 def tap(text=None, resource=None):
     for attempt in range(6):
-        for node in nodes():
+        snapshot = nodes()
+        navigation = next((n for n in snapshot if n.get('resource-id','').endswith('/bottom_navigation')), None)
+        nav_bounds = list(map(int,re.findall(r'\d+',navigation.get('bounds','')))) if navigation is not None else None
+        for node in snapshot:
             if ((text is not None and (node.get('text') == text or node.get('content-desc','').split(',')[0] == text))
                     or (resource is not None and node.get('resource-id','').endswith('/'+resource))):
                 x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
                 if x2>x1 and y2>y1:
+                    if resource is not None and nav_bounds and nav_bounds[0] <= (x1+x2)//2 <= nav_bounds[2] and nav_bounds[1] <= (y1+y2)//2 <= nav_bounds[3]:
+                        continue
                     adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)); time.sleep(1); return
         adb('shell','input','swipe','215','730','215','250','500'); time.sleep(1)
     raise RuntimeError('Controle não encontrado: '+str(text or resource))
@@ -84,13 +89,15 @@ adb('shell','wm','size','430x932'); adb('shell','wm','density','160')
 adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(3)
 tap('Explorar sem entrar'); wait('issue_title'); capture('catalog-home')
-adb('shell','input','swipe','215','730','215','250','600'); wait('featured_name','Spider-Man'); capture('catalog-home-featured')
-adb('shell','input','swipe','215','730','215','250','600'); wait('fact_text'); capture('catalog-home-fact')
+adb('shell','input','swipe','215','730','215','480','600'); wait('featured_name','Spider-Man'); capture('catalog-home-featured')
+adb('shell','input','swipe','215','730','215','480','600'); wait('fact_text'); capture('catalog-home-fact')
 tap('Personagens'); wait('character_name','Spider-Man'); capture('catalog-characters')
-tap(resource='next_character'); time.sleep(3); capture('catalog-characters-next')
+tap(resource='next_character'); time.sleep(3); assert wait('character_name').get('text') != 'Spider-Man', 'Controle próximo não avançou'; capture('catalog-characters-next')
 top(); tap(resource='search_name'); adb('shell','input','text','Spider-Man'); adb('shell','input','keyevent','66'); wait('character_name','Spider-Man'); capture('catalog-search')
 tap(resource='gender_filter'); tap('Feminino'); time.sleep(4); capture('catalog-gender')
 tap(resource='clear_filters'); wait('character_name','Spider-Man')
+tap('Início'); tap('Personagens'); wait('search_name','Spider-Man'); wait('character_name','Spider-Man'); capture('catalog-restored')
+adb('shell','wm','size','640x1000'); time.sleep(2); capture('catalog-large')
 adb('shell','wm','size','320x640'); time.sleep(2); capture('catalog-small')
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('catalog-font-200')
 adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932')

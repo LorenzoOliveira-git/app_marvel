@@ -56,6 +56,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
                 && !isAuthDestination(navController.getCurrentDestination().getId())) {
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
+        binding.headerBack.setOnClickListener(view -> openFeature(AppFeature.HOME));
         binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
@@ -67,6 +68,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
+            boolean catalog = destination.getId() == R.id.charactersFragment;
+            binding.headerBack.setVisibility(catalog ? View.VISIBLE : View.GONE);
+            binding.brandCaption.setVisibility(catalog ? View.GONE : View.VISIBLE);
+            binding.screenTitle.setTextAppearance(catalog ? R.style.TextAppearance_Marvel_CatalogHeader : R.style.TextAppearance_Marvel_Title);
+            binding.screenTitle.setGravity(catalog ? Gravity.CENTER : Gravity.START);
             boolean form = isAuthDestination(destination.getId());
             binding.bottomNavigation.setVisibility(form ? View.GONE : View.VISIBLE);
             binding.mainHeader.setVisibility(form ? View.GONE : View.VISIBLE);

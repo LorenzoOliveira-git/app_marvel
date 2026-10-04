@@ -8,6 +8,7 @@
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent">
           <LinearLayout android:id="@+id/main_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="68dp"
             android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false" android:paddingStart="@dimen/screen_padding" android:paddingEnd="@dimen/screen_padding" android:paddingTop="@dimen/space_sm" android:paddingBottom="@dimen/space_sm">
+            <com.google.android.material.button.MaterialButton android:id="@+id/header_back" style="@style/Widget.Marvel.AuthLink" android:layout_width="48dp" android:layout_height="48dp" android:padding="0dp" android:visibility="gone" android:contentDescription="@string/catalog_back" app:icon="@drawable/ic_catalog_back" app:iconSize="20dp" app:iconTint="@color/marvel_text" app:iconGravity="textStart" app:iconPadding="0dp" />
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                 android:orientation="vertical" android:layout_marginEnd="@dimen/space_md">
                 <TextView android:id="@+id/brand_caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"

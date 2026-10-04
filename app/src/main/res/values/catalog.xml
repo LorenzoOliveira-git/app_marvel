@@ -33,7 +33,9 @@
     <string name="catalog_link_failure">Não foi possível abrir o link.</string>
     <string name="catalog_dialog_loading">Carregando opções…</string>
     <string name="catalog_dialog_error">Não foi possível carregar as opções. Tente novamente.</string>
+    <string name="catalog_back">Voltar ao início</string>
     <string name="catalog_cancel">Cancelar</string>
+    <style name="TextAppearance.Marvel.CatalogHeader" parent="TextAppearance.Marvel.Body"><item name="android:fontFamily">@font/inter_semibold</item><item name="fontFamily">@font/inter_semibold</item><item name="android:textSize">20sp</item><item name="android:textColor">@color/marvel_text</item></style>
     <style name="TextAppearance.Marvel.CatalogHeading" parent="TextAppearance.Marvel.Display"><item name="android:textSize">40sp</item></style>
     <style name="TextAppearance.Marvel.CatalogTitle" parent="TextAppearance.Marvel.Display"><item name="android:textSize">24sp</item></style>
     <style name="TextAppearance.Marvel.CatalogFilter" parent="TextAppearance.Marvel.Display"><item name="android:textSize">20sp</item></style>

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.app_marvel.data.catalog.CatalogModels.Character;
 import com.example.app_marvel.data.catalog.CatalogModels.Issue;
 import com.example.app_marvel.data.catalog.MarvelRepository;
+import com.example.app_marvel.data.catalog.CatalogDescriptions;
 import com.example.app_marvel.data.translation.TranslationRepository;
 import com.example.app_marvel.ui.common.UiState;
 import java.util.List;
@@ -51,7 +52,7 @@ public final class HomeViewModel extends ViewModel {
         Character item = current.getData(); int stamp = ++generation;
         String original = MarvelRepository.plain(item.originalDeck);
         fact.setValue(original.isEmpty() ? UiState.empty() : UiState.loading());
-        if (!original.isEmpty()) translations.translate("character:" + item.id, "deck", original, result -> {
+        if (!original.isEmpty()) CatalogDescriptions.translate(translations, item, result -> {
             if (stamp == generation) fact.setValue(result.getFailure() == null ? UiState.content(result.getText()) : UiState.error());
         });
         origin.setValue(item.origin.isEmpty() ? UiState.empty() : UiState.loading());

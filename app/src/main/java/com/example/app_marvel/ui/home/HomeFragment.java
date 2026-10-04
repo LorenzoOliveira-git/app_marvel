@@ -74,7 +74,9 @@ public final class HomeFragment extends Fragment {
                 // Dois trechos do mesmo resumo factual; nenhum fato ou tradução oficial é inventado.
                 String text = state.getData(); int sentence = text.indexOf(". ");
                 binding.featuredDescription.setText(sentence < 0 ? text : text.substring(0, sentence + 1));
-                binding.factText.setText(sentence < 0 ? "" : text.substring(sentence + 2).trim());
+                String remainder = sentence < 0 ? "" : text.substring(sentence + 2).trim();
+                int nextSentence = remainder.indexOf(". ");
+                binding.factText.setText(nextSentence < 0 ? remainder : remainder.substring(0, nextSentence + 1));
                 binding.factHeader.setVisibility(sentence < 0 ? View.GONE : View.VISIBLE);
             }
         });

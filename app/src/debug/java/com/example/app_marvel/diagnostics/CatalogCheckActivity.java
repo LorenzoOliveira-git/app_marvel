@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.example.app_marvel.MarvelApplication;
 import com.example.app_marvel.data.catalog.CatalogModels;
 import com.example.app_marvel.data.catalog.MarvelRepository;
+import com.example.app_marvel.data.catalog.CatalogDescriptions;
 import com.example.app_marvel.data.translation.TranslationRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public final class CatalogCheckActivity extends Activity {
         repository.featured(result -> {
             if (result.failure != null) { fail("featured"); return; }
             owner = result.data.publisherId; put("publisher_id", owner); put("featured", character(result.data));
-            translations.translate("character:" + result.data.id, "deck", MarvelRepository.plain(result.data.originalDeck), translated -> {
+            CatalogDescriptions.translate(translations, result.data, translated -> {
                 if (translated.getFailure() != null) { fail("translation"); return; }
                 put("translated_deck", translated.getText()); put("translation_from_cache", translated.isFromCache()); recent();
             });
