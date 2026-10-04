@@ -7,6 +7,11 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.core.splashscreen.SplashScreen;
+import androidx.navigation.NavGraph;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -25,21 +30,32 @@ import com.google.android.material.navigation.NavigationBarView;
 public final class MainActivity extends AppCompatActivity implements AppNavigator {
     private ActivityMainBinding binding;
     private NavController navController;
+    private NavHostFragment host;
+    private int bottomSafe, keyboardBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        if (android.os.Build.VERSION.SDK_INT >= 29) getWindow().setNavigationBarContrastEnforced(false);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setAccessibilityHeading(binding.screenTitle, true);
         applySafeInsets();
 
-        NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
+        host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
         if (host == null) {
             throw new IllegalStateException("NavHost não encontrado");
         }
         navController = host.getNavController();
+        boolean authenticated = ((MarvelApplication) getApplication()).getContainer().getAuth()
+                .getSession().getValue().isAuthenticated();
+        if (savedInstanceState == null && authenticated) resetGraph(R.id.homeFragment);
+        else if (savedInstanceState != null && navController.getCurrentDestination() != null
+                && !isAuthDestination(navController.getCurrentDestination().getId())) {
+            navController.getGraph().setStartDestination(R.id.homeFragment);
+        }
         binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
@@ -49,8 +65,15 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         preserveIconGeometry();
         // NavigationUI salva/restaura as pilhas dos destinos superiores.
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
-        navController.addOnDestinationChangedListener((controller, destination, arguments) ->
-                binding.screenTitle.setText(destination.getLabel()));
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            binding.screenTitle.setText(destination.getLabel());
+            boolean form = isAuthDestination(destination.getId());
+            binding.bottomNavigation.setVisibility(form ? View.GONE : View.VISIBLE);
+            binding.screenTitle.setVisibility(form ? View.GONE : View.VISIBLE);
+            binding.brandCaption.setText(form ? R.string.brand_sua : R.string.brand_caption);
+            binding.navHost.post(this::updateContentInsets);
+        });
+        binding.bottomNavigation.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateContentInsets());
     }
 
     private void applySafeInsets() {
@@ -58,7 +81,13 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             Insets safe = insets.getInsets(WindowInsetsCompat.Type.systemBars()
                     | WindowInsetsCompat.Type.displayCutout());
             Insets keyboard = insets.getInsets(WindowInsetsCompat.Type.ime());
-            view.setPadding(safe.left, safe.top, safe.right, Math.max(safe.bottom, keyboard.bottom));
+            // O painel continua por trás do menu e da barra do sistema.
+            view.setPadding(safe.left, safe.top, safe.right, 0);
+            bottomSafe = safe.bottom; keyboardBottom = keyboard.bottom;
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.bottomNavigation.getLayoutParams();
+            int margin = getResources().getDimensionPixelSize(R.dimen.space_sm) + bottomSafe;
+            if (params.bottomMargin != margin) { params.bottomMargin = margin; binding.bottomNavigation.setLayoutParams(params); }
+            updateContentInsets();
             // Evita aplicar novamente os insets na barra Material e nos Fragments.
             return WindowInsetsCompat.CONSUMED;
         });
@@ -68,6 +97,35 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             controller.setAppearanceLightNavigationBars(false);
         }
         ViewCompat.requestApplyInsets(binding.getRoot());
+    }
+
+    private boolean isAuthDestination(int id) { return id == R.id.loginFragment || id == R.id.registerFragment; }
+
+    public void updateContentInsets() {
+        if (host == null || host.getChildFragmentManager().getPrimaryNavigationFragment() == null) return;
+        View content = host.getChildFragmentManager().getPrimaryNavigationFragment().getView();
+        if (!(content instanceof NestedScrollView)) return;
+        int bottom = Math.max(bottomSafe, keyboardBottom);
+        if (binding.bottomNavigation.getVisibility() == View.VISIBLE) {
+            bottom = Math.max(bottom, binding.bottomNavigation.getHeight() + bottomSafe
+                    + 2 * getResources().getDimensionPixelSize(R.dimen.space_sm));
+        }
+        content.setPadding(content.getPaddingLeft(), content.getPaddingTop(), content.getPaddingRight(), bottom);
+        ((NestedScrollView) content).setClipToPadding(false);
+    }
+
+    public void enterHome() { hideKeyboard(); resetGraph(R.id.homeFragment); }
+    public void openLogin() { hideKeyboard(); navController.navigate(R.id.loginFragment); }
+    public void leaveAccount() {
+        hideKeyboard(); resetGraph(R.id.loginFragment);
+    }
+    private void resetGraph(int destination) {
+        NavGraph graph = navController.getNavInflater().inflate(R.navigation.main_graph);
+        graph.setStartDestination(destination); navController.setGraph(graph);
+    }
+    private void hideKeyboard() {
+        WindowInsetsControllerCompat controller = ViewCompat.getWindowInsetsController(binding.getRoot());
+        if (controller != null) controller.hide(WindowInsetsCompat.Type.ime());
     }
 
     private void preserveIconGeometry() {

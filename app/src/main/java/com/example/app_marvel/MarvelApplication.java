@@ -9,7 +9,7 @@ public final class MarvelApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        container = new AppContainer();
+        container = new AppContainer(this);
     }
 
     public AppContainer getContainer() {

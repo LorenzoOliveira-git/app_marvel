@@ -31,6 +31,7 @@ public final class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        view.post(() -> { if (binding != null) ((com.example.app_marvel.MainActivity) requireActivity()).updateContentInsets(); });
         ViewCompat.setAccessibilityHeading(binding.homeHeading, true);
         ViewCompat.setAccessibilityHeading(binding.marvHeading, true);
         ViewCompat.setAccessibilityHeading(binding.exploreHeading, true);
