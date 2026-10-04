@@ -21,3 +21,7 @@ Os dois PNGs foram preparados pelo ImageGen a partir do guia anexado. São asset
 ## Bloco 2
 
 Sem novas chamadas ao Figma. Login/Home reutilizados do cache. Painel até o rodapé, menu sobreposto e fonte de títulos explícita. Login/cadastro reutilizam Marv existente junto ao formulário/status. Cadastro adaptado dos componentes locais; splash nativa, sem cópia das três telas ainda não consultadas.
+
+## Correção da marca e autenticação
+
+Marca restaurada: SUA (Bebas Neue) centralizado acima do símbolo MARVEL, usando o asset original. No Login/Cadastro, o slot de 169×73dp preserva o conteúdo de aproximadamente 149×69dp da referência (o export inclui margem transparente); no cabeçalho principal, slot original de 76×33dp. Splash nativa compõe os contornos do mesmo símbolo em vetor Android com SUA derivado da fonte local, para preservar a marca dentro da máscara do sistema. O PNG original continua inalterado no cabeçalho. Login reutiliza título 40sp, rótulos 32sp, campos de borda branca e links 20sp. Nenhuma nova consulta Figma. Mensagens sobre etapas de implementação ficam na documentação, fora da UI.

@@ -3,7 +3,7 @@ package com.example.app_marvel.ui.auth;
 import com.example.app_marvel.data.auth.AuthRepository;
 
 public final class AuthState {
-    public enum Status { READY, LOADING, ERROR, SUCCESS, UNAVAILABLE }
+    public enum Status { READY, LOADING, ERROR, SUCCESS }
     public final Status status;
     public final AuthRepository.Failure failure;
     public final boolean nameSaved;

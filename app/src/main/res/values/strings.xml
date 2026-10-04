@@ -13,21 +13,13 @@
     <string name="home_stories_description">Explore quadrinhos, filmes, séries e arcos.</string>
     <string name="home_create_description">Dê forma à sua ideia com a ajuda do Marv.</string>
     <string name="home_profile_description">Encontre sua coleção de heróis personalizados.</string>
-    <string name="home_availability_notice">As áreas abaixo ainda não estão disponíveis. O Marv avisa o que você pode encontrar em cada uma.</string>
     <string name="open_section_description">Abrir %1$s. %2$s</string>
-    <string name="unavailable_title">Esta área ainda não está disponível</string>
-    <string name="characters_unavailable">O catálogo de personagens ainda não está disponível. Volte ao início para conhecer os caminhos do aplicativo.</string>
-    <string name="stories_unavailable">As histórias ainda não estão disponíveis. Aqui você encontrará quadrinhos, filmes, séries e arcos.</string>
-    <string name="create_unavailable">A criação de heróis ainda não está disponível. Eu vou acompanhar você quando chegar a hora de dar forma à sua ideia.</string>
-    <string name="profile_unavailable">Seu perfil e sua coleção ainda não estão disponíveis. Seus heróis personalizados terão um espaço aqui.</string>
     <string name="state_loading_title">Só um instante…</string><string name="state_loading_body">Estou buscando as informações para você.</string>
     <string name="state_empty_title">Nada por aqui ainda</string><string name="state_empty_body">Nenhum resultado foi encontrado.</string>
     <string name="state_error_title">Não consegui carregar</string><string name="state_error_body">Tente novamente em instantes.</string>
     <string name="retry">Tentar novamente</string><string name="return_home">Voltar ao início</string><string name="card_arrow">→</string>
     <string name="auth_login_title">Faça login</string>
     <string name="auth_register_title">Crie sua conta</string>
-    <string name="auth_login_intro">Entre para guardar seus futuros heróis em um só lugar.</string>
-    <string name="auth_register_intro">O Marv acompanha você desde o primeiro passo.</string>
     <string name="auth_name">Nome</string><string name="auth_email">E-mail</string>
     <string name="auth_password">Senha</string><string name="auth_confirmation">Confirmar senha</string>
     <string name="auth_password_help">Use pelo menos 6 caracteres.</string>
@@ -35,7 +27,6 @@
     <string name="auth_go_register">Não tem conta? Cadastre-se</string>
     <string name="auth_go_login">Já tem conta? Faça login</string>
     <string name="auth_browse">Explorar sem entrar</string>
-    <string name="auth_unavailable">O acesso à conta ainda não está disponível. Você pode explorar o aplicativo enquanto isso.</string>
     <string name="auth_loading_login">Conferindo seu acesso…</string>
     <string name="auth_loading_register">Criando sua conta…</string>
     <string name="auth_error_network">Não consegui conectar. Confira sua internet e tente novamente.</string>
@@ -49,9 +40,12 @@
     <string name="auth_error_short_password">Use pelo menos 6 caracteres.</string>
     <string name="auth_error_confirmation">As senhas precisam ser iguais.</string>
     <string name="auth_name_not_saved">Sua conta foi criada, mas seu nome não pôde ser salvo. Você já pode entrar.</string>
-    <string name="account_title">Sua conta</string><string name="account_signed_out">Você ainda não entrou</string>
-    <string name="account_sign_in_body">Entre ou crie uma conta para começar sua coleção quando a criação de heróis estiver disponível.</string>
-    <string name="account_collection_notice">Sua coleção de heróis estará disponível em um próximo bloco.</string>
+    <string name="account_title">Sua conta</string><string name="account_signed_out">Seu perfil</string>
+    <string name="account_sign_in_body">Entre ou crie sua conta.</string>
     <string name="account_sign_out">Sair da conta</string>
     <string name="brand_sua">SUA</string>
+    <string name="auth_name_hint">Seu nome</string>
+    <string name="auth_email_hint">seu.email@gmail.com</string>
+    <string name="auth_password_hint">Sua senha</string>
+    <string name="auth_confirmation_hint">Repita sua senha</string>
 </resources>

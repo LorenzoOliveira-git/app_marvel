@@ -61,5 +61,11 @@
     "source": "https://github.com/google/fonts",
     "inter": "Instâncias estáticas 400 e 600; opsz 14, para minSdk 24",
     "licenses": "docs/licenses"
+  },
+  "nativeSplash": {
+    "path": "app/src/main/res/drawable/splash_brand.xml",
+    "source": "logo_marvel.png exportado do Figma e Bebas Neue local",
+    "method": "Vetor Android: contornos do símbolo existente, SUA da fonte local; geometria dentro da máscara da splash Android",
+    "sourceBitmapUnchanged": true
   }
 }

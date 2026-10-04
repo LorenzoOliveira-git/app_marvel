@@ -1,8 +1,15 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/section_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
-        android:padding="@dimen/screen_padding" android:gravity="center_vertical">
-        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/state_view" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        android:padding="@dimen/screen_padding">
+        <TextView android:id="@+id/section_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Marvel.Display" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
+        <TextView android:id="@+id/section_description" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md" android:textAppearance="@style/TextAppearance.Marvel.Body" />
+        <ImageView android:layout_width="128dp" android:layout_height="144dp" android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_xl" android:src="@drawable/marv_welcome" android:scaleType="fitCenter"
+            android:importantForAccessibility="no" android:contentDescription="@null" />
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/state_view" android:layout_width="match_parent" android:layout_height="wrap_content" android:visibility="gone" />
         <com.google.android.material.button.MaterialButton android:id="@+id/return_home" style="@style/Widget.Marvel.Button.Secondary"
             android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_lg" android:text="@string/return_home" />
     </LinearLayout>

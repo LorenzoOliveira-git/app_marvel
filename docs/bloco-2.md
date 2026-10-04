@@ -1,5 +1,13 @@
 # Bloco 2 — splash, acesso à conta e painel contínuo
 
+## Correção visual solicitada
+
+A revisão atual restaura SUA centralizado sobre o símbolo MARVEL no Login/Cadastro e na marca menor do cabeçalho principal, com o mesmo asset exportado. Login usa título de 40sp, rótulos separados de 32sp, campos com contorno branco e links Bebas Neue, conforme o contexto salvo. Marv permanece discreto junto ao título. A splash nativa recebe a marca completa; não é a sequência de três frames do Figma, cujo contexto completo não está salvo.
+
+Avisos de desenvolvimento removidos das telas. Formulários começam em READY; validação continua ativa. Erros operacionais aparecem somente após tentativa de envio. Firebase sem configuração nunca autentica ficticiamente. Seções sem dados mantêm apenas apresentação/navegação; o estado interno de integração não vira aviso ou lista fictícia.
+
+Revisão verificada no [run 37166914245](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245), código ed1f450f. Splash inteira confirmada em captura do início a frio; Login/Cadastro, validação de campos vazios, cinco destinos do menu e fonte ampliada executados e inspecionados. Lint: zero erros, 14 avisos (11 versões disponíveis, 2 recursos originais sem uso e 1 recomendação genérica de dimensão de vetor). O vetor da splash usa o canvas nativo de 288dp com a marca dentro da área segura; o PNG original permanece inalterado. Nenhuma nova consulta ao Figma.
+
 ## Resultado
 
 - Splash nativa AndroidX, na MainActivity, sem Activity adicional ou espera artificial.
@@ -13,11 +21,11 @@
 
 ## Referências e decisões
 
-Nenhuma nova consulta ao MCP do Figma. Reutilizado contexto completo Login 30:296 e Home 19:102 salvo no diagnóstico, captura enviada pelo usuário, tokens/ícones/fontes e Marv existentes. O Login adapta o cabeçalho compartilhado da fundação e acrescenta Marv, ações e estados funcionais; não é declarado reprodução pixel a pixel. O cadastro usa a mesma linguagem visual; seu frame não foi consultado. As três telas Splash do Figma não estão em contexto completo no cache: foi usada splash nativa com logo existente, sem inventar sequência temporizada.
+Nenhuma nova consulta ao MCP do Figma. Reutilizado contexto completo Login 30:296 e Home 19:102 salvo no diagnóstico, captura enviada pelo usuário, tokens/ícones/fontes e Marv existentes. O Login restaura a marca central e a tipografia/campos da referência, acrescentando Marv discreto e ações funcionais; não é declarado reprodução pixel a pixel. O cadastro usa a mesma linguagem visual; seu frame não foi consultado. As três telas Splash do Figma não estão em contexto completo no cache: foi usada splash nativa com logo existente, sem inventar sequência temporizada.
 
 AndroidX SplashScreen 1.2.0, Firebase BoM 34.19.0 e Google Services 4.5.0 adicionados para o bloco aprovado. SDKs, applicationId, linguagem e versões estruturais existentes preservados. Java/XML, sem Compose ou código Kotlin do app.
 
-Sem configuração Firebase, Entrar/Criar conta ficam indisponíveis e aparece o aviso real; as telas/formulários e Explorar continuam acessíveis. A configuração e o teste de conta real dependem do proprietário. [Passo a passo](firebase-auth.md).
+Sem configuração Firebase, Entrar/Criar conta validam os campos e retornam um erro operacional após envio válido; não aparece aviso de desenvolvimento ao abrir a tela. Explorar continua acessível. A configuração e o teste de conta real dependem do proprietário. [Passo a passo](firebase-auth.md).
 
 ## Arquivos e dados
 
@@ -27,7 +35,7 @@ Sem configuração Firebase, Entrar/Criar conta ficam indisponíveis e aparece o
 | Splash | tema Starting e splash_brand.xml | Logo original exportado; API nativa |
 | Formulários | AuthFragment, fragment_auth.xml, AuthViewModel/Factory/State | Texto de UI local, dados digitados |
 | Conta/sessão | AuthRepository/FirebaseAuthRepository/AuthSession e AccountFragment/ViewModel | Firebase UID/displayName/email reais; operações ainda dependem de configuração |
-| Disponibilidade de serviços | inicialização FirebaseApp | Sem configuração, estado UNAVAILABLE; nenhum mock |
+| Disponibilidade de serviços | inicialização FirebaseApp | Sem configuração, falha operacional após envio; nenhum mock |
 | Compilação e prévia | workflow e capture-preview.py | APK/lint e capturas reais ADB; sem testes unitários |
 
 Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o resultado parcial e conclui acesso com a conta real existente. Não repete cadastro. Credenciais do Firebase não são publicadas em git; arquivo google-services.json local ou secret de CI.
@@ -35,9 +43,12 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 ## Verificações
 
 - Sintaxe dos 25 arquivos Java e 31 XMLs analisados localmente; git diff --check aprovado.
-- assembleDebug/lintDebug aprovados no [run 37163811030](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37163811030), código 666f18b2. Relatório inspecionado: zero erros e 13 avisos sobre atualizações disponíveis/recursos sem uso.
-- App instalado e aberto em emulador Android 35, tela física 320 × 640 px. Capturas de Login, Cadastro, Início, rolagem e fonte 200% inspecionadas: títulos Bebas, painel contínuo e menu translúcido sobre o conteúdo. Cadastro e Explorar foram acessados por rolagem em tela pequena. As primeiras tentativas de captura falharam; a execução citada concluiu o roteiro ADB.
-- Essa prévia não cobre todos os destinos, a última posição de rolagem, paisagem, tablet, teclado, TalkBack ou rotação. Esses itens permanecem no roteiro manual.
+- assembleDebug/lintDebug aprovados no [run 37166914245](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245), código ed1f450f. Relatório inspecionado: zero erros e 14 avisos, descritos acima.
+- App instalado e aberto em emulador Android 35. Início a frio capturado: splash nativa com marca completa, sem recortar o símbolo.
+- Referência 430 × 932 px: Login, Cadastro, rolagem, Início, Personagens, Histórias, Criar herói e Perfil inspecionados. Envio de Login vazio mostrou erros por campo. Volta do cadastro, Explorar, retorno ao Início e Perfil → Login executados.
+- Tela de 320 × 640 px e fonte 200%: Início, Login e Cadastro inspecionados. O roteiro alcançou o link de Cadastro rolando o Login ampliado. O último card do Início foi alcançado na prévia de 430px. Conteúdo permanece sobre painel contínuo e sob menu translúcido.
+- Ausência de avisos de desenvolvimento conferida no código e no roteiro ADB. Isso não acrescenta integrações de catálogo/criação de heróis aos blocos já entregues.
+- Paisagem, tablet, teclado, TalkBack e rotação não foram verificados; permanecem no roteiro manual.
 - Cadastro/login/logout e restauração com conta real ainda não verificados: falta configuração Firebase.
 - Nenhum teste unitário adicionado/executado.
 
@@ -46,9 +57,9 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 | Item | Situação | Evidência / limite |
 |---|---|---|
 | 1. Fidelidade e componentes | Pendente aceite visual | Login/Home em cache, correção do painel e componentes reutilizados; cadastro/splash adaptados |
-| 2. Navegação/hierarquia | Parcialmente verificado | Login → Cadastro → voltar → Explorar → Home executado; pilhas de autenticação real pendentes |
+| 2. Navegação/hierarquia | Parcialmente verificado | Login/Cadastro, cinco destinos e Perfil → Login executados; pilhas de autenticação real pendentes |
 | 3. Regressões | Build/lint aprovados; uso completo pendente | App instalado/aberto e roteiro de prévia concluído |
-| 4. Telas/fontes | Parcialmente verificado | Tela pequena e fonte 200% inspecionadas; paisagem/tablet/teclado pendentes |
+| 4. Telas/fontes | Parcialmente verificado | 430px, 320px e fonte 200% em Início/Login/Cadastro inspecionados; paisagem/tablet/teclado pendentes |
 | 5. Java/MVVM/Fragments/XML | Atendido por inspeção | Interface e dados separados; sem Compose |
 | 6. Decisões | Atendido | Bloco 2 aprovado; overlay solicitado; configuração pendente explícita |
 | 7. Estados/recuperação | Atendido na implementação; teste real pendente | Operações reais, campos preservados em falha, sem percentual fictício |
@@ -61,7 +72,7 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 
 ## Roteiro manual
 
-1. Sem configuração: abrir app, conferir splash/Login, abrir cadastro e voltar; botões de conta indisponíveis com aviso e sem login fictício.
+1. Sem configuração: abrir app, conferir splash/Login, abrir cadastro e voltar; formulários sem aviso de desenvolvimento; botões ativos para validação, sem login fictício.
 2. Explorar sem entrar: abrir Home e cada destino. O painel deve continuar abaixo do menu até o rodapé. Rolar ao último card: ele deve ser alcançável sem ficar preso atrás do menu.
 3. Girar aparelho e usar fonte 200%, largura 320dp, paisagem e tablet. Conferir textos, menu sobreposto e rolagem. Abrir teclado no cadastro: campo/ação devem continuar acessíveis ao rolar.
 4. Com Firebase configurado: enviar campos vazios, e-mail inválido, senha menor que seis caracteres e confirmação diferente: erros por campo, nenhum envio.
