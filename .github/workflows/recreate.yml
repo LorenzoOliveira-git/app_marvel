@@ -1,0 +1,45 @@
+name: Diagnosticar recriação do catálogo
+on:
+  push:
+    branches: ["diagnostic/native-recreation"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recreate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: "platform-tools"
+          log-accepted-android-sdk-licenses: false
+      - uses: actions/download-artifact@v7
+        with:
+          name: app-marvel-debug
+          run-id: 37211559551
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: apk
+      - name: Abrir APK já compilado e conferir recriação
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: |
+          sudo chmod a+rw /dev/kvm
+          sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
+          printf 'no\n' | avdmanager create avd -n MarvPreview -k "system-images;android-35;google_apis;x86_64" --force
+          "$ANDROID_HOME/emulator/emulator" -avd MarvPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader > /tmp/emulator.log 2>&1 &
+          timeout 180 adb wait-for-device
+          for attempt in $(seq 1 90); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
+            sleep 2
+          done
+          adb shell input keyevent 82
+          adb install apk/app-debug.apk
+          python3 tools/comicvine.py device
+          python3 .github/scripts/recreate-catalog.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: recreation
+          path: app/build/previews/*
