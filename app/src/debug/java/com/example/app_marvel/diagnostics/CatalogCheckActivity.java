@@ -26,8 +26,20 @@ public final class CatalogCheckActivity extends Activity {
         if (!"catalog".equals(check) && !"catalog-cache".equals(check)) { finish(); return; }
         var container = ((MarvelApplication) getApplication()).getContainer();
         repository = container.getCatalog(); translations = container.getTranslations();
+        if ("catalog".equals(check)) awaitInternet(0); else featured();
+    }
+    private void awaitInternet(int attempt) {
+        if (isFinishing() || isDestroyed()) return;
+        android.net.ConnectivityManager connectivity = getSystemService(android.net.ConnectivityManager.class);
+        android.net.NetworkCapabilities capabilities = connectivity.getNetworkCapabilities(connectivity.getActiveNetwork());
+        if (capabilities != null && capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+            put("internet_validated", true); featured();
+        } else if (attempt >= 60) fail("internet_unavailable");
+        else new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> awaitInternet(attempt + 1), 500);
+    }
+    private void featured() {
         repository.featured(result -> {
-            if (result.failure != null) { fail("featured"); return; }
+            if (result.failure != null) { put("catalog_failure", result.failure.name()); fail("featured"); return; }
             owner = result.data.publisherId; put("publisher_id", owner); put("featured", character(result.data));
             CatalogDescriptions.translate(translations, result.data, translated -> {
                 if (translated.getFailure() != null) { fail("translation"); return; }
