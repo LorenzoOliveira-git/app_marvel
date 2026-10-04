@@ -105,7 +105,9 @@ public final class ComicVineClient {
                 deliver(callback, new Result(null, status == 429 ? Failure.RATE_LIMIT : Failure.HTTP, status)); return;
             }
             try (InputStream input = connection.getInputStream(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                int maxBytes = path.startsWith("publisher/") ? 8_000_000 : 2_000_000;
+                boolean appearanceIndex = path.startsWith("character/")
+                        && "id,name,publisher,issue_credits".equals(parameters.get("field_list"));
+                int maxBytes = path.startsWith("publisher/") || appearanceIndex ? 8_000_000 : 2_000_000;
                 byte[] buffer = new byte[8192]; int count;
                 while ((count = input.read(buffer)) != -1) {
                     if (output.size() + count > maxBytes) {

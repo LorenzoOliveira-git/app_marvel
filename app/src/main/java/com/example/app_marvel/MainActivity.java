@@ -61,7 +61,8 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
         binding.headerBack.setOnClickListener(view -> {
-            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.characterDetailsFragment)
+            if (navController.getCurrentDestination() != null && (navController.getCurrentDestination().getId() == R.id.characterDetailsFragment
+                    || navController.getCurrentDestination().getId() == R.id.characterHistoryFragment))
                 navController.navigateUp();
             else openFeature(AppFeature.HOME);
         });
@@ -78,9 +79,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
             boolean details = destination.getId() == R.id.characterDetailsFragment;
-            boolean catalog = destination.getId() == R.id.charactersFragment || details;
+            boolean history = destination.getId() == R.id.characterHistoryFragment;
+            boolean catalog = destination.getId() == R.id.charactersFragment || details || history || destination.getId() == R.id.storiesFragment;
             if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
-            binding.headerBack.setContentDescription(getString(details ? R.string.details_back : R.string.catalog_back));
+            if (history) binding.bottomNavigation.getMenu().findItem(R.id.storiesFragment).setChecked(true);
+            binding.headerBack.setContentDescription(getString(details || history ? R.string.details_back : R.string.catalog_back));
             boolean home = destination.getId() == R.id.homeFragment;
             boolean expanded = catalog && getResources().getConfiguration().fontScale > 1.3f;
             binding.titleHeader.setVisibility(home || expanded ? View.GONE : View.VISIBLE);
@@ -155,6 +158,12 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         hideKeyboard();
         Bundle arguments = new Bundle(); arguments.putInt("characterId", characterId);
         navController.navigate(R.id.characterDetailsFragment, arguments);
+    }
+    public void openCharacterHistory(int characterId) {
+        if (characterId <= 0) return;
+        hideKeyboard();
+        Bundle arguments = new Bundle(); arguments.putInt("characterId", characterId);
+        navController.navigate(R.id.characterHistoryFragment, arguments);
     }
 
     public void enterHome() { hideKeyboard(); resetGraph(R.id.homeFragment); }

@@ -2,11 +2,13 @@ package com.example.app_marvel.ui.components;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.data.catalog.CatalogModels.Issue;
 import com.example.app_marvel.databinding.ItemRecentIssueBinding;
 import com.example.app_marvel.ui.common.ComicVineNavigation;
+import com.example.app_marvel.R;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +18,11 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
     private final ComicVineImages images;
     private List<Issue> items = Collections.emptyList();
     private int width;
-    public RecentIssueAdapter(ComicVineImages images) { this.images = images; setHasStableIds(true); }
+    private final boolean coverDates, explicitExternal;
+    public RecentIssueAdapter(ComicVineImages images) { this(images, false, false); }
+    public RecentIssueAdapter(ComicVineImages images, boolean coverDates, boolean explicitExternal) {
+        this.images = images; this.coverDates = coverDates; this.explicitExternal = explicitExternal; setHasStableIds(true);
+    }
     public void submit(List<Issue> value) { if (items.equals(value)) return; items = value; notifyDataSetChanged(); }
     public void width(int value) { if (width != value) { width = value; notifyDataSetChanged(); } }
     @Override public long getItemId(int position) { return items.get(position).id; }
@@ -38,8 +44,14 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
         view.issueTitle.setText(item.title);
         try {
             SimpleDateFormat source = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); source.setLenient(false);
-            view.issueDate.setText(new SimpleDateFormat("dd MMM yyyy", new Locale("pt", "BR")).format(source.parse(item.publicationDate)));
+            String date = new SimpleDateFormat("dd MMM yyyy", new Locale("pt", "BR")).format(source.parse(item.publicationDate));
+            view.issueDate.setText(coverDates ? view.getRoot().getContext().getString(R.string.history_cover_date, date) : date);
         } catch (Exception invalidDate) { view.issueDate.setText(""); }
+        view.issueDate.setVisibility(view.issueDate.getText().length() > 0 ? View.VISIBLE : View.GONE);
+        if (explicitExternal) {
+            view.issueMore.setText(R.string.history_external);
+            view.issueMore.setContentDescription(view.getRoot().getContext().getString(R.string.history_external_issue, item.title));
+        }
         view.issueMore.setEnabled(!item.siteUrl.isEmpty());
         view.issueMore.setOnClickListener(clicked -> ComicVineNavigation.open(clicked.getContext(), item.siteUrl));
         images.show(view.issueImage, item.imageUrl);

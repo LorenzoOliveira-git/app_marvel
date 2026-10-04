@@ -13,8 +13,11 @@
     <fragment android:id="@+id/characterDetailsFragment" android:name="com.example.app_marvel.ui.details.CharacterDetailsFragment" android:label="@string/nav_characters">
         <argument android:name="characterId" app:argType="integer" />
     </fragment>
-    <fragment android:id="@id/storiesFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_stories">
+    <fragment android:id="@id/storiesFragment" android:name="com.example.app_marvel.ui.history.StoriesFragment" android:label="@string/nav_stories">
         <argument android:name="feature" app:argType="string" android:defaultValue="STORIES" />
+    </fragment>
+    <fragment android:id="@+id/characterHistoryFragment" android:name="com.example.app_marvel.ui.history.CharacterHistoryFragment" android:label="@string/nav_stories">
+        <argument android:name="characterId" app:argType="integer" />
     </fragment>
     <fragment android:id="@id/createHeroFragment" android:name="com.example.app_marvel.ui.section.SectionFragment" android:label="@string/nav_create">
         <argument android:name="feature" app:argType="string" android:defaultValue="CREATE_HERO" />

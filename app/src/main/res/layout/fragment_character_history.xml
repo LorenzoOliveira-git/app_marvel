@@ -1,0 +1,20 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/history_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/history_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <LinearLayout android:id="@+id/history_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+            <include android:id="@+id/character_identity" layout="@layout/component_history_identity" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <LinearLayout android:id="@+id/history_first_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="64dp" android:orientation="vertical">
+                <TextView android:id="@+id/history_first_heading" style="@style/TextAppearance.Marvel.HistoryHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/history_beginning" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/history_first_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <androidx.recyclerview.widget.RecyclerView android:id="@+id/history_first_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
+            </LinearLayout>
+            <TextView android:id="@+id/history_timeline_heading" style="@style/TextAppearance.Marvel.HistoryHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="64dp" android:text="@string/history_timeline" />
+            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/history_order" />
+            <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/history_timeline_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/history_timeline_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
+            <ProgressBar android:id="@+id/history_page_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/history_page_more" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/history_more" android:visibility="gone" />
+            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/history_source" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
