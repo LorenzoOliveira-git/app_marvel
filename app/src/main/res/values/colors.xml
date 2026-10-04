@@ -2,6 +2,9 @@
     <color name="marvel_background">#545573</color>
     <color name="marvel_surface">#242434</color>
     <color name="marvel_surface_raised">#343448</color>
+    <color name="marvel_character_identity">#302E46</color>
+    <color name="marvel_power">#323048</color>
+    <color name="marvel_stat_start">#49435E</color>
     <color name="marvel_primary">#ED1D24</color>
     <color name="marvel_primary_strong">#D71920</color>
     <color name="marvel_on_primary">#FFFFFF</color>

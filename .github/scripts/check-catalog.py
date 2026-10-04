@@ -27,8 +27,13 @@ def run(name):
             (OUT/(name+'.json')).write_text(json.dumps(report, ensure_ascii=False, indent=2))
             assert report['success'], 'Falha no catálogo real: ' + report.get('failed_stage', '')
             owner = report['publisher_id']
-            assert all(row['publisher_id'] == owner for group in ['first','next','search','origin_gender','team'] for row in report[group])
+            assert all(row['publisher_id'] == owner for group in ['first','next','search','origin_gender','team','details_teams','details_friends','details_friends_next','details_enemies'] for row in report[group])
             assert set(x['id'] for x in report['first']).isdisjoint(x['id'] for x in report['next']), 'Paginação duplicada'
+            assert set(x['id'] for x in report['details_friends']).isdisjoint(x['id'] for x in report['details_friends_next']), 'Relações duplicadas'
+            assert report['details']['id'] == report['featured']['id'] and report['details']['publisher_id'] == owner
+            assert report['invalid_character_rejected'] and report['foreign_publisher_rejected']
+            reviewed = {35:'Dispositivos',38:'Absorção de habilidades',54:'Aderência a paredes',138:'Lançamento de teias'}
+            assert all(row['translated'] == reviewed[row['id']] for row in report['powers'] if row['id'] in reviewed)
             assert all('Spider-Man' in x['name'] for x in report['search']), 'Busca incoerente'
             assert [x['store_date'] for x in report['issues']] == sorted([x['store_date'] for x in report['issues']], reverse=True)
             return report
@@ -40,8 +45,8 @@ try:
     adb('shell','cmd','connectivity','airplane-mode','enable')
     adb('shell','svc','wifi','disable'); adb('shell','svc','data','disable')
     offline = run('catalog-cache')
-    assert offline['translation_from_cache'], 'Tradução não recuperada do cache'
-    for field in ['featured','issues','first','next','search','origin_gender','team','translated_deck']:
+    assert offline['translation_from_cache'] and offline['powers_from_cache'], 'Tradução não recuperada do cache'
+    for field in ['featured','issues','first','next','search','origin_gender','team','translated_deck','details','appearance_count','powers','details_teams','details_friends','details_friends_next','details_enemies','first_appearance']:
         assert offline[field] == online[field], 'Cache divergiu: '+field
 finally:
     adb('shell','cmd','connectivity','airplane-mode','disable',check=False)
@@ -53,7 +58,7 @@ def nodes():
     (PREVIEW/'catalog-window.xml').write_bytes(result)
     return list(ET.fromstring(result).iter('node'))
 
-def tap(text=None, resource=None):
+def tap(text=None, resource=None, contains=None):
     for attempt in range(6):
         snapshot = nodes()
         navigation = next((n for n in snapshot if n.get('resource-id','').endswith('/bottom_navigation')), None)
@@ -61,13 +66,25 @@ def tap(text=None, resource=None):
         for node in snapshot:
             if ((text is not None and (node.get('text') == text or node.get('content-desc','').split(',')[0] == text))
                     or (resource is not None and node.get('resource-id','').endswith('/'+resource))):
+                if contains is not None and contains not in node.get('content-desc',''): continue
                 x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
                 if x2>x1 and y2>y1:
-                    if resource is not None and nav_bounds and nav_bounds[0] <= (x1+x2)//2 <= nav_bounds[2] and nav_bounds[1] <= (y1+y2)//2 <= nav_bounds[3]:
+                    if (resource is not None or text not in ['Início','Personagens','Histórias','Criar herói','Perfil']) and nav_bounds and nav_bounds[0] <= (x1+x2)//2 <= nav_bounds[2] and nav_bounds[1] <= (y1+y2)//2 <= nav_bounds[3]:
                         continue
                     adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)); time.sleep(1); return
         adb('shell','input','swipe','215','730','215','250','500'); time.sleep(1)
     raise RuntimeError('Controle não encontrado: '+str(text or resource))
+
+def heading(text):
+    tap(text=text)
+    for attempt in range(2):
+        for node in nodes():
+            if node.get('text') == text:
+                x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
+                delta = min(500, max(0, y1-130))
+                if delta > 20:
+                    adb('shell','input','swipe','215','750','215',str(750-delta),'500'); time.sleep(1)
+                break
 
 def top():
     for attempt in range(3): adb('shell','input','swipe','215','300','215','780','400')
@@ -91,10 +108,26 @@ adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/
 capture('login'); tap('Não tem conta? Cadastre-se'); capture('cadastro'); adb('shell','input','keyevent','4'); time.sleep(1)
 tap('Explorar sem entrar'); wait('issue_title'); wait('user_name','Visitante'); wait('user_avatar'); capture('catalog-home')
 adb('shell','input','swipe','215','730','215','480','600'); wait('featured_name','Spider-Man'); capture('catalog-home-featured')
+tap(resource='featured_more'); wait('details_name','Spider-Man'); capture('details-home-top')
+tap(resource='description_heading'); wait('details_description'); capture('details-description')
+tap(resource='first_heading'); wait('first_title', online['first_appearance']['title']); capture('details-first')
+tap(resource='powers_heading'); wait('power_labels'); capture('details-powers')
+heading('Equipes'); wait('related_name'); capture('details-teams')
+heading('Aliados'); wait('related_name'); capture('details-friends')
+friend = online['details_friends'][0]['name']
+tap(resource='related_more', contains=friend); wait('details_name',friend); capture('details-related-profile')
+tap(resource='header_back'); heading('Inimigos'); wait('related_name'); capture('details-enemies')
+tap(resource='header_back'); wait('featured_name','Spider-Man')
 adb('shell','input','swipe','215','730','215','480','600'); wait('fact_text'); capture('catalog-home-fact')
 tap('Personagens'); wait('character_name','Spider-Man'); capture('catalog-characters')
 tap(resource='next_character'); time.sleep(3); assert wait('character_name').get('text') != 'Spider-Man', 'Controle próximo não avançou'; capture('catalog-characters-next')
 top(); tap(resource='search_name'); adb('shell','input','text','Spider-Man'); adb('shell','input','keyevent','66'); wait('character_name','Spider-Man'); capture('catalog-search')
+tap(resource='character_more'); wait('details_name','Spider-Man'); capture('details-catalog-top')
+adb('shell','wm','size','640x1000'); time.sleep(2); capture('details-large')
+adb('shell','wm','size','320x640'); time.sleep(2); capture('details-small')
+adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('details-font-200')
+adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(2)
+tap(resource='header_back'); top(); wait('search_name','Spider-Man'); wait('character_name','Spider-Man')
 tap(resource='gender_filter'); tap('Feminino'); time.sleep(4); capture('catalog-gender')
 tap(resource='clear_filters'); wait('character_name','Spider-Man')
 tap('Início'); tap('Personagens'); wait('search_name','Spider-Man'); wait('character_name','Spider-Man'); capture('catalog-restored')
@@ -103,7 +136,7 @@ adb('shell','wm','size','320x640'); time.sleep(2); capture('catalog-small')
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('catalog-font-200')
 adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(3)
 tap('Início'); time.sleep(2)
-# Ausência de chave em instalação nova: falha comum com Marv, sem aviso técnico.
+# Ausência de chave em instalação nova: ícone comum, sem aviso técnico.
 adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')
 adb('shell','run-as',PACKAGE,'rm','-f','databases/comicvine-cache.db','databases/comicvine-cache.db-wal','databases/comicvine-cache.db-shm')
 adb('shell','run-as',PACKAGE,'rm','-rf','files/comicvine-responses')

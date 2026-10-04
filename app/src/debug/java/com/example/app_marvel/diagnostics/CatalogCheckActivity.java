@@ -18,7 +18,8 @@ public final class CatalogCheckActivity extends Activity {
     private MarvelRepository repository;
     private TranslationRepository translations;
     private final JSONObject report = new JSONObject();
-    private int owner;
+    private int owner, featuredId;
+    private CatalogModels.CharacterDetails details;
     private String check;
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -40,7 +41,7 @@ public final class CatalogCheckActivity extends Activity {
     private void featured() {
         repository.featured(result -> {
             if (result.failure != null) { put("catalog_failure", result.failure.name()); fail("featured"); return; }
-            owner = result.data.publisherId; put("publisher_id", owner); put("featured", character(result.data));
+            owner = result.data.publisherId; featuredId = result.data.id; put("publisher_id", owner); put("featured", character(result.data));
             CatalogDescriptions.translate(translations, result.data, translated -> {
                 if (translated.getFailure() != null) { fail("translation"); return; }
                 put("translated_deck", translated.getText()); put("translation_from_cache", translated.isFromCache()); recent();
@@ -97,9 +98,68 @@ public final class CatalogCheckActivity extends Activity {
             put("team_id", selected);
             repository.characters("", 0, 0, selected, 0, team -> {
                 if (!page("team", team, 0, 0)) return;
-                put("success", true); save();
+                loadDetails();
             });
         });
+    }
+    private void loadDetails() {
+        repository.details(featuredId, result -> {
+            if (result.failure != null || result.data.character.id != featuredId || result.data.character.publisherId != owner) { fail("details"); return; }
+            details = result.data;
+            put("details", character(details.character)); put("appearance_count", details.appearanceCount);
+            if (details.powers.isEmpty()) { fail("powers_missing"); return; }
+            JSONArray rows = new JSONArray(); int[] remaining = {details.powers.size()}; boolean[] failed = {false}, cached = {true};
+            for (var power : details.powers) CatalogDescriptions.translatePower(translations, power, translated -> {
+                if (failed[0]) return;
+                if (translated.getFailure() != null) { failed[0] = true; fail("power_translation"); return; }
+                cached[0] &= translated.isFromCache();
+                try { rows.put(new JSONObject().put("id", power.id).put("original", power.name).put("translated", translated.getText())); }
+                catch (Exception ignored) { failed[0] = true; fail("serialize_powers"); return; }
+                if (--remaining[0] == 0) {
+                    java.util.List<JSONObject> sorted = new java.util.ArrayList<>();
+                    for (int i = 0; i < rows.length(); i++) sorted.add(rows.optJSONObject(i));
+                    sorted.sort(java.util.Comparator.comparingInt(row -> row.optInt("id")));
+                    put("powers", new JSONArray(sorted)); put("powers_from_cache", cached[0]); put("alias_count", details.character.aliases.isEmpty() ? 0 : details.character.aliases.split("[\\r\\n]+").length); relations("teams");
+                }
+            });
+        });
+    }
+    private void relations(String kind) {
+        repository.relations(details, kind, 0, result -> {
+            if (!relationPage("details_" + kind, result)) return;
+            if (kind.equals("teams")) relations("friends");
+            else if (kind.equals("friends")) {
+                put("friends_has_more", result.data.hasMore);
+                if (!result.data.hasMore) { fail("friends_pagination_missing"); return; }
+                repository.relations(details, kind, result.data.nextOffset, next -> {
+                    if (relationPage("details_friends_next", next)) relations("enemies");
+                });
+            } else repository.firstAppearance(details, first -> {
+                if (first.failure != null || first.data.size() != 1 || details.firstAppearance == null || first.data.get(0).id != details.firstAppearance.id) { fail("first_appearance"); return; }
+                var issue = first.data.get(0);
+                try { put("first_appearance", new JSONObject().put("id", issue.id).put("volume_id", issue.volumeId).put("title", issue.title).put("cover_date", issue.publicationDate)); }
+                catch (Exception ignored) { fail("serialize_first"); return; }
+                repository.details(0, invalid -> {
+                    if (invalid.failure == null) { fail("invalid_character_accepted"); return; }
+                    put("invalid_character_rejected", true);
+                    // ID de Lightning Lad/DC observado na sondagem real anterior, apenas diagnóstico debug.
+                    repository.details(1253, foreign -> {
+                        if (foreign.failure == null) { fail("foreign_publisher_accepted"); return; }
+                        put("foreign_publisher_rejected", true); put("success", true); save();
+                    });
+                });
+            });
+        });
+    }
+    private boolean relationPage(String name, CatalogModels.Result<CatalogModels.RelationPage> result) {
+        if (result.failure != null || result.data.items.isEmpty()) { fail(name); return false; }
+        JSONArray rows = new JSONArray();
+        for (var item : result.data.items) {
+            if (item.publisherId != owner) { fail(name + "_publisher"); return false; }
+            try { rows.put(new JSONObject().put("id", item.id).put("name", item.name).put("publisher_id", item.publisherId)); }
+            catch (Exception ignored) { fail("serialize_related"); return false; }
+        }
+        put(name, rows); return true;
     }
     private boolean page(String label, CatalogModels.Result<CatalogModels.Page> result, int origin, int gender) {
         if (result.failure != null || result.data.characters.isEmpty()) { fail(label); return false; }

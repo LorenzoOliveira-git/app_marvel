@@ -10,11 +10,13 @@ Login/cadastro com Firebase Authentication real, estados e sessão, além do pai
 
 HQs recém-publicadas, Spider-Man em destaque, resumo/curiosidade traduzidos e catálogo com carrossel, busca, filtros e paginação. Relações Marvel verificadas antes da exibição; respostas, imagens e traduções têm cache. [Entrega e mapeamento](docs/bloco-3-home-personagens.md).
 
+Perfil nativo acessível pela Home e pelo catálogo: identidade, descrição traduzida, primeira aparição, poderes e carrosséis paginados de equipes/aliados/inimigos. [Detalhes de personagem](docs/bloco-3-detalhes-personagem.md).
+
 Configure `COMICVINE_API_KEY` no `.env` local da raiz e execute **Sua Marvel (local)** no Android Studio, com um emulador/aparelho iniciado. Alternativa no PowerShell: `.\gradlew.bat :app:runLocalDebug`. A tarefa instala, configura a chave privada no aparelho e abre o app; depois pode usar Run/Debug normalmente. O Secret do GitHub configura somente o emulador de CI. [Configuração local e correções de design](docs/correcoes-dados-home.md).
 
 ## Abrir e executar
 
-1. Clone o repositório e selecione a branch `codex/correcoes-dados-home` (ou `main` após incorporar o PR).
+1. Clone o repositório e selecione a branch `codex/bloco-3-detalhes-personagem` (ou `main` após incorporar o PR).
 2. Abra a raiz no Android Studio.
 3. Mantenha os SDKs existentes: minSdk 24, compileSdk/targetSdk 37. Instale a plataforma Android 37.0 (pacote `platforms;android-37.0`) e Build Tools 36.0.0.
 4. Disponibilize um JDK 25, conforme gradle/gradle-daemon-jvm.properties, e sincronize o Gradle.
@@ -37,6 +39,8 @@ No Windows:
 O workflow Android build e lint executa essas tarefas e verifica o app no emulador. Publica relatórios; APK somente em execução manual. Não executa testes unitários.
 
 ## Documentação
+
+- [Detalhes de personagem: entrega e roteiro](docs/bloco-3-detalhes-personagem.md)
 
 - [Correções de dados locais e design da Home](docs/correcoes-dados-home.md)
 - [Entrega e mapeamento do bloco 3](docs/bloco-3-home-personagens.md)

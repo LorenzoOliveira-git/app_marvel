@@ -17,7 +17,6 @@ import com.example.app_marvel.R;
 import com.example.app_marvel.data.model.AppFeature;
 import com.example.app_marvel.databinding.FragmentHomeBinding;
 import com.example.app_marvel.di.AppContainer;
-import com.example.app_marvel.ui.common.ComicVineNavigation;
 import com.example.app_marvel.ui.common.UiState;
 import com.example.app_marvel.ui.components.FeatureCardView;
 import com.example.app_marvel.ui.components.RecentIssueAdapter;
@@ -62,8 +61,8 @@ public final class HomeFragment extends Fragment {
             binding.featuredName.setText(item.name);
             binding.featuredRealName.setText(item.realName.isEmpty() ? "" : getString(R.string.catalog_real_name, item.realName));
             binding.featuredRealName.setVisibility(item.realName.isEmpty() ? View.GONE : View.VISIBLE);
-            binding.featuredMore.setEnabled(!item.siteUrl.isEmpty());
-            binding.featuredMore.setOnClickListener(clicked -> ComicVineNavigation.open(requireContext(), item.siteUrl));
+            binding.featuredMore.setEnabled(item.id > 0);
+            binding.featuredMore.setOnClickListener(clicked -> ((MainActivity) requireActivity()).openCharacter(item.id));
             container.getImages().show(binding.featuredImage, item.imageUrl);
         });
         model.getFact().observe(getViewLifecycleOwner(), state -> {

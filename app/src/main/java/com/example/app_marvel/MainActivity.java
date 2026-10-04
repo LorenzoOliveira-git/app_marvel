@@ -44,6 +44,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setAccessibilityHeading(binding.screenTitle, true);
+        ViewCompat.setAccessibilityHeading(binding.expandedScreenTitle, true);
         ViewCompat.setAccessibilityHeading(binding.userName, true);
         applySafeInsets();
 
@@ -59,7 +60,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
                 && !isAuthDestination(navController.getCurrentDestination().getId())) {
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
-        binding.headerBack.setOnClickListener(view -> openFeature(AppFeature.HOME));
+        binding.headerBack.setOnClickListener(view -> {
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.characterDetailsFragment)
+                navController.navigateUp();
+            else openFeature(AppFeature.HOME);
+        });
         ((MarvelApplication) getApplication()).getContainer().getAuth().getSession().observe(this, this::renderUserHeader);
         binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
@@ -72,9 +77,16 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
-            boolean catalog = destination.getId() == R.id.charactersFragment;
+            boolean details = destination.getId() == R.id.characterDetailsFragment;
+            boolean catalog = destination.getId() == R.id.charactersFragment || details;
+            if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
+            binding.headerBack.setContentDescription(getString(details ? R.string.details_back : R.string.catalog_back));
             boolean home = destination.getId() == R.id.homeFragment;
-            binding.titleHeader.setVisibility(home ? View.GONE : View.VISIBLE);
+            boolean expanded = catalog && getResources().getConfiguration().fontScale > 1.3f;
+            binding.titleHeader.setVisibility(home || expanded ? View.GONE : View.VISIBLE);
+            binding.headerExpandedSpacer.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            binding.expandedScreenTitle.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            binding.expandedScreenTitle.setText(destination.getLabel());
             binding.userHeader.setVisibility(home ? View.VISIBLE : View.GONE);
             binding.headerBack.setVisibility(catalog ? View.VISIBLE : View.GONE);
             binding.brandCaption.setVisibility(catalog ? View.GONE : View.VISIBLE);
@@ -136,6 +148,13 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         }
         content.setPadding(content.getPaddingLeft(), content.getPaddingTop(), content.getPaddingRight(), bottom);
         ((NestedScrollView) content).setClipToPadding(false);
+    }
+
+    public void openCharacter(int characterId) {
+        if (characterId <= 0) return;
+        hideKeyboard();
+        Bundle arguments = new Bundle(); arguments.putInt("characterId", characterId);
+        navController.navigate(R.id.characterDetailsFragment, arguments);
     }
 
     public void enterHome() { hideKeyboard(); resetGraph(R.id.homeFragment); }

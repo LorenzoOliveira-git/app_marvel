@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 /** Contrato validado com respostas reais. Relações são verificadas antes da exibição. */
 public final class MarvelRepository {
     private static final long DAY = 86_400_000L;
-    private static final String CHARACTER_FIELDS = "id,name,real_name,publisher,origin,gender,image,deck,site_detail_url";
+    private static final String CHARACTER_FIELDS = "id,name,real_name,publisher,origin,gender,image,deck,site_detail_url,aliases";
     private static final String ISSUE_FIELDS = "id,name,issue_number,volume,image,store_date,site_detail_url";
     private final ComicVineClient client;
     private final CatalogCache cache;
@@ -143,7 +143,7 @@ public final class MarvelRepository {
         if (pub == null || pub.optInt("id") != publisherId || row.optInt("id") <= 0 || text(row, "name").isEmpty()) return null;
         return new CatalogModels.Character(row.optInt("id"), publisherId, text(row, "name"), text(row, "real_name"),
                 origin == null ? 0 : origin.optInt("id"), text(origin, "name"), row.optInt("gender"),
-                text(row, "deck"), image(row), website(text(row, "site_detail_url")));
+                text(row, "deck"), image(row), website(text(row, "site_detail_url")), text(row, "aliases"));
     }
 
     public void featured(Callback<CatalogModels.Character> callback) {
@@ -161,6 +161,123 @@ public final class MarvelRepository {
                     }
                 }
                 deliver(callback, selected == null ? Result.failed(result.failure == null ? Failure.DATA : result.failure) : Result.success(selected));
+            });
+        });
+    }
+
+    private static List<Reference> references(JSONArray rows, String resource) {
+        Map<Integer, Reference> unique = new LinkedHashMap<>();
+        if (rows != null) for (int i = 0; i < rows.length(); i++) {
+            JSONObject row = rows.optJSONObject(i); if (row == null) continue;
+            int id = row.optInt("id"); String path = resourcePath(text(row, "api_detail_url"), resource);
+            if (id > 0 && path != null && path.endsWith("-" + id + "/") && !text(row, "name").isEmpty())
+                unique.put(id, new Reference(id, text(row, "name"), path));
+        }
+        return new ArrayList<>(unique.values());
+    }
+
+    public void details(int characterId, Callback<CharacterDetails> callback) {
+        if (characterId <= 0) { deliver(callback, Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            index(pub.data, "characters", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Reference selected = null;
+                for (Reference ref : indexed.data) if (ref.id == characterId) selected = ref;
+                if (selected == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                String fields = CHARACTER_FIELDS + ",powers,teams,character_friends,character_enemies,first_appeared_in_issue,count_of_issue_appearances";
+                request(selected.path, params("field_list", fields), DAY, result -> {
+                    JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
+                    CatalogModels.Character item = row == null ? null : character(row, pub.data.id);
+                    if (item == null || item.id != characterId) {
+                        deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+                    }
+                    JSONObject first = row.optJSONObject("first_appeared_in_issue");
+                    Reference firstRef = null;
+                    if (first != null) {
+                        int id = first.optInt("id");
+                        // A API real usa o alias first_appeared_in_issue no vínculo; a consulta usa issues/id.
+                        String path = resourcePath(text(first, "api_detail_url"), "first_appeared_in_issue");
+                        if (path == null) path = resourcePath(text(first, "api_detail_url"), "issue");
+                        if (id > 0 && path != null && path.endsWith("-" + id + "/")) firstRef = new Reference(id, text(first, "name"), path);
+                    }
+                    deliver(callback, Result.success(new CharacterDetails(item,
+                            row.has("count_of_issue_appearances") && !row.isNull("count_of_issue_appearances") ? row.optInt("count_of_issue_appearances", -1) : -1,
+                            firstRef, references(row.optJSONArray("powers"), "power"), references(row.optJSONArray("teams"), "team"),
+                            references(row.optJSONArray("character_friends"), "character"), references(row.optJSONArray("character_enemies"), "character"))));
+                });
+            });
+        });
+    }
+
+    public void relations(CharacterDetails details, String kind, int offset, Callback<RelationPage> callback) {
+        List<Reference> refs = details.relations(kind);
+        if (refs.isEmpty()) { deliver(callback, Result.success(new RelationPage(Collections.emptyList(), 0, false))); return; }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            if (pub.data.id != details.character.publisherId) { deliver(callback, Result.failed(Failure.DATA)); return; }
+            index(pub.data, kind.equals("teams") ? "teams" : "characters", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Map<Integer, Reference> canonical = new HashMap<>();
+                for (Reference ref : indexed.data) canonical.put(ref.id, ref);
+                List<Reference> verified = new ArrayList<>();
+                for (Reference ref : refs) {
+                    Reference known = canonical.get(ref.id);
+                    if (known != null && known.path.equals(ref.path)) verified.add(known);
+                }
+                relationPage(pub.data, kind, verified, Math.max(0, offset), 0, new ArrayList<>(), callback);
+            });
+        });
+    }
+    private void relationPage(Publisher publisher, String kind, List<Reference> refs, int offset, int attempt,
+            List<RelatedItem> items, Callback<RelationPage> callback) {
+        if (offset >= refs.size() || attempt >= 3 || !items.isEmpty()) {
+            deliver(callback, Result.success(new RelationPage(items, offset, offset < refs.size()))); return;
+        }
+        List<Reference> batch = refs.subList(offset, Math.min(offset + 24, refs.size()));
+        StringBuilder ids = new StringBuilder(); Set<Integer> requested = new HashSet<>();
+        for (Reference ref : batch) { if (ids.length() > 0) ids.append('|'); ids.append(ref.id); requested.add(ref.id); }
+        request(kind.equals("teams") ? "teams/" : "characters/", params("filter", "id:" + ids, "limit", "100",
+                "field_list", "id,name,publisher,image,site_detail_url"), DAY, result -> {
+            JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+            if (rows == null) { deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return; }
+            Map<Integer, RelatedItem> parsed = new HashMap<>();
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.optJSONObject(i); if (row == null) continue;
+                int id = row.optInt("id");
+                if (!requested.contains(id)) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                JSONObject owner = row.optJSONObject("publisher");
+                if (owner != null && owner.optInt("id") == publisher.id && !text(row, "name").isEmpty())
+                    parsed.put(id, new RelatedItem(id, publisher.id, text(row, "name"), image(row), website(text(row, "site_detail_url"))));
+            }
+            for (Reference ref : batch) if (parsed.containsKey(ref.id)) items.add(parsed.get(ref.id));
+            relationPage(publisher, kind, refs, offset + batch.size(), attempt + 1, items, callback);
+        });
+    }
+
+    public void firstAppearance(CharacterDetails details, Callback<List<Issue>> callback) {
+        if (details.firstAppearance == null) { deliver(callback, Result.success(Collections.emptyList())); return; }
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            if (pub.data.id != details.character.publisherId) { deliver(callback, Result.failed(Failure.DATA)); return; }
+            index(pub.data, "volumes", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Set<Integer> volumes = new HashSet<>(); for (Reference ref : indexed.data) volumes.add(ref.id);
+                request("issues/", params("filter", "id:" + details.firstAppearance.id, "limit", "100",
+                        "field_list", "id,name,issue_number,volume,image,cover_date,site_detail_url"), DAY, result -> {
+                    JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+                    if (rows == null) { deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return; }
+                    List<Issue> found = new ArrayList<>();
+                    for (int i = 0; i < rows.length(); i++) {
+                        JSONObject row = rows.optJSONObject(i); if (row == null || row.optInt("id") != details.firstAppearance.id) continue;
+                        JSONObject volume = row.optJSONObject("volume");
+                        if (volume == null || !volumes.contains(volume.optInt("id")) || text(volume, "name").isEmpty()) continue;
+                        String number = text(row, "issue_number"), name = text(volume, "name");
+                        found.add(new Issue(row.optInt("id"), volume.optInt("id"), name + (number.isEmpty() ? "" : " #" + number),
+                                name, text(row, "cover_date"), image(row), website(text(row, "site_detail_url"))));
+                    }
+                    deliver(callback, Result.success(found));
+                });
             });
         });
     }
