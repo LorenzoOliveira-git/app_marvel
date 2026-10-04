@@ -51,14 +51,18 @@ Respostas usam o cache persistente existente, TTL de um dia e recuperação de r
 
 ## Validação
 
-A primeira execução compilou e passou no lint, com zero erros e 28 avisos. Repositório real e reinício offline passaram: identidade, contagem, primeira edição, poderes, relações e paginação se mantiveram. O roteiro de captura foi ajustado para rolar os nomes dos cards para dentro da tela; a execução final também verifica aliases, rejeição de outra editora e tradução de poderes com contexto.
+[Execução final no GitHub Actions](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37223984144), código `f1f1bafd3692babfecd9dd76a5d8ee32953921ac`: **sucesso**. `assembleDebug` e `lintDebug` passaram, com zero erros e 28 avisos. Nenhum teste unitário foi executado.
+
+No emulador Android 35, o roteiro conferiu Home/catalog → perfil, aliado → outro perfil → voltar, retorno à busca com seleção preservada, filtros e navegação existentes. Respostas, contagem, primeira edição, poderes e páginas de relações se mantiveram idênticos após reinício offline; resumo e poderes retornaram do cache de tradução. Um ID inválido e o ID observado de Lightning Lad/DC foram rejeitados. Provisionamento privado e ausência da chave no conteúdo do APK foram conferidos pelo workflow.
+
+Foram produzidas 26 capturas. Inspeção visual incluiu identidade, estatísticas, poderes revisados, relações, erro comum, busca restaurada e o cabeçalho com fonte 200%. Capturas/reportes sanitizados ficam nos artefatos dessa execução por sete dias. A inspeção não equivale a teste em aparelho físico nem auditoria completa de acessibilidade.
 
 | Critério | Estado | Evidência/limite |
 |---|---|---|
 | 1. Fidelidade e componentes | Atendido | Comparação do frame salvo com identidade, descrição, cards e menu no emulador; carrosséis usam componente compartilhado |
-| 2. Navegação e hierarquia | Pendente de conclusão | Home/catalog → perfil e perfis relacionados; roteiro final em execução |
-| 3. Regressões afetadas | Pendente de conclusão | Fluxos existentes continuam no roteiro ADB final |
-| 4. Tela/fonte | Pendente de conclusão | Capturas 430×932, 640×1000, 320×640 e fonte 200% previstas na execução final |
+| 2. Navegação e hierarquia | Atendido | Home/catalog → perfil → aliado → voltar; seleção/busca restauradas no emulador |
+| 3. Regressões afetadas | Atendido dentro das verificações | Home, catálogo, busca, filtros, paginação, menu e erro comum passaram no roteiro final |
+| 4. Tela/fonte | Atendido no emulador | Capturas 430×932, 640×1000, 320×640 e fonte 200%; título ampliado não divide Personagens |
 | 5. Java/MVVM/Fragments/XML | Atendido | Nova tela usa as mesmas camadas e dependências, sem Compose |
 | 6. Decisões/pendências | Atendido | Subbloco aprovado; história/biografia longa separadas; físico/TalkBack pendentes |
 | 7. Estados/recuperação | Atendido no escopo inspecionado | Subsections independentes; próxima página preserva itens; inválido rejeitado; componentes comuns com retentativa |
@@ -66,7 +70,7 @@ A primeira execução compilou e passou no lint, com zero erros e 28 avisos. Rep
 | 9. Fontes e transformações | Atendido | Mapeamento acima e sondagem real; nenhum mock de conteúdo |
 | 10. Credenciais/propriedade | Atendido / heróis não aplicável | Provisionamento privado existente e verificação de ausência da chave no APK; nenhuma operação sobre heróis |
 | 11. Marvel | Atendido | Índices e publisher de cada entidade conferidos; primeira edição por volume Marvel |
-| 12. Português/cache/falhas | Pendente de conclusão | Resumo e poderes/cache offline passaram; revisão contextual e aliases na execução final |
+| 12. Português/cache/falhas | Atendido no escopo verificado | Resumo e poderes em português; quatro rótulos revisados; proteção de aliases; cache após reinício offline |
 | 13. Formulário/edição de herói | Não aplicável | Não faz parte deste subbloco |
 
 ## Roteiro para validar no Android Studio
