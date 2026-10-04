@@ -1,0 +1,40 @@
+name: Preparar APK existente para entrega
+on:
+  push:
+    branches: ["diagnostic/apk-delivery"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: app-marvel-debug
+          run-id: 37211559551
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: apk
+      - name: Preparar transferência com conferência de integridade
+        run: |
+          mkdir parts
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          p=pathlib.Path('apk/app-debug.apk')
+          pathlib.Path('parts/metadata.json').write_text(json.dumps({'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size,'source_run':37211559551}))
+          PY
+          gzip -c -9 apk/app-debug.apk > app.apk.gz
+          split -b 20M app.apk.gz parts/apk.gz.part-
+      - uses: actions/upload-artifact@v7
+        with:
+          name: marvel-apk-part-1
+          path: |
+            parts/apk.gz.part-aa
+            parts/metadata.json
+          retention-days: 7
+      - uses: actions/upload-artifact@v7
+        with:
+          name: marvel-apk-part-2
+          path: parts/apk.gz.part-ab
+          retention-days: 7
