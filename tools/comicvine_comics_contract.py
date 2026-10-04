@@ -24,6 +24,8 @@ def main():
         refs = {r['id']:r for r in index['volumes']}
         today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
         fields = 'id,api_detail_url,issue_number,volume,image,store_date,cover_date,site_detail_url'
+        for offset in [0,100]:
+            probe('stable_'+str(offset), 'issues/', {'sort':'store_date:desc,id:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'offset':offset,'field_list':fields})
         rows = probe('recent', 'issues/', {'sort':'store_date:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'field_list':fields})
         ids = list(dict.fromkeys(i['volume']['id'] for i in rows if i['volume']['id'] in refs))[:3]
         assert ids
