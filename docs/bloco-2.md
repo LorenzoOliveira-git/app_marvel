@@ -1,5 +1,13 @@
 # Bloco 2 — splash, acesso à conta e painel contínuo
 
+## Correção visual solicitada
+
+A revisão atual restaura SUA centralizado sobre o símbolo MARVEL no Login/Cadastro e na marca menor do cabeçalho principal, com o mesmo asset exportado. Login usa título de 40sp, rótulos separados de 32sp, campos com contorno branco e links Bebas Neue, conforme o contexto salvo. Marv permanece discreto junto ao título. A splash nativa recebe a marca completa; não é a sequência de três frames do Figma, cujo contexto completo não está salvo.
+
+Avisos de desenvolvimento removidos das telas. Formulários começam em READY; validação continua ativa. Erros operacionais aparecem somente após tentativa de envio. Firebase sem configuração nunca autentica ficticiamente. Seções sem dados mantêm apenas apresentação/navegação; o estado interno de integração não vira aviso ou lista fictícia.
+
+A verificação da versão anterior está registrada abaixo; a compilação/prévia desta revisão será registrada ao concluir.
+
 ## Resultado
 
 - Splash nativa AndroidX, na MainActivity, sem Activity adicional ou espera artificial.
@@ -13,11 +21,11 @@
 
 ## Referências e decisões
 
-Nenhuma nova consulta ao MCP do Figma. Reutilizado contexto completo Login 30:296 e Home 19:102 salvo no diagnóstico, captura enviada pelo usuário, tokens/ícones/fontes e Marv existentes. O Login adapta o cabeçalho compartilhado da fundação e acrescenta Marv, ações e estados funcionais; não é declarado reprodução pixel a pixel. O cadastro usa a mesma linguagem visual; seu frame não foi consultado. As três telas Splash do Figma não estão em contexto completo no cache: foi usada splash nativa com logo existente, sem inventar sequência temporizada.
+Nenhuma nova consulta ao MCP do Figma. Reutilizado contexto completo Login 30:296 e Home 19:102 salvo no diagnóstico, captura enviada pelo usuário, tokens/ícones/fontes e Marv existentes. O Login restaura a marca central e a tipografia/campos da referência, acrescentando Marv discreto e ações funcionais; não é declarado reprodução pixel a pixel. O cadastro usa a mesma linguagem visual; seu frame não foi consultado. As três telas Splash do Figma não estão em contexto completo no cache: foi usada splash nativa com logo existente, sem inventar sequência temporizada.
 
 AndroidX SplashScreen 1.2.0, Firebase BoM 34.19.0 e Google Services 4.5.0 adicionados para o bloco aprovado. SDKs, applicationId, linguagem e versões estruturais existentes preservados. Java/XML, sem Compose ou código Kotlin do app.
 
-Sem configuração Firebase, Entrar/Criar conta ficam indisponíveis e aparece o aviso real; as telas/formulários e Explorar continuam acessíveis. A configuração e o teste de conta real dependem do proprietário. [Passo a passo](firebase-auth.md).
+Sem configuração Firebase, Entrar/Criar conta validam os campos e retornam um erro operacional após envio válido; não aparece aviso de desenvolvimento ao abrir a tela. Explorar continua acessível. A configuração e o teste de conta real dependem do proprietário. [Passo a passo](firebase-auth.md).
 
 ## Arquivos e dados
 
@@ -27,7 +35,7 @@ Sem configuração Firebase, Entrar/Criar conta ficam indisponíveis e aparece o
 | Splash | tema Starting e splash_brand.xml | Logo original exportado; API nativa |
 | Formulários | AuthFragment, fragment_auth.xml, AuthViewModel/Factory/State | Texto de UI local, dados digitados |
 | Conta/sessão | AuthRepository/FirebaseAuthRepository/AuthSession e AccountFragment/ViewModel | Firebase UID/displayName/email reais; operações ainda dependem de configuração |
-| Disponibilidade de serviços | inicialização FirebaseApp | Sem configuração, estado UNAVAILABLE; nenhum mock |
+| Disponibilidade de serviços | inicialização FirebaseApp | Sem configuração, falha operacional após envio; nenhum mock |
 | Compilação e prévia | workflow e capture-preview.py | APK/lint e capturas reais ADB; sem testes unitários |
 
 Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o resultado parcial e conclui acesso com a conta real existente. Não repete cadastro. Credenciais do Firebase não são publicadas em git; arquivo google-services.json local ou secret de CI.
@@ -61,7 +69,7 @@ Se o perfil de nome não puder ser salvo após criar uma conta, o app informa o 
 
 ## Roteiro manual
 
-1. Sem configuração: abrir app, conferir splash/Login, abrir cadastro e voltar; botões de conta indisponíveis com aviso e sem login fictício.
+1. Sem configuração: abrir app, conferir splash/Login, abrir cadastro e voltar; formulários sem aviso de desenvolvimento; botões ativos para validação, sem login fictício.
 2. Explorar sem entrar: abrir Home e cada destino. O painel deve continuar abaixo do menu até o rodapé. Rolar ao último card: ele deve ser alcançável sem ficar preso atrás do menu.
 3. Girar aparelho e usar fonte 200%, largura 320dp, paisagem e tablet. Conferir textos, menu sobreposto e rolagem. Abrir teclado no cadastro: campo/ação devem continuar acessíveis ao rolar.
 4. Com Firebase configurado: enviar campos vazios, e-mail inválido, senha menor que seis caracteres e confirmação diferente: erros por campo, nenhum envio.

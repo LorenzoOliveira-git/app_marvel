@@ -4,7 +4,7 @@ Aplicativo Android em **Java, XML, Fragments e MVVM** para explorar o universo M
 
 ## Bloco 2 — splash e autenticação
 
-Login/cadastro com Firebase Authentication real, estados e sessão, além do painel contínuo com menu sobreposto. Sem configuração do Firebase, as telas são acessíveis e o app informa indisponibilidade; use Explorar sem entrar para avaliar o painel. [Entrega do bloco 2](docs/bloco-2.md) e [configuração Firebase](docs/firebase-auth.md).
+Login/cadastro com Firebase Authentication real, estados e sessão, além do painel contínuo com menu sobreposto. Os formulários abrem sem avisos de desenvolvimento; use Explorar sem entrar para avaliar o painel. O Firebase precisa ser configurado para as operações de conta real. [Entrega do bloco 2](docs/bloco-2.md) e [configuração Firebase](docs/firebase-auth.md).
 
 ## Bloco 1 — fundação
 
@@ -12,7 +12,7 @@ Login/cadastro com Firebase Authentication real, estados e sessão, além do pai
 - View Binding, ViewModels/LiveData e repositório local de disponibilidade.
 - Tema escuro inspirado em Marvel - Mobile, com Bebas Neue e fontes estáticas derivadas de Inter.
 - Cards, campos/botões estilizados e componente de feedback com o Marv.
-- Home de recepção; destinos sem integração mostram indisponibilidade real.
+- Home de recepção; destinos mantêm sua apresentação sem avisos de desenvolvimento.
 - **Sem dados fictícios, autenticação simulada, chamadas à ComicVine ou geração paga de heróis.**
 
 O bloco não implementa ainda a home de notícias, destaques e curiosidades do Figma. Essa área depende de dados reais e será construída no bloco de conteúdo.

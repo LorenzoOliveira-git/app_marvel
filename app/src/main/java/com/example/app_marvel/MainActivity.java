@@ -69,8 +69,8 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.screenTitle.setText(destination.getLabel());
             boolean form = isAuthDestination(destination.getId());
             binding.bottomNavigation.setVisibility(form ? View.GONE : View.VISIBLE);
-            binding.screenTitle.setVisibility(form ? View.GONE : View.VISIBLE);
-            binding.brandCaption.setText(form ? R.string.brand_sua : R.string.brand_caption);
+            binding.mainHeader.setVisibility(form ? View.GONE : View.VISIBLE);
+            binding.authHeader.setVisibility(form ? View.VISIBLE : View.GONE);
             binding.navHost.post(this::updateContentInsets);
         });
         binding.bottomNavigation.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateContentInsets());

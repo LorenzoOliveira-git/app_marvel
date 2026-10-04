@@ -38,7 +38,7 @@ public final class AccountFragment extends Fragment {
             binding.name.setText(session.getName()); binding.email.setText(session.getEmail());
             binding.name.setVisibility(signed && !session.getName().isEmpty() ? View.VISIBLE : View.GONE);
             binding.email.setVisibility(signed ? View.VISIBLE : View.GONE);
-            binding.message.setText(signed ? R.string.account_collection_notice : R.string.account_sign_in_body);
+            binding.message.setVisibility(signed ? View.GONE : View.VISIBLE);
             binding.action.setText(signed ? R.string.account_sign_out : R.string.auth_sign_in);
             binding.action.setOnClickListener(v -> {
                 if (signed) { model.signOut(); ((MainActivity) requireActivity()).leaveAccount(); }

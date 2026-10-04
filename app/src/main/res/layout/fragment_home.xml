@@ -15,8 +15,6 @@
         </com.google.android.material.card.MaterialCardView>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xl" android:layout_marginBottom="@dimen/space_sm"
             android:id="@+id/explore_heading" android:text="@string/home_explore_title" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="@dimen/space_md"
-            android:text="@string/home_availability_notice" android:textAppearance="@style/TextAppearance.Marvel.Caption" />
         <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/characters_card" android:layout_width="match_parent" android:layout_height="wrap_content" />
         <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/stories_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" />
         <com.example.app_marvel.ui.components.FeatureCardView android:id="@+id/create_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" />

@@ -1,6 +1,6 @@
 # Configurar Firebase Authentication — bloco 2
 
-A integração E-mail/Senha está implementada. Esta entrega não recebeu configuração de um projeto Firebase; a APK sem configuração permite avaliar as telas/explorar e informa indisponibilidade de acesso à conta.
+A integração E-mail/Senha está implementada. Esta entrega não recebeu configuração de um projeto Firebase; a APK sem configuração permite avaliar os formulários e explorar. Não há avisos de configuração na tela; uma tentativa válida de envio sem serviço configurado resulta em erro operacional, sem simular sucesso.
 
 ## Android Studio
 

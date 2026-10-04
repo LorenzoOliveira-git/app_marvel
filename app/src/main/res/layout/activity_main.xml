@@ -4,9 +4,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/content_shell" android:layout_width="0dp" android:layout_height="0dp"
         app:layout_constraintWidth_max="@dimen/content_max_width" app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent">
-        <LinearLayout android:id="@+id/header" android:layout_width="0dp" android:layout_height="wrap_content" android:minHeight="80dp"
-            android:orientation="horizontal" android:gravity="center_vertical" android:padding="@dimen/screen_padding"
+        <FrameLayout android:id="@+id/header" android:layout_width="0dp" android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent">
+          <LinearLayout android:id="@+id/main_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="68dp"
+            android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="@dimen/screen_padding" android:paddingEnd="@dimen/screen_padding" android:paddingTop="@dimen/space_sm" android:paddingBottom="@dimen/space_sm">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                 android:orientation="vertical" android:layout_marginEnd="@dimen/space_md">
                 <TextView android:id="@+id/brand_caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"
@@ -14,9 +15,25 @@
                 <TextView android:id="@+id/screen_title" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
             </LinearLayout>
-            <ImageView android:layout_width="76dp" android:layout_height="33dp" android:scaleType="fitCenter"
-                android:src="@drawable/logo_marvel" android:contentDescription="@string/brand_content_description" />
-        </LinearLayout>
+            <LinearLayout android:layout_width="76dp" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal"
+                android:contentDescription="@string/brand_content_description" android:importantForAccessibility="yes">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_sua" android:gravity="center"
+                    android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" android:textColor="@color/marvel_text" android:textSize="15sp"
+                    android:includeFontPadding="false" android:importantForAccessibility="no" />
+                <ImageView android:layout_width="76dp" android:layout_height="33dp" android:layout_marginTop="4dp" android:scaleType="fitCenter"
+                    android:src="@drawable/logo_marvel" android:contentDescription="@null" android:importantForAccessibility="no" />
+            </LinearLayout>
+          </LinearLayout>
+          <LinearLayout android:id="@+id/auth_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="106dp"
+              android:orientation="vertical" android:gravity="center_horizontal" android:paddingBottom="13dp" android:visibility="gone"
+              android:contentDescription="@string/brand_content_description" android:importantForAccessibility="yes">
+              <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_sua" android:gravity="center"
+                  android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" android:textColor="@color/marvel_text" android:textSize="20sp"
+                  android:includeFontPadding="false" android:importantForAccessibility="no" />
+              <ImageView android:layout_width="169dp" android:layout_height="73dp" android:layout_marginTop="2dp" android:scaleType="fitCenter"
+                  android:src="@drawable/logo_marvel" android:contentDescription="@null" android:importantForAccessibility="no" />
+          </LinearLayout>
+        </FrameLayout>
         <androidx.fragment.app.FragmentContainerView android:id="@+id/nav_host" android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp" android:layout_height="0dp" android:background="@drawable/background_panel"
             app:defaultNavHost="true" app:navGraph="@navigation/main_graph" app:layout_constraintTop_toBottomOf="@id/header"

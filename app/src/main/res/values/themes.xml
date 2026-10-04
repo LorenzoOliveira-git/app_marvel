@@ -16,7 +16,7 @@
     </style>
     <style name="Theme.App_Marvel" parent="Base.Theme.App_Marvel" />
     <style name="Theme.App_Marvel.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/marvel_surface</item>
+        <item name="windowSplashScreenBackground">@color/marvel_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_brand</item>
         <item name="postSplashScreenTheme">@style/Theme.App_Marvel</item>
         <item name="android:windowLightStatusBar">false</item>
