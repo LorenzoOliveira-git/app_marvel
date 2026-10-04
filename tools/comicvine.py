@@ -19,11 +19,35 @@ BASE = "https://comicvine.gamespot.com/api/"
 PACKAGE = "com.example.app_marvel"
 
 
+def key_from_env_file(path):
+    try:
+        contents = path.read_text(encoding="utf-8-sig")
+    except FileNotFoundError:
+        return None
+    except (OSError, UnicodeError):
+        raise RuntimeError("Não foi possível ler o .env local.") from None
+    key = None
+    for line in contents.splitlines():
+        line = line.strip()
+        if line.startswith("export "):
+            line = line[7:].lstrip()
+        name, separator, value = line.partition("=")
+        if separator and name.strip() == "COMICVINE_API_KEY":
+            value = value.strip()
+            if len(value) >= 2 and value[0] in {"'", '"'} and value[-1] == value[0]:
+                value = value[1:-1]
+            key = value
+    # Apenas lê o valor literal; não executa comandos nem expande variáveis.
+    return key
+
+
 def read_key():
     key = os.environ.get("COMICVINE_API_KEY")
     if not key:
+        key = key_from_env_file(Path(__file__).resolve().parents[1] / ".env")
+    if not key:
         if not sys.stdin.isatty():
-            raise RuntimeError("Configure COMICVINE_API_KEY no ambiente privado ou no secret do GitHub.")
+            raise RuntimeError("Configure COMICVINE_API_KEY no .env local, no ambiente privado ou no secret do GitHub.")
         key = getpass.getpass("Chave ComicVine (entrada oculta, não será salva no computador): ").strip()
     if not re.fullmatch(r"[A-Za-z0-9_-]{16,256}", key):
         raise RuntimeError("Formato de chave inválido.")
