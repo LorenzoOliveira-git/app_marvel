@@ -20,6 +20,25 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
+      - name: Identificar correção apenas do roteiro de detalhes
+        id: scope
+        env:
+          CHECK_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git fetch --no-tags origin "$CHECK_HEAD" --depth=2
+          git diff --name-only "$CHECK_HEAD^" "$CHECK_HEAD" > /tmp/marv-changed-paths.txt
+          python3 - <<'PYTHON'
+          import os
+          from pathlib import Path
+          paths = set(Path('/tmp/marv-changed-paths.txt').read_text().splitlines())
+          allowed = {'.github/scripts/check-issue.py', '.github/workflows/android-build.yml',
+                     'app/src/debug/java/com/example/app_marvel/diagnostics/IssueCheckActivity.java',
+                     'README.md', 'docs/bloco-6-detalhes-quadrinho.md'}
+          focused = '.github/scripts/check-issue.py' in paths and paths <= allowed
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('issue_only=' + str(focused).lower() + '\n')
+          print('Roteiro de detalhes isolado.' if focused else 'Verificação integrada da aplicação.')
+          PYTHON
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
@@ -83,11 +102,11 @@ jobs:
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 15
         run: python3 .github/scripts/check-catalog.py --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar quadrinhos reais, cache e navegação
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 7
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}

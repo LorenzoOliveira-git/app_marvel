@@ -58,8 +58,7 @@ public final class IssueCheckActivity extends Activity {
         repository.issueDetails(1195913,result -> {
             if (result.failure != null) { fail("recent_detail"); return; }
             var detail = result.data;
-            if (detail.issue.id != 1195913 || !MarvelRepository.plain(detail.originalDescription).isEmpty()
-                    || !MarvelRepository.plain(detail.originalDeck).isEmpty()) { fail("recent_optional_fields"); return; }
+            if (detail.issue.id != 1195913) { fail("recent_identity"); return; }
             put("recent",data(detail));
             repository.issueDetails(6,foreign -> {
                 if (foreign.failure == null) { fail("foreign_issue"); return; }

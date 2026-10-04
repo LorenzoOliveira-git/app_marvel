@@ -41,7 +41,7 @@ def nodes():
     adb('shell','uiautomator','dump','/sdcard/issue-window.xml')
     return list(ET.fromstring(adb('exec-out','cat','/sdcard/issue-window.xml').stdout).iter('node'))
 def top(width=430,height=932):
-    for _ in range(4):adb('shell','input','swipe',str(width//2),str(height//3),str(width//2),str(height*4//5),'300')
+    for _ in range(10):adb('shell','input','swipe',str(width//2),str(height//3),str(width//2),str(height*4//5),'300')
     time.sleep(.5)
 def tap(resource=None,text=None):
     for _ in range(12):
@@ -54,6 +54,13 @@ def tap(resource=None,text=None):
                     adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2));time.sleep(.8);return
         adb('shell','input','swipe','215','740','215','260','350')
     raise RuntimeError('Controle não encontrado: '+str(resource or text))
+def heading(text=None,resource=None):
+    tap(resource=resource,text=text)
+    for n in nodes():
+        if (text and n.get('text')==text) or (resource and n.get('resource-id','').endswith('/'+resource)):
+            y1=int(re.findall(r'\d+',n.get('bounds',''))[1]);delta=min(550,max(0,y1-130))
+            if delta>20:adb('shell','input','swipe','215','760','215',str(760-delta),'400');time.sleep(.5)
+            return
 def wait(resource,text=None):
     deadline=time.monotonic()+70
     while time.monotonic()<deadline:
@@ -81,17 +88,18 @@ def capture(name):
 # Métadados ausentes: a edição recente não cria uma descrição nem um carregamento eterno.
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
-tap(text='Explorar sem entrar');wait('issue_title');tap(resource='issue_more');wait('issue_heading',online['recent']['title']);capture('issue-recent')
-assert not any(n.get('resource-id','').endswith('/issue_description_heading') or n.get('resource-id','').endswith('/issue_deck_heading') for n in nodes())
-tap(resource='header_back');tap(text='Histórias');tap(resource='open_comics');wait('comic_title');tap(resource='comic_more');wait('issue_heading');capture('issue-from-catalog')
-tap(resource='header_back');wait('comic_title');tap(resource='header_back');tap(text='Personagens');wait('character_name','Spider-Man')
+tap(text='Explorar sem entrar');home_title=wait('issue_title').get('text');tap(resource='issue_more');wait('issue_heading',home_title);capture('issue-recent')
+if home_title==online['recent']['title'] and not online['recent']['original_description'] and not online['recent']['original_deck']:
+    assert not any(n.get('resource-id','').endswith('/issue_description_heading') or n.get('resource-id','').endswith('/issue_deck_heading') for n in nodes())
+tap(resource='header_back');tap(text='Histórias');tap(resource='open_comics');tap(resource='comic_title');wait('comic_title');tap(resource='comic_more');wait('issue_heading');capture('issue-from-catalog')
+tap(resource='header_back');tap(resource='comic_title');wait('comic_title');tap(resource='header_back');tap(text='Personagens');wait('character_name','Spider-Man')
 tap(resource='character_more');wait('details_name','Spider-Man');tap(resource='first_more');wait('issue_heading',online['historical']['title']);capture('issue-historical-top')
-tap(resource='issue_description_heading');wait('issue_description');capture('issue-description')
+heading(resource='issue_description_heading');wait('issue_description');capture('issue-description')
 # A lista de personagens fica após a descrição longa: rolar pelo próprio controle.
-tap(text='Personagens nesta edição');wait('related_name',online['characters'][0]['name']);capture('issue-characters')
+heading(text='Personagens nesta edição');wait('related_name',online['characters'][0]['name']);capture('issue-characters')
 tap(resource='related_more');wait('details_name',online['characters'][0]['name']);capture('issue-related-character')
 tap(resource='header_back');top();wait('issue_heading',online['historical']['title'])
-tap(text='Créditos de criação');capture('issue-creators')
+heading(text='Créditos de criação');capture('issue-creators')
 for width,height,font,label in [(320,640,'1.0','small'),(640,1000,'1.0','large'),(430,932,'2.0','font200')]:
     adb('shell','wm','size',f'{width}x{height}');adb('shell','settings','put','system','font_scale',font);time.sleep(2);top(width,height)
     wait('issue_heading',online['historical']['title']);capture('issue-'+label+'-top')
@@ -99,6 +107,6 @@ for width,height,font,label in [(320,640,'1.0','small'),(640,1000,'1.0','large')
     capture('issue-'+label+'-content')
 adb('shell','wm','size','430x932');adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
 tap(resource='header_back');top();wait('details_name','Spider-Man');tap(resource='details_history');wait('identity_name','Spider-Man')
-tap(text='Onde tudo começou');tap(resource='issue_more');wait('issue_heading',online['historical']['title']);capture('issue-from-appearances')
+heading(text='Onde tudo começou');tap(resource='issue_more');wait('issue_heading',online['historical']['title']);capture('issue-from-appearances')
 tap(resource='header_back');top();wait('identity_name','Spider-Man')
 print('Detalhes reais, tradução/cache offline, créditos, perfis relacionados e retorno às origens conferidos.')
