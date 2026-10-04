@@ -57,7 +57,7 @@ O workflow Android volta a compilar/lint e não é substituído pelas inspeçõe
 
 ## Roteiro manual
 
-1. Instale o APK debug deste bloco, configure a chave via ADB e abra “Explorar sem entrar”. Espere capas, datas e Spider-Man; a tradução pode exigir o primeiro download do modelo por Wi-Fi.
+1. Execute este bloco pelo Android Studio, configure a chave via ADB e abra “Explorar sem entrar”. Espere capas, datas e Spider-Man; a tradução pode exigir o primeiro download do modelo por Wi-Fi.
 2. Role a Home: confira resumo em português, nome real/origem, curiosidade com Marv e fonte. “Ver mais” deve abrir o registro correspondente na ComicVine.
 3. Abra Personagens. Arraste retratos e use anterior/próximo; nome, metadados e link devem acompanhar o retrato central.
 4. Busque `Spider-Man`. Selecione origem, gênero e um time; nomes/imagens devem respeitar a seleção. “Limpar filtros” preserva a busca; apague a busca para retornar à seleção geral.
@@ -67,7 +67,27 @@ O workflow Android volta a compilar/lint e não é substituído pelas inspeçõe
 
 ## Verificação e checklist
 
-Em andamento: compilação/lint e emulador. Os resultados efetivos serão registrados nesta seção após o CI. Sintaxe Java 11 (44 arquivos) e XML/Python conferidos localmente, sem resolução Android local. Não há SDK Android neste ambiente.
+Sintaxe Java 11 (45 arquivos), XML/Python e diff conferidos localmente. Compilação e lint passaram no Android CI (zero erros; 25 avisos). [Repositório real e cache após reiniciar offline](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37211559551) passaram: seis HQs, páginas de 32 personagens sem IDs duplicados, busca, origem/gênero e equipe Avengers, sempre com publisher Marvel verificado.
+
+[Execução de verificação final](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37215745602), commit `94ca314a50b4e533e1d435ac5d9f21cbc235a6ad`: **concluída com sucesso**. O mesmo cenário de mudança de tamanho/fonte e retorno à Home passou sem fechar o app. As 14 capturas incluem conteúdo, seleção vazia e erro real após remover a chave/cache do emulador. Login/cadastro reais com conta Firebase e aparelho físico não foram exercitados neste bloco.
+
+Foi corrigido um callback de margens que acessava o NavHost após sua destruição durante mudanças de tamanho/fonte. O ajuste agora verifica Activity/Fragment ativos e cancela o Runnable ao destruir a Activity. A publicação automática de APK foi desativada; o trabalho de transferência não solicitada foi removido. Compilar para executar no emulador faz parte da verificação da aplicação; entrega de APK ocorre somente mediante solicitação.
+
+| # | Critério | Situação e evidência |
+| --- | --- | --- |
+| 1 | Fidelidade e componentes | Atendido: referências salvas, marca empilhada, hierarquia, tipografia, carrossel e menu sobreposto; sem nova consulta Figma. |
+| 2 | Navegação e hierarquia | Atendido: Home, catálogo, voltar, anterior/próximo, busca e retomada da seleção exercitados; links externos verificados. |
+| 3 | Regressões | Atendido nos fluxos exercitados: recriação por tamanho/fonte, retorno à Home, busca/filtros e cache offline passaram; autenticação de conta real não exercitada. |
+| 4 | Telas e fonte | Atendido no emulador: 320×640, 430×932, 640×1000 e fonte 200%; rolagem para conteúdo longo. Aparelho físico pendente. |
+| 5 | Java/MVVM/Fragments/XML | Atendido: repositórios, ViewModels e layouts nativos; sem Compose ou migração de linguagem/SDK. |
+| 6 | Decisões e escopo | Atendido: ComicVine real, acesso direto, ML Kit, datas de publicação e Perfil=gênero; detalhes internos no próximo subbloco. |
+| 7 | Estados e recuperação | Atendido: conteúdo, seleção vazia, erro real com Marv e botão de retentativa capturados; recuperação do cache offline conferida. Retentativa após restaurar conexão deve ser conferida manualmente em aparelho físico. |
+| 8 | Sem testes unitários | Atendido: nenhum arquivo src/test adicionado; verificação por compilação, lint e ADB. |
+| 9 | Mapeamento e mocks | Atendido: tabela acima descreve campos, relações e trechos derivados; nenhum mock de conteúdo. |
+| 10 | Credenciais/proprietário | Atendido para credenciais: chave separada, privada e fora de backup/APK. Heróis e regras de proprietário não se aplicam a este subbloco. |
+| 11 | Exclusividade Marvel | Atendido: publisher resolvido/validado, publisher por personagem e relações reais de volumes/equipes antes de exibir. |
+| 12 | Português/tradução/cache | Atendido: UI pt-BR, ML Kit pt, nomes conhecidos preservados, fonte/automação identificadas e resultado idêntico offline. Revisão humana da tradução pendente. |
+| 13 | Formulário/edição de herói | Não aplicável: fluxo de criação/edição não incluído neste subbloco. |
 
 ## Próximo subbloco proposto
 
