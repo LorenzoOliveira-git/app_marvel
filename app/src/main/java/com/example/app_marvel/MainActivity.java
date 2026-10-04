@@ -22,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import com.example.app_marvel.data.model.AppFeature;
+import com.example.app_marvel.data.auth.AuthSession;
 import com.example.app_marvel.databinding.ActivityMainBinding;
 import com.example.app_marvel.ui.common.FeatureResources;
 import com.example.app_marvel.ui.navigation.AppNavigator;
@@ -43,6 +44,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setAccessibilityHeading(binding.screenTitle, true);
+        ViewCompat.setAccessibilityHeading(binding.userName, true);
         applySafeInsets();
 
         host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
@@ -58,6 +60,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
         binding.headerBack.setOnClickListener(view -> openFeature(AppFeature.HOME));
+        ((MarvelApplication) getApplication()).getContainer().getAuth().getSession().observe(this, this::renderUserHeader);
         binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
@@ -70,6 +73,9 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
             boolean catalog = destination.getId() == R.id.charactersFragment;
+            boolean home = destination.getId() == R.id.homeFragment;
+            binding.titleHeader.setVisibility(home ? View.GONE : View.VISIBLE);
+            binding.userHeader.setVisibility(home ? View.VISIBLE : View.GONE);
             binding.headerBack.setVisibility(catalog ? View.VISIBLE : View.GONE);
             binding.brandCaption.setVisibility(catalog ? View.GONE : View.VISIBLE);
             binding.screenTitle.setTextAppearance(catalog ? R.style.TextAppearance_Marvel_CatalogHeader : R.style.TextAppearance_Marvel_Title);
@@ -81,6 +87,16 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.navHost.post(contentInsetsUpdater);
         });
         binding.bottomNavigation.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateContentInsets());
+    }
+
+    private void renderUserHeader(AuthSession session) {
+        boolean signed = session.isAuthenticated();
+        binding.userName.setText(!signed ? getString(R.string.home_guest_name)
+                : session.getName().isEmpty() ? getString(R.string.home_account_name) : session.getName());
+        binding.userEmail.setText(session.getEmail());
+        binding.userEmail.setVisibility(signed && !session.getEmail().isEmpty() ? View.VISIBLE : View.GONE);
+        ((MarvelApplication) getApplication()).getContainer().getImages()
+                .showProfilePhoto(binding.userAvatar, session.getPhotoUrl());
     }
 
     private void applySafeInsets() {

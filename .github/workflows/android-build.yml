@@ -64,8 +64,20 @@ jobs:
             sleep 2
           done
           adb shell input keyevent 82
-          adb install -r app/build/outputs/apk/debug/app-debug.apk
-          python3 tools/comicvine.py device
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          Path('.env').write_text('COMICVINE_API_KEY=' + os.environ['COMICVINE_API_KEY'] + '\n', encoding='utf-8')
+          PY
+          trap 'rm -f .env' EXIT
+          env -u COMICVINE_API_KEY bash gradlew :app:runLocalDebug --no-daemon --console=plain
+          python3 - <<'PY'
+          import os, zipfile
+          key = os.environ['COMICVINE_API_KEY'].encode()
+          with zipfile.ZipFile('app/build/outputs/apk/debug/app-debug.apk') as apk:
+              assert all(key not in apk.read(name) for name in apk.namelist()), 'Credencial encontrada no APK'
+          print('Credencial local fora do APK conferida.')
+          PY
       - name: Verificar ML Kit e cache persistente no emulador
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py

@@ -31,6 +31,13 @@ public final class ComicVineImages {
         @Override protected int sizeOf(String key, Bitmap bitmap) { return bitmap.getByteCount(); }
     };
     public ComicVineImages(Context context) { directory = new File(context.getCacheDir(), "comicvine-images"); }
+    public void showProfilePhoto(ImageView view, String url) {
+        view.setTag(url); view.setImageResource(R.drawable.ic_profile_avatar);
+        Uri uri = Uri.parse(url);
+        // Foto fornecida pela sessão Firebase. Sem envio da chave ComicVine ou tokens de conta.
+        if (!"https".equals(uri.getScheme()) || uri.getHost() == null || uri.getUserInfo() != null) return;
+        loadInto(view, url);
+    }
     public void show(ImageView view, String url) {
         view.setTag(url);
         view.setImageDrawable(new ColorDrawable(view.getContext().getColor(R.color.marvel_surface_raised)));
@@ -38,6 +45,9 @@ public final class ComicVineImages {
         if (!"https".equals(uri.getScheme()) || !"comicvine.gamespot.com".equals(uri.getHost())
                 || uri.getPath() == null || !uri.getPath().startsWith("/a/uploads/")
                 || uri.getQuery() != null || uri.getUserInfo() != null) return;
+        loadInto(view, url);
+    }
+    private void loadInto(ImageView view, String url) {
         Bitmap saved = memory.get(url);
         if (saved != null) { view.setImageBitmap(saved); return; }
         WeakReference<ImageView> target = new WeakReference<>(view);

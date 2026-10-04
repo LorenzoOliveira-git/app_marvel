@@ -43,8 +43,10 @@ public final class ComicVineClient {
     private final ExecutorService network = Executors.newSingleThreadExecutor();
     private final Handler main = new Handler(Looper.getMainLooper());
     private long nextRequestAt;
+    private final boolean debug;
 
     public ComicVineClient(Context context) {
+        debug = (context.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         credentials = new ComicVineCredentials(context);
         rateLimiter = new ComicVineRateLimiter(context.getApplicationContext());
     }
@@ -123,5 +125,8 @@ public final class ComicVineClient {
         } finally { if (connection != null) connection.disconnect(); }
     }
 
-    private void deliver(Callback callback, Result result) { main.post(() -> callback.complete(result)); }
+    private void deliver(Callback callback, Result result) {
+        if (debug && result.failure != null) android.util.Log.w("ComicVine", "Falha: " + result.failure.name() + "; HTTP=" + result.httpStatus);
+        main.post(() -> callback.complete(result));
+    }
 }
