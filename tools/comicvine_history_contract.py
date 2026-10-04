@@ -38,7 +38,12 @@ def main():
         if sample:
             probe('issue_detail', resource_path(sample[0]['api_detail_url'], 'issue'), {'field_list': 'id,name,volume,character_credits,first_appearance_characters,cover_date,store_date,story_arc_credits'})
         # Alternativa canônica caso o filtro não seja sustentado pela resposta.
-        probe('character_issue_index', resource_path(hero['api_detail_url'], 'character'), {'field_list': 'id,name,publisher,issue_credits'}, max_bytes=8_000_000)
+        index = probe('character_issue_index', resource_path(hero['api_detail_url'], 'character'), {'field_list': 'id,name,publisher,issue_credits'}, max_bytes=8_000_000)['results']
+        for offset in [0, 12]:
+            refs = index['issue_credits'][offset:offset+12]
+            probe('canonical_batch_' + str(offset), 'issues/', {'filter': 'id:' + '|'.join(str(r['id']) for r in refs), 'limit': 100,
+                'field_list': 'id,api_detail_url,issue_number,volume,image,cover_date,site_detail_url'})
+        probe('marvel_volumes', resource_path(publisher['api_detail_url'], 'publisher'), {'field_list': 'id,name,volumes'}, max_bytes=8_000_000)
         report['character_id'] = hero['id']
     finally:
         Path('comicvine-history-contract.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')

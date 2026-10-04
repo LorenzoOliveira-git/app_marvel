@@ -145,11 +145,39 @@ public final class CatalogCheckActivity extends Activity {
                     // ID de Lightning Lad/DC observado na sondagem real anterior, apenas diagnóstico debug.
                     repository.details(1253, foreign -> {
                         if (foreign.failure == null) { fail("foreign_publisher_accepted"); return; }
-                        put("foreign_publisher_rejected", true); put("success", true); save();
+                        put("foreign_publisher_rejected", true); history();
                     });
                 });
             });
         });
+    }
+    private void history() {
+        repository.appearanceIndex(details, indexed -> {
+            if (indexed.failure != null || indexed.data.issues.isEmpty() || indexed.data.characterId != featuredId || indexed.data.publisherId != owner) { fail("appearance_index"); return; }
+            var index = indexed.data; put("appearance_reference_count", index.issues.size());
+            repository.appearances(index, 0, first -> {
+                if (!appearancePage("appearances_first", index, first)) return;
+                put("appearance_first_offset", first.data.nextOffset);
+                if (!first.data.hasMore) { fail("appearance_pagination_missing"); return; }
+                repository.appearances(index, first.data.nextOffset, next -> {
+                    if (!appearancePage("appearances_next", index, next)) return;
+                    put("appearance_next_offset", next.data.nextOffset);
+                    put("success", true); save();
+                });
+            });
+        });
+    }
+    private boolean appearancePage(String name, CatalogModels.AppearanceIndex index, CatalogModels.Result<CatalogModels.AppearancePage> result) {
+        if (result.failure != null || result.data.items.isEmpty()) { fail(name); return false; }
+        JSONArray rows = new JSONArray(); int previous = -1;
+        for (var issue : result.data.items) {
+            int position = -1; for (int i = 0; i < index.issues.size(); i++) if (index.issues.get(i).id == issue.id) { position = i; break; }
+            if (position <= previous || position < 0 || position >= result.data.nextOffset) { fail(name + "_relationship_order"); return false; }
+            previous = position;
+            try { rows.put(new JSONObject().put("id", issue.id).put("volume_id", issue.volumeId).put("title", issue.title).put("cover_date", issue.publicationDate).put("reference_position", position)); }
+            catch (Exception ignored) { fail("serialize_appearance"); return false; }
+        }
+        put(name, rows); return true;
     }
     private boolean relationPage(String name, CatalogModels.Result<CatalogModels.RelationPage> result) {
         if (result.failure != null || result.data.items.isEmpty()) { fail(name); return false; }

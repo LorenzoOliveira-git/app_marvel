@@ -58,6 +58,7 @@ public final class CharacterDetailsFragment extends Fragment {
             if (state.getStatus() != UiState.Status.CONTENT) return;
             var details = state.getData(); var item = details.character;
             binding.detailsName.setText(item.name); container.getImages().show(binding.detailsImage, item.imageUrl);
+            binding.detailsHistory.setOnClickListener(v -> ((MainActivity) requireActivity()).openCharacterHistory(item.id));
             binding.detailsRealName.setText(item.realName.isEmpty() ? "" : getString(R.string.catalog_real_name, item.realName));
             binding.detailsRealName.setVisibility(item.realName.isEmpty() ? View.GONE : View.VISIBLE);
             binding.countSection.setVisibility(details.appearanceCount < 0 ? View.GONE : View.VISIBLE);

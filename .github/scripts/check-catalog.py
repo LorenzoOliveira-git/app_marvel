@@ -32,6 +32,9 @@ def run(name):
             assert set(x['id'] for x in report['details_friends']).isdisjoint(x['id'] for x in report['details_friends_next']), 'Relações duplicadas'
             assert report['details']['id'] == report['featured']['id'] and report['details']['publisher_id'] == owner
             assert report['invalid_character_rejected'] and report['foreign_publisher_rejected']
+            assert report['appearance_reference_count'] > report['appearance_next_offset'] > report['appearance_first_offset'] > 0
+            assert set(x['id'] for x in report['appearances_first']).isdisjoint(x['id'] for x in report['appearances_next']), 'Aparições duplicadas'
+            assert all(x['reference_position'] >= report['appearance_first_offset'] for x in report['appearances_next']), 'Cursor de aparições incoerente'
             reviewed = {35:'Dispositivos',38:'Absorção de habilidades',54:'Aderência a paredes',138:'Lançamento de teias'}
             assert all(row['translated'] == reviewed[row['id']] for row in report['powers'] if row['id'] in reviewed)
             assert all('Spider-Man' in x['name'] for x in report['search']), 'Busca incoerente'
@@ -46,7 +49,7 @@ try:
     adb('shell','svc','wifi','disable'); adb('shell','svc','data','disable')
     offline = run('catalog-cache')
     assert offline['translation_from_cache'] and offline['powers_from_cache'], 'Tradução não recuperada do cache'
-    for field in ['featured','issues','first','next','search','origin_gender','team','translated_deck','details','appearance_count','powers','details_teams','details_friends','details_friends_next','details_enemies','first_appearance']:
+    for field in ['featured','issues','first','next','search','origin_gender','team','translated_deck','details','appearance_count','powers','details_teams','details_friends','details_friends_next','details_enemies','first_appearance','appearance_reference_count','appearance_first_offset','appearance_next_offset','appearances_first','appearances_next']:
         assert offline[field] == online[field], 'Cache divergiu: '+field
 finally:
     adb('shell','cmd','connectivity','airplane-mode','disable',check=False)
@@ -135,6 +138,32 @@ adb('shell','wm','size','640x1000'); time.sleep(2); capture('catalog-large')
 adb('shell','wm','size','320x640'); time.sleep(2); capture('catalog-small')
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('catalog-font-200')
 adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(3)
+tap('Histórias'); wait('identity_name','Spider-Man'); wait('identity_description'); capture('stories-featured')
+tap(resource='identity_open'); wait('identity_name','Spider-Man'); wait('identity_description'); capture('history-character-top')
+tap(resource='identity_open'); wait('details_name','Spider-Man'); capture('history-profile-link')
+tap(resource='header_back'); wait('identity_name','Spider-Man')
+heading('Onde tudo começou'); wait('issue_title',online['first_appearance']['title']); capture('history-first-appearance')
+heading('Aparições nos quadrinhos'); wait('appearance_title',online['appearances_first'][0]['title']); capture('history-appearances')
+# Paginação manual: o controle está após as edições já exibidas, não necessariamente no viewport inicial.
+for attempt in range(40):
+    if any(n.get('resource-id','').endswith('/history_page_more') for n in nodes()):
+        break
+    adb('shell','input','swipe','215','760','215','260','350'); time.sleep(.3)
+tap(resource='history_page_more'); time.sleep(4); capture('history-next-page')
+for attempt in range(50):
+    if any(n.get('text') == online['appearances_next'][0]['title'] for n in nodes()): break
+    adb('shell','input','swipe','215','300','215','780','350'); time.sleep(.3)
+wait('appearance_title',online['appearances_next'][0]['title'])
+tap(resource='header_back'); top(); wait('identity_name','Spider-Man'); capture('stories-returned')
+tap(resource='identity_open'); top(); wait('identity_name','Spider-Man')
+adb('shell','wm','size','640x1000'); time.sleep(2); capture('history-large')
+adb('shell','wm','size','320x640'); time.sleep(2); capture('history-small')
+adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('history-font-200')
+adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(2)
+tap(resource='header_back'); tap('Personagens'); top(); wait('search_name','Spider-Man'); wait('character_name','Spider-Man')
+selected = wait('character_name').get('text'); tap(resource='character_more'); wait('details_name',selected)
+tap(resource='details_history'); wait('identity_name',selected); capture('history-from-catalog')
+tap(resource='header_back'); wait('details_name',selected); tap(resource='header_back'); top(); wait('search_name','Spider-Man'); wait('character_name',selected)
 tap('Início'); time.sleep(2)
 # Ausência de chave em instalação nova: ícone comum, sem aviso técnico.
 adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')

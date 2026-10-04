@@ -282,6 +282,79 @@ public final class MarvelRepository {
         });
     }
 
+    /** Somente sob demanda na tela de história; o filtro issues/characters é ignorado pela API. */
+    public void appearanceIndex(CharacterDetails details, Callback<AppearanceIndex> callback) {
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            if (pub.data.id != details.character.publisherId) { deliver(callback, Result.failed(Failure.DATA)); return; }
+            index(pub.data, "characters", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Reference selected = null;
+                for (Reference ref : indexed.data) if (ref.id == details.character.id) selected = ref;
+                if (selected == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                request(selected.path, params("field_list", "id,name,publisher,issue_credits"), DAY, result -> {
+                    JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
+                    JSONObject owner = row == null ? null : row.optJSONObject("publisher");
+                    JSONArray refs = row == null ? null : row.optJSONArray("issue_credits");
+                    if (row == null || row.optInt("id") != details.character.id || !details.character.name.equals(text(row, "name"))
+                            || owner == null || owner.optInt("id") != pub.data.id || refs == null) {
+                        deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+                    }
+                    Map<Integer, Reference> unique = new LinkedHashMap<>();
+                    for (int i = 0; i < refs.length(); i++) {
+                        JSONObject ref = refs.optJSONObject(i); if (ref == null) continue;
+                        int id = ref.optInt("id"); String path = resourcePath(text(ref, "api_detail_url"), "issue");
+                        // Os nomes de muitos vínculos são nulos; o título é obtido da edição/volume.
+                        if (id > 0 && path != null && path.endsWith("-" + id + "/"))
+                            unique.putIfAbsent(id, new Reference(id, text(ref, "name"), path));
+                    }
+                    deliver(callback, Result.success(new AppearanceIndex(details.character.id, pub.data.id, new ArrayList<>(unique.values()))));
+                });
+            });
+        });
+    }
+    public void appearances(AppearanceIndex appearanceIndex, int offset, Callback<AppearancePage> callback) {
+        publisher(pub -> {
+            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
+            if (pub.data.id != appearanceIndex.publisherId) { deliver(callback, Result.failed(Failure.DATA)); return; }
+            index(pub.data, "volumes", indexed -> {
+                if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                Map<Integer, Reference> volumes = new HashMap<>(); for (Reference ref : indexed.data) volumes.put(ref.id, ref);
+                appearancePage(appearanceIndex.issues, volumes, Math.max(0, offset), 0, new ArrayList<>(), callback);
+            });
+        });
+    }
+    private void appearancePage(List<Reference> refs, Map<Integer, Reference> volumes, int offset, int attempt,
+            List<Issue> matches, Callback<AppearancePage> callback) {
+        if (offset >= refs.size() || attempt >= 3 || !matches.isEmpty()) {
+            deliver(callback, Result.success(new AppearancePage(matches, offset, offset < refs.size()))); return;
+        }
+        List<Reference> batch = refs.subList(offset, Math.min(offset + 12, refs.size()));
+        StringBuilder ids = new StringBuilder(); Map<Integer, Reference> requested = new LinkedHashMap<>();
+        for (Reference ref : batch) { if (ids.length() > 0) ids.append('|'); ids.append(ref.id); requested.put(ref.id, ref); }
+        request("issues/", params("filter", "id:" + ids, "limit", "100", "field_list",
+                "id,api_detail_url,issue_number,volume,image,cover_date,site_detail_url"), DAY, result -> {
+            JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+            if (rows == null) { deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return; }
+            Map<Integer, Issue> parsed = new HashMap<>();
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.optJSONObject(i); if (row == null) continue;
+                int id = row.optInt("id"); Reference ref = requested.get(id);
+                if (ref == null || !ref.path.equals(resourcePath(text(row, "api_detail_url"), "issue"))) {
+                    deliver(callback, Result.failed(Failure.DATA)); return;
+                }
+                JSONObject volume = row.optJSONObject("volume"); Reference canonical = volume == null ? null : volumes.get(volume.optInt("id"));
+                if (canonical == null || !canonical.path.equals(resourcePath(text(volume, "api_detail_url"), "volume")) || text(volume, "name").isEmpty()) continue;
+                String name = text(volume, "name"), number = text(row, "issue_number");
+                parsed.put(id, new Issue(id, canonical.id, name + (number.isEmpty() ? "" : " #" + number), name,
+                        text(row, "cover_date"), image(row), website(text(row, "site_detail_url"))));
+            }
+            // Preserva a sequência do vínculo do personagem; não inventa ordem cronológica/leitura.
+            for (Reference ref : batch) if (parsed.containsKey(ref.id)) matches.add(parsed.get(ref.id));
+            appearancePage(refs, volumes, offset + batch.size(), attempt + 1, matches, callback);
+        });
+    }
+
     public void origins(Callback<List<Reference>> callback) {
         request("origins/", params("limit", "100", "field_list", "id,name"), DAY, result -> {
             JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");

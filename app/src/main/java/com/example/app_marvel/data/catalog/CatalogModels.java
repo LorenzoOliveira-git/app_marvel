@@ -59,6 +59,21 @@ public final class CatalogModels {
             this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
         }
     }
+    public static final class AppearanceIndex {
+        public final int characterId, publisherId;
+        public final List<Reference> issues;
+        public AppearanceIndex(int characterId, int publisherId, List<Reference> issues) {
+            this.characterId = characterId; this.publisherId = publisherId; this.issues = immutable(issues);
+        }
+    }
+    public static final class AppearancePage {
+        public final List<Issue> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public AppearancePage(List<Issue> items, int nextOffset, boolean hasMore) {
+            this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
+        }
+    }
     private static <T> List<T> immutable(List<T> items) { return Collections.unmodifiableList(new ArrayList<>(items)); }
     public static final class Page {
         public final List<Character> characters;

@@ -1,0 +1,33 @@
+{
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb",
+  "frames": {
+    "stories": "64:632",
+    "characterHistory": "59:126"
+  },
+  "reference": "Contexto e screenshot de cada frame consultados uma vez. Conteúdo fictício do Figma substituído por dados ComicVine reais.",
+  "shared": [
+    "logo_marvel",
+    "background_app",
+    "background_panel",
+    "background_navigation",
+    "Bebas Neue",
+    "Inter",
+    "RecentIssueAdapter",
+    "MarvStateView (ícones comuns)"
+  ],
+  "geometry": {
+    "identityImageHeightDp": 290,
+    "identityImageRadiusDp": 10,
+    "identityTextImageWeight": "1:1.25",
+    "sectionSpacingDp": 64,
+    "historyHeadingSp": 32,
+    "timelineNodeDp": 24
+  },
+  "adaptation": [
+    "Identidade empilhada em largura menor que 360dp ou fonte maior que 130%.",
+    "Capas completas na lista de aparições, com fitCenter.",
+    "Menu sobreposto; painel principal até o rodapé.",
+    "Categorias completas e arcos/mídias separados dos perfis e aparições neste subbloco."
+  ],
+  "dataOrder": "issue_credits preservado; datas de capa; não afirma ordem de leitura ou cronologia global."
+}
