@@ -10,7 +10,7 @@ Java, XML, MVVM e Fragments mantidos. Adicionada RecyclerView 1.4.0 para as list
 
 Referências em cache: Tela Inicial `19:102` e Personagens `38:428`, do arquivo Marvel - Mobile. Nenhuma chamada adicional ao Figma foi feita para os ajustes. Marca SUA centralizada acima de MARVEL, fontes Bebas Neue/Inter, painel escuro até o fundo e menu sobreposto reutilizados.
 
-Home mantém hierarquia de últimas atualizações, destaque e curiosidade; a apresentação em duas colunas vira vertical em telas menores que 360 dp ou fonte acima de 130%. O cabeçalho de personagens reutiliza Inter 20 sp e oferece voltar ao início. Os retratos do catálogo preservam proporção aproximada 240 × 366 e destaque central maior. Busca, alvos de 48 dp, controles anterior/próximo e carregamento são adaptações funcionais. Marv aparece na curiosidade e nos estados reais de carregamento, vazio e erro.
+Home mantém hierarquia de últimas atualizações, destaque e curiosidade; a apresentação em duas colunas vira vertical em telas menores que 360 dp ou fonte acima de 130%. O cabeçalho de personagens reutiliza Inter 20 sp e oferece voltar ao início. Os retratos do catálogo preservam proporção aproximada 240 × 366 e destaque central maior. Busca, alvos de 48 dp, controles anterior/próximo e carregamento são adaptações funcionais. Marv aparece na curiosidade com conteúdo. Estados comuns de carregamento, vazio e erro usam progresso/ícones, conforme a revisão solicitada. O cabeçalho da Home usa avatar, nome e e-mail reais da sessão Firebase; visitante usa identidade neutra.
 
 ## Contrato verificado com respostas reais
 
@@ -51,7 +51,7 @@ Respostas públicas em arquivos JSON privados com gravação atômica e metadado
 
 Imagens: memória limitada a 8 MiB e até 80 arquivos no cache privado, gravação atômica e redimensionamento antes de exibir. Traduções: cache persistente por entidade/campo/hash/idioma/versão existente; original preservado. Imagens e navegação não esperam tradução. Falha sem tradução salva mostra estado em português com retentativa. Nome e nome real conhecidos do destaque são preservados fora da tradução; nomes dos registros e títulos permanecem como registrados na fonte; a UI identifica “Tradução automática”. ML Kit usa `pt`, sem variante própria pt-BR.
 
-A chave continua fora do APK: configure `.env` local na raiz e execute `python tools/comicvine.py device` com aparelho debug conectado. O Secret do GitHub somente provisiona o **emulador do CI**; baixar o APK não configura automaticamente um celular. Procedimento completo em [bloco-3-proposta.md](bloco-3-proposta.md). Nenhum valor de chave foi lido ou publicado nesta sessão.
+A chave continua fora do APK: configure `.env` local na raiz e execute `:app:runLocalDebug` com um aparelho/emulador iniciado. A tarefa instala, provisiona a chave privada e abre o app; `:app:configureComicVineDebug` apenas provisiona uma instalação debug existente. Roteiro Windows/Android Studio em [correcoes-dados-home.md](correcoes-dados-home.md). O Secret do GitHub somente provisiona o **emulador do CI**; baixar o APK não configura automaticamente um celular. Procedimento completo em [bloco-3-proposta.md](bloco-3-proposta.md). Nenhum valor de chave foi lido ou publicado nesta sessão.
 
 O workflow Android volta a compilar/lint e não é substituído pelas inspeções. Atividades ADB de diagnóstico existem apenas em `src/debug`, sem launcher ou menu, e exercitam os repositórios reais; não são conteúdo do produto. O artefato de diagnóstico salva IDs públicos e resultados, sem URLs de requisição com chave.
 
@@ -67,6 +67,8 @@ O workflow Android volta a compilar/lint e não é substituído pelas inspeçõe
 
 ## Verificação e checklist
 
+A execução abaixo registra a entrega original. Para a revisão do cabeçalho, estados e configuração local, consulte [correcoes-dados-home.md](correcoes-dados-home.md).
+
 Sintaxe Java 11 (45 arquivos), XML/Python e diff conferidos localmente. Compilação e lint passaram no Android CI (zero erros; 25 avisos). [Repositório real e cache após reiniciar offline](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37211559551) passaram: seis HQs, páginas de 32 personagens sem IDs duplicados, busca, origem/gênero e equipe Avengers, sempre com publisher Marvel verificado.
 
 [Execução de verificação final](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37215745602), commit `94ca314a50b4e533e1d435ac5d9f21cbc235a6ad`: **concluída com sucesso**. O mesmo cenário de mudança de tamanho/fonte e retorno à Home passou sem fechar o app. As 14 capturas incluem conteúdo, seleção vazia e erro real após remover a chave/cache do emulador. Login/cadastro reais com conta Firebase e aparelho físico não foram exercitados neste bloco.
@@ -81,7 +83,7 @@ Foi corrigido um callback de margens que acessava o NavHost após sua destruiç�
 | 4 | Telas e fonte | Atendido no emulador: 320×640, 430×932, 640×1000 e fonte 200%; rolagem para conteúdo longo. Aparelho físico pendente. |
 | 5 | Java/MVVM/Fragments/XML | Atendido: repositórios, ViewModels e layouts nativos; sem Compose ou migração de linguagem/SDK. |
 | 6 | Decisões e escopo | Atendido: ComicVine real, acesso direto, ML Kit, datas de publicação e Perfil=gênero; detalhes internos no próximo subbloco. |
-| 7 | Estados e recuperação | Atendido: conteúdo, seleção vazia, erro real com Marv e botão de retentativa capturados; recuperação do cache offline conferida. Retentativa após restaurar conexão deve ser conferida manualmente em aparelho físico. |
+| 7 | Estados e recuperação | Atendido: conteúdo, seleção vazia, erro real e botão de retentativa capturados; recuperação do cache offline conferida. Retentativa após restaurar conexão deve ser conferida manualmente em aparelho físico. |
 | 8 | Sem testes unitários | Atendido: nenhum arquivo src/test adicionado; verificação por compilação, lint e ADB. |
 | 9 | Mapeamento e mocks | Atendido: tabela acima descreve campos, relações e trechos derivados; nenhum mock de conteúdo. |
 | 10 | Credenciais/proprietário | Atendido para credenciais: chave separada, privada e fora de backup/APK. Heróis e regras de proprietário não se aplicam a este subbloco. |

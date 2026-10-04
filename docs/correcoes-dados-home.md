@@ -21,10 +21,11 @@ No Logcat debug, o filtro `ComicVine` informa somente categoria de falha e statu
 
 - Home: o cabeçalho “Seu universo / INÍCIO” foi substituído por avatar circular, nome e e-mail da sessão Firebase. Foto HTTPS existente na sessão é carregada com limite/cache; sem foto, usa ícone neutro. Visitante mostra “Visitante”, sem inventar nome, foto ou e-mail. Marca SUA/MARVEL, painel escuro até o fundo e navegação sobreposta mantidos.
 - Estados comuns: carregamento usa indicador de progresso; seleção vazia usa ícone de busca; erro usa ícone de alerta e retentativa. Marv foi retirado desses estados compartilhados.
+- A curiosidade/origem não ficam carregando indefinidamente quando o destaque falha; ficam ocultas até existir personagem para traduzir. Retentativas invalidam traduções antigas.
 - Marv permanece em momentos de orientação e na curiosidade da Home, somente quando o conteúdo correspondente está carregado. Referências/recursos existentes reutilizados, sem novas chamadas ao Figma.
 
 ## Verificação
 
-Em andamento: compilação/lint, fluxo Gradle local usando `.env`, ausência da chave no APK, ComicVine real, cache offline e capturas da Home/catálogo. Identidade/foto de uma conta Firebase real e Windows/Android Studio local precisam de validação na máquina do usuário; o CI usa Linux com emulador Android.
+O [fluxo Gradle com `.env`, ausência da chave no APK, ComicVine real, ML Kit/cache offline e navegação](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37218180581) passou. Lint: zero erros e 26 avisos. As capturas mostraram o cabeçalho de visitante e erros com ícones sem Marv. A [verificação final](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37218958361), incluindo ausência de carregamento permanente da curiosidade sem personagem, **concluiu com sucesso** no commit `3c9a7bf91a38a196cf1111717715df1821b25554`. Foram conferidas Home/Personagens, filtros, páginas sem duplicação, seis HQs reais, cache offline, três tamanhos de tela e fonte 200%. O erro real mostra ícones e retentativa, sem Marv ou indicador preso. Identidade/foto de uma conta Firebase real e Windows/Android Studio local precisam de validação na máquina do usuário; o CI usa Linux com emulador Android.
 
 Estas correções pertencem ao bloco Home/Personagens. Não iniciam o próximo bloco e não disponibilizam APK automaticamente.
