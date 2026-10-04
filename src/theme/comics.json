@@ -1,0 +1,17 @@
+{
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb",
+  "frame": "62:542",
+  "reference": "Contexto e screenshot consultados uma vez para o bloco 5.",
+  "shared": ["logo_marvel", "background_app", "background_panel", "background_navigation", "Bebas Neue", "Inter", "background_recent_issue", "RecentIssueAdapter", "MarvStateView"],
+  "geometry": {"highlightCoverDp": [134, 203], "headingSp": 32, "carouselTitleSp": 40, "coverRadiusDp": 10, "sectionGapDp": 64, "carouselWidthFraction": 0.60, "carouselAspect": 1.47},
+  "adaptation": [
+    "Conteúdo e capas fictícios substituídos por edições Marvel verificadas na ComicVine.",
+    "Volume substitui Saga: o filtro utiliza a relação volume realmente conferida; arcos ficam em outro bloco.",
+    "Busca dentro do seletor de volumes; nome completo da seleção abaixo dos controles.",
+    "Carrossel com capas completas, controles acessíveis anterior/próximo e carregamento manual.",
+    "Destaque empilhado abaixo de 360dp ou fonte acima de 130%; textos e botões com altura variável.",
+    "Menu sobreposto e painel até o rodapé; identidade e ícones originais reutilizados.",
+    "Links de edição identificam explicitamente o destino externo ComicVine."
+  ],
+  "data": "Título composto por volume.name + issue_number; store_date até hoje; índice canônico publisher.volumes confirma ID e URL; nomes/títulos preservados."
+}

@@ -18,9 +18,13 @@ Configure `COMICVINE_API_KEY` no `.env` local da raiz e execute **Sua Marvel (lo
 
 Histórias com destaque real, primeira aparição e edições vinculadas ao personagem, paginadas e verificadas por volumes Marvel. Acessível também por **Ver aparições** nos perfis. Datas da capa e sequência do catálogo identificadas; resumo/origem traduzidos e cache persistente. [Entrega e roteiro](docs/bloco-4-historias-aparicoes.md).
 
+## Bloco 5 — Quadrinhos
+
+Catálogo nativo acessível por Histórias, com destaque, capas em carrossel, busca de volumes Marvel, Recentes/Antigos e paginação. Edições verificadas pelo índice de volumes, dados em cache e links ComicVine explícitos. [Entrega e roteiro](docs/bloco-5-quadrinhos.md).
+
 ## Abrir e executar
 
-1. Clone o repositório e selecione a branch `codex/bloco-4-historias-aparicoes` (ou `main` após incorporar o PR).
+1. Clone o repositório e selecione a branch `codex/bloco-5-quadrinhos` (ou `main` após incorporar o PR).
 2. Abra a raiz no Android Studio.
 3. Mantenha os SDKs existentes: minSdk 24, compileSdk/targetSdk 37. Instale a plataforma Android 37.0 (pacote `platforms;android-37.0`) e Build Tools 36.0.0.
 4. Disponibilize um JDK 25, conforme gradle/gradle-daemon-jvm.properties, e sincronize o Gradle.
@@ -43,6 +47,8 @@ No Windows:
 O workflow Android build e lint executa essas tarefas e verifica o app no emulador. Publica relatórios; APK somente em execução manual. Não executa testes unitários.
 
 ## Documentação
+
+- [Quadrinhos: entrega e roteiro](docs/bloco-5-quadrinhos.md)
 
 - [Histórias e aparições: entrega e roteiro](docs/bloco-4-historias-aparicoes.md)
 - [Detalhes de personagem: entrega e roteiro](docs/bloco-3-detalhes-personagem.md)
