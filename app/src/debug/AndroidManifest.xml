@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application>
         <!-- Verificação ADB somente em debug; não aparece na navegação do aplicativo. -->
         <activity android:name=".diagnostics.DataCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.CatalogCheckActivity" android:exported="true" />
     </application>
 </manifest>

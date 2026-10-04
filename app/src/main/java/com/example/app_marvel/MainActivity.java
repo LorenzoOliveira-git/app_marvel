@@ -32,6 +32,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
     private NavController navController;
     private NavHostFragment host;
     private int bottomSafe, keyboardBottom;
+    private final Runnable contentInsetsUpdater = this::updateContentInsets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
                 && !isAuthDestination(navController.getCurrentDestination().getId())) {
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
+        binding.headerBack.setOnClickListener(view -> openFeature(AppFeature.HOME));
         binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
@@ -67,11 +69,16 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
+            boolean catalog = destination.getId() == R.id.charactersFragment;
+            binding.headerBack.setVisibility(catalog ? View.VISIBLE : View.GONE);
+            binding.brandCaption.setVisibility(catalog ? View.GONE : View.VISIBLE);
+            binding.screenTitle.setTextAppearance(catalog ? R.style.TextAppearance_Marvel_CatalogHeader : R.style.TextAppearance_Marvel_Title);
+            binding.screenTitle.setGravity(catalog ? Gravity.CENTER : Gravity.START);
             boolean form = isAuthDestination(destination.getId());
             binding.bottomNavigation.setVisibility(form ? View.GONE : View.VISIBLE);
             binding.mainHeader.setVisibility(form ? View.GONE : View.VISIBLE);
             binding.authHeader.setVisibility(form ? View.VISIBLE : View.GONE);
-            binding.navHost.post(this::updateContentInsets);
+            binding.navHost.post(contentInsetsUpdater);
         });
         binding.bottomNavigation.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateContentInsets());
     }
@@ -102,7 +109,8 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
     private boolean isAuthDestination(int id) { return id == R.id.loginFragment || id == R.id.registerFragment; }
 
     public void updateContentInsets() {
-        if (host == null || host.getChildFragmentManager().getPrimaryNavigationFragment() == null) return;
+        if (isFinishing() || isDestroyed() || host == null || !host.isAdded()
+                || host.getChildFragmentManager().getPrimaryNavigationFragment() == null) return;
         View content = host.getChildFragmentManager().getPrimaryNavigationFragment().getView();
         if (!(content instanceof NestedScrollView)) return;
         int bottom = Math.max(bottomSafe, keyboardBottom);
@@ -149,6 +157,13 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (binding != null) binding.navHost.removeCallbacks(contentInsetsUpdater);
+        host = null;
+        super.onDestroy();
     }
 
     @Override

@@ -1,0 +1,51 @@
+package com.example.app_marvel.ui.components;
+
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.app_marvel.data.catalog.CatalogModels.Issue;
+import com.example.app_marvel.databinding.ItemRecentIssueBinding;
+import com.example.app_marvel.ui.common.ComicVineNavigation;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAdapter.Holder> {
+    private final ComicVineImages images;
+    private List<Issue> items = Collections.emptyList();
+    private int width;
+    public RecentIssueAdapter(ComicVineImages images) { this.images = images; setHasStableIds(true); }
+    public void submit(List<Issue> value) { if (items.equals(value)) return; items = value; notifyDataSetChanged(); }
+    public void width(int value) { if (width != value) { width = value; notifyDataSetChanged(); } }
+    @Override public long getItemId(int position) { return items.get(position).id; }
+    @Override public int getItemCount() { return items.size(); }
+    @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int type) {
+        ItemRecentIssueBinding binding = ItemRecentIssueBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        if (parent.getResources().getConfiguration().screenWidthDp < 360 || parent.getResources().getConfiguration().fontScale > 1.3f) {
+            binding.issueRow.setOrientation(android.widget.LinearLayout.VERTICAL);
+            android.widget.LinearLayout.LayoutParams image = (android.widget.LinearLayout.LayoutParams) binding.issueImage.getLayoutParams();
+            image.gravity = android.view.Gravity.CENTER_HORIZONTAL; binding.issueImage.setLayoutParams(image);
+            binding.issueDetails.setLayoutParams(new android.widget.LinearLayout.LayoutParams(-1, -2));
+        }
+        return new Holder(binding);
+    }
+    @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
+        Issue item = items.get(position); ItemRecentIssueBinding view = holder.binding;
+        ViewGroup.LayoutParams params = view.getRoot().getLayoutParams();
+        params.width = width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT; view.getRoot().setLayoutParams(params);
+        view.issueTitle.setText(item.title);
+        try {
+            SimpleDateFormat source = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); source.setLenient(false);
+            view.issueDate.setText(new SimpleDateFormat("dd MMM yyyy", new Locale("pt", "BR")).format(source.parse(item.publicationDate)));
+        } catch (Exception invalidDate) { view.issueDate.setText(""); }
+        view.issueMore.setEnabled(!item.siteUrl.isEmpty());
+        view.issueMore.setOnClickListener(clicked -> ComicVineNavigation.open(clicked.getContext(), item.siteUrl));
+        images.show(view.issueImage, item.imageUrl);
+    }
+    static final class Holder extends RecyclerView.ViewHolder {
+        final ItemRecentIssueBinding binding;
+        Holder(ItemRecentIssueBinding binding) { super(binding.getRoot()); this.binding = binding; }
+    }
+}
