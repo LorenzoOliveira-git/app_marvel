@@ -44,6 +44,7 @@ public final class HomeFragment extends Fragment {
             }
         }).get(HomeViewModel.class);
         RecentIssueAdapter issues = new RecentIssueAdapter(container.getImages());
+        issues.openWith(id -> ((MainActivity) requireActivity()).openIssue(id));
         binding.recentList.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.recentList.setAdapter(issues);
         binding.recentList.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> { if (r - l > 0 && r - l != or - ol) issues.width(r - l - dp(8)); });

@@ -63,7 +63,8 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         binding.headerBack.setOnClickListener(view -> {
             if (navController.getCurrentDestination() != null && (navController.getCurrentDestination().getId() == R.id.characterDetailsFragment
                     || navController.getCurrentDestination().getId() == R.id.characterHistoryFragment
-                    || navController.getCurrentDestination().getId() == R.id.comicsFragment))
+                    || navController.getCurrentDestination().getId() == R.id.comicsFragment
+                    || navController.getCurrentDestination().getId() == R.id.issueDetailsFragment))
                 navController.navigateUp();
             else openFeature(AppFeature.HOME);
         });
@@ -80,7 +81,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             binding.screenTitle.setText(destination.getLabel());
             boolean details = destination.getId() == R.id.characterDetailsFragment;
-            boolean history = destination.getId() == R.id.characterHistoryFragment || destination.getId() == R.id.comicsFragment;
+            boolean history = destination.getId() == R.id.characterHistoryFragment || destination.getId() == R.id.comicsFragment || destination.getId() == R.id.issueDetailsFragment;
             boolean catalog = destination.getId() == R.id.charactersFragment || details || history || destination.getId() == R.id.storiesFragment;
             if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
             if (history) binding.bottomNavigation.getMenu().findItem(R.id.storiesFragment).setChecked(true);
@@ -159,6 +160,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         hideKeyboard();
         Bundle arguments = new Bundle(); arguments.putInt("characterId", characterId);
         navController.navigate(R.id.characterDetailsFragment, arguments);
+    }
+    public void openIssue(int issueId) {
+        if (issueId <= 0) return;
+        hideKeyboard(); Bundle arguments = new Bundle(); arguments.putInt("issueId",issueId);
+        navController.navigate(R.id.issueDetailsFragment,arguments);
     }
     public void openComics() { hideKeyboard(); navController.navigate(R.id.comicsFragment); }
     public void openCharacterHistory(int characterId) {

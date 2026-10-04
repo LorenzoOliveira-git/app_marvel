@@ -48,6 +48,7 @@ public final class CharacterHistoryFragment extends Fragment {
         model.getDescription().observe(getViewLifecycleOwner(), state -> identity.description(state, model::translate));
         model.getOrigin().observe(getViewLifecycleOwner(), state -> identity.origin(state, model::translate));
         RecentIssueAdapter first = new RecentIssueAdapter(container.getImages(), true, true);
+        first.openWith(id -> ((MainActivity) requireActivity()).openIssue(id));
         binding.historyFirstList.setLayoutManager(new LinearLayoutManager(requireContext())); binding.historyFirstList.setAdapter(first);
         model.getFirst().observe(getViewLifecycleOwner(), state -> {
             binding.historyFirstSection.setVisibility(state.getStatus() == UiState.Status.UNAVAILABLE ? View.GONE : View.VISIBLE);
@@ -56,6 +57,7 @@ public final class CharacterHistoryFragment extends Fragment {
             if (state.getStatus() == UiState.Status.CONTENT) first.submit(state.getData());
         });
         AppearanceAdapter timeline = new AppearanceAdapter(container.getImages());
+        timeline.openWith(id -> ((MainActivity) requireActivity()).openIssue(id));
         binding.historyTimelineList.setLayoutManager(new LinearLayoutManager(requireContext())); binding.historyTimelineList.setAdapter(timeline);
         model.getAppearances().observe(getViewLifecycleOwner(), state -> {
             binding.historyTimelineState.render(state.getStatus(), () -> model.loadAppearances(false));

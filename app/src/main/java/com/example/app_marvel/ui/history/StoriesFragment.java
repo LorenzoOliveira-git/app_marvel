@@ -46,6 +46,7 @@ public final class StoriesFragment extends Fragment {
         model.getFact().observe(getViewLifecycleOwner(), state -> identity.description(state, model::translate));
         model.getOrigin().observe(getViewLifecycleOwner(), state -> identity.origin(state, model::translate));
         RecentIssueAdapter issues = new RecentIssueAdapter(container.getImages(), false, true);
+        issues.openWith(id -> ((MainActivity) requireActivity()).openIssue(id));
         binding.storiesRecentList.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.storiesRecentList.setAdapter(issues);
         binding.storiesRecentList.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> { if (r - l > 0 && r - l != or - ol) issues.width(r - l); });

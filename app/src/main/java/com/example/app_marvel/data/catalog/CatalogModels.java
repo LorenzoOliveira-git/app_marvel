@@ -44,6 +44,33 @@ public final class CatalogModels {
                 default: throw new IllegalArgumentException("Relação desconhecida"); }
         }
     }
+    public static final class Credit {
+        public final Reference reference;
+        public final String role, siteUrl;
+        public Credit(Reference reference, String role, String siteUrl) {
+            this.reference = reference; this.role = role; this.siteUrl = siteUrl;
+        }
+    }
+    public static final class IssueDetails {
+        public final Issue issue;
+        public final int publisherId;
+        public final String name, coverDate, originalDeck, originalDescription, volumeSiteUrl;
+        public final List<Reference> characters, teams;
+        public final List<Credit> creators, arcs, locations, objects, concepts;
+        public IssueDetails(Issue issue, int publisherId, String name, String coverDate, String originalDeck,
+                String originalDescription, String volumeSiteUrl, List<Reference> characters, List<Reference> teams,
+                List<Credit> creators, List<Credit> arcs, List<Credit> locations, List<Credit> objects, List<Credit> concepts) {
+            this.issue = issue; this.publisherId = publisherId; this.name = name; this.coverDate = coverDate;
+            this.originalDeck = originalDeck; this.originalDescription = originalDescription; this.volumeSiteUrl = volumeSiteUrl;
+            this.characters = immutable(characters); this.teams = immutable(teams); this.creators = immutable(creators);
+            this.arcs = immutable(arcs); this.locations = immutable(locations); this.objects = immutable(objects); this.concepts = immutable(concepts);
+        }
+        public List<Reference> relations(String kind) {
+            if (kind.equals("characters")) return characters;
+            if (kind.equals("teams")) return teams;
+            throw new IllegalArgumentException("Relação desconhecida");
+        }
+    }
     public static final class RelatedItem {
         public final int id, publisherId;
         public final String name, imageUrl, siteUrl;

@@ -1,51 +1,38 @@
 #!/usr/bin/env python3
-"""Consulta dirigida do catálogo; relatório público sem credenciais."""
-import datetime
+"""Contrato dirigido de detalhes de edições; credencial somente no ambiente privado."""
 import json
 from pathlib import Path
 from comicvine import fetch, read_key
 from comicvine_contract import resource_path
 
 def main():
-    key = read_key()
-    report = {'probes': {}}
-    def probe(label, path, params, max_bytes=2_000_000):
-        result = fetch(path, params, key, max_bytes)
-        report['probes'][label] = {'path': path, 'query_without_key': params, **result}
-        payload = result.get('response', {})
-        assert payload.get('status_code') == 1
-        return payload['results']
+    key=read_key(); report={'probes':{}}
+    def probe(label,path,params,max_bytes=2_000_000):
+        value=fetch(path,params,key,max_bytes)
+        report['probes'][label]={'path':path,'query_without_key':params,**value}
+        assert value.get('response',{}).get('status_code')==1,label
+        return value['response']['results']
     try:
-        publishers = probe('publisher', 'publishers/', {'filter':'name:Marvel','limit':100,'field_list':'id,name,api_detail_url'})
-        pubs = [p for p in publishers if p.get('name') == 'Marvel']
-        assert len(pubs) == 1
-        pub = pubs[0]
-        index = probe('volumes', resource_path(pub['api_detail_url'], 'publisher'), {'field_list':'id,name,volumes'}, 8_000_000)
-        refs = {r['id']:r for r in index['volumes']}
-        today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-        fields = 'id,api_detail_url,issue_number,volume,image,store_date,cover_date,site_detail_url'
-        for offset in [0,100]:
-            probe('stable_'+str(offset), 'issues/', {'sort':'store_date:desc,id:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'offset':offset,'field_list':fields})
-        rows = probe('recent', 'issues/', {'sort':'store_date:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'field_list':fields})
-        day = rows[-1]['store_date']
-        for offset in [0,100]:
-            daily = probe('date_bucket_'+str(offset), 'issues/', {'sort':'id:desc','filter':'store_date:'+day+'|'+day,'limit':100,'offset':offset,'field_list':fields})
-            assert all(i['store_date'] == day for i in daily)
-            assert all(a['id'] > b['id'] for a,b in zip(daily,daily[1:]))
-        first = report['probes']['date_bucket_0']['response']['results']
-        next_page = report['probes']['date_bucket_100']['response']['results']
-        assert {i['id'] for i in first}.isdisjoint(i['id'] for i in next_page)
-        ids = list(dict.fromkeys(i['volume']['id'] for i in rows if i['volume']['id'] in refs))[:3]
-        assert ids
-        report['selected_volumes'] = [refs[i] for i in ids]
-        for order in ['desc','asc']:
-            for offset in [0,12]:
-                probe(order+str(offset), 'issues/', {'sort':'store_date:'+order,'filter':'volume:'+'|'.join(map(str,ids))+',store_date:1900-01-01|'+today,'limit':12,'offset':offset,'field_list':fields})
-        first = next(i for i in rows if i['volume']['id'] in refs)
-        probe('detail', resource_path(first['api_detail_url'],'issue'), {'field_list':'id,name,volume,store_date,cover_date,story_arc_credits,deck,description'})
+        pubs=probe('publisher','publishers/',{'filter':'name:Marvel','limit':100,'field_list':'id,name,api_detail_url'})
+        pub=next(p for p in pubs if p['name']=='Marvel')
+        index=probe('volumes',resource_path(pub['api_detail_url'],'publisher'),{'field_list':'id,name,volumes'},8_000_000)
+        canonical={r['id']:r for r in index['volumes']}
+        fields='id,api_detail_url,name,issue_number,volume,image,store_date,cover_date,site_detail_url,deck,description,character_credits,team_credits,person_credits,story_arc_credits,location_credits,object_credits,concept_credits'
+        for issue_id in [1195913,105342]:
+            rows=probe('reference_'+str(issue_id),'issues/',{'filter':'id:'+str(issue_id),'field_list':'id,api_detail_url','limit':100})
+            assert len(rows)==1 and rows[0]['id']==issue_id
+            detail=probe('detail_'+str(issue_id),resource_path(rows[0]['api_detail_url'],'issue'),{'field_list':fields})
+            assert detail['id']==issue_id and detail['volume']['id'] in canonical
+            ref=canonical[detail['volume']['id']]
+            owner=probe('volume_'+str(issue_id),resource_path(ref['api_detail_url'],'volume'),{'field_list':'id,name,publisher'})
+            assert owner['publisher']['id']==pub['id']
+            for kind,field in [('character','character_credits'),('team','team_credits'),('person','person_credits'),('story_arc','story_arc_credits')]:
+                refs=detail.get(field) or []
+                if refs:
+                    probe(kind+'_'+str(issue_id),resource_path(refs[0]['api_detail_url'],kind),{'field_list':'id,name,publisher,site_detail_url,image,issue_credits'})
+        dc=probe('foreign','issues/',{'filter':'id:6','limit':100,'field_list':'id,volume,api_detail_url'})
+        assert all(i['volume']['id'] not in canonical for i in dc)
     finally:
-        Path('comicvine-comics-contract.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
-    print('Contrato público de quadrinhos consultado.')
-
-if __name__ == '__main__':
-    main()
+        Path('comicvine-issue-contract.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+    print('Detalhes e vínculos reais consultados sem credencial no relatório.')
+if __name__=='__main__':main()

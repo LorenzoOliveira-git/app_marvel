@@ -18,6 +18,8 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
     private final ComicVineImages images;
     private List<Issue> items = Collections.emptyList();
     private int width;
+    private java.util.function.IntConsumer open;
+    public void openWith(java.util.function.IntConsumer listener) { open = listener; }
     private final boolean coverDates, explicitExternal, showVolume;
     public RecentIssueAdapter(ComicVineImages images) { this(images, false, false); }
     public RecentIssueAdapter(ComicVineImages images, boolean coverDates, boolean explicitExternal) {
@@ -53,12 +55,15 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
             view.issueDate.setText(coverDates ? view.getRoot().getContext().getString(R.string.history_cover_date, date) : date);
         } catch (Exception invalidDate) { view.issueDate.setText(""); }
         view.issueDate.setVisibility(view.issueDate.getText().length() > 0 ? View.VISIBLE : View.GONE);
-        if (explicitExternal) {
+        if (open != null) {
+            view.issueMore.setText(R.string.issue_open);
+            view.issueMore.setContentDescription(view.getRoot().getContext().getString(R.string.issue_open_named,item.title));
+        } else if (explicitExternal) {
             view.issueMore.setText(R.string.history_external);
             view.issueMore.setContentDescription(view.getRoot().getContext().getString(R.string.history_external_issue, item.title));
         }
-        view.issueMore.setEnabled(!item.siteUrl.isEmpty());
-        view.issueMore.setOnClickListener(clicked -> ComicVineNavigation.open(clicked.getContext(), item.siteUrl));
+        view.issueMore.setEnabled(open != null || !item.siteUrl.isEmpty());
+        view.issueMore.setOnClickListener(clicked -> { if (open != null) open.accept(item.id); else ComicVineNavigation.open(clicked.getContext(),item.siteUrl); });
         images.show(view.issueImage, item.imageUrl);
     }
     static final class Holder extends RecyclerView.ViewHolder {

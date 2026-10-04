@@ -22,9 +22,13 @@ Histórias com destaque real, primeira aparição e edições vinculadas ao pers
 
 Catálogo nativo acessível por Histórias, com destaque, capas em carrossel, busca de volumes Marvel, Recentes/Antigos e paginação. Edições verificadas pelo índice de volumes, dados em cache e links ComicVine explícitos. [Entrega e roteiro](docs/bloco-5-quadrinhos.md).
 
+## Bloco 6 — Detalhes de quadrinhos
+
+Capas completas, datas de venda/capa identificadas, descrição traduzida com cache, personagens Marvel e créditos da edição. Entradas pela Home, catálogo e aparições. [Entrega e roteiro](docs/bloco-6-detalhes-quadrinho.md).
+
 ## Abrir e executar
 
-1. Clone o repositório e selecione a branch `codex/bloco-5-quadrinhos` (ou `main` após incorporar o PR).
+1. Clone o repositório e selecione a branch `codex/bloco-6-detalhes-quadrinho` (ou `main` após incorporar o PR).
 2. Abra a raiz no Android Studio.
 3. Mantenha os SDKs existentes: minSdk 24, compileSdk/targetSdk 37. Instale a plataforma Android 37.0 (pacote `platforms;android-37.0`) e Build Tools 36.0.0.
 4. Disponibilize um JDK 25, conforme gradle/gradle-daemon-jvm.properties, e sincronize o Gradle.
@@ -48,6 +52,7 @@ O workflow Android build e lint executa essas tarefas e verifica o app no emulad
 
 ## Documentação
 
+- [Detalhes de quadrinhos: entrega e roteiro](docs/bloco-6-detalhes-quadrinho.md)
 - [Quadrinhos: entrega e roteiro](docs/bloco-5-quadrinhos.md)
 
 - [Histórias e aparições: entrega e roteiro](docs/bloco-4-historias-aparicoes.md)

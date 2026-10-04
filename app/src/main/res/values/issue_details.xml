@@ -1,0 +1,28 @@
+<resources>
+    <string name="issue_details_title">Quadrinho</string>
+    <string name="issue_open">Ver quadrinho</string>
+    <string name="issue_open_named">Ver quadrinho: %1$s</string>
+    <string name="issue_summary">Resumo</string>
+    <string name="issue_description">Descrição</string>
+    <string name="issue_characters">Personagens nesta edição</string>
+    <string name="issue_teams">Equipes nesta edição</string>
+    <string name="issue_creators">Créditos de criação</string>
+    <string name="issue_arcs">Arcos relacionados</string>
+    <string name="issue_locations">Locais relacionados</string>
+    <string name="issue_objects">Objetos relacionados</string>
+    <string name="issue_concepts">Conceitos relacionados</string>
+    <string name="issue_more_characters">Carregar mais personagens</string>
+    <string name="issue_more_teams">Carregar mais equipes</string>
+    <string name="issue_credit_external">%1$s · Na ComicVine ↗</string>
+    <string name="issue_creator_role">%1$s · %2$s</string>
+    <string name="issue_volume_external">Volume na ComicVine ↗</string>
+    <string name="issue_source">Fonte: ComicVine · Descrições traduzidas automaticamente. Créditos e relações conforme o catálogo.</string>
+    <string name="issue_role_artist">Arte</string>
+    <string name="issue_role_cover">Capa</string>
+    <string name="issue_role_writer">Roteiro</string>
+    <string name="issue_role_inker">Arte-final</string>
+    <string name="issue_role_penciler">Desenho</string>
+    <string name="issue_role_letterer">Letreiramento</string>
+    <string name="issue_role_colorist">Cores</string>
+    <string name="issue_role_editor">Edição</string>
+</resources>
