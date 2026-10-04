@@ -1,8 +1,7 @@
-name: Sondar relações Marvel com respostas reais
+name: Verificar equipes Marvel reais
 on:
   push:
     branches: ["diagnostic/comicvine-real-contract"]
-  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -11,13 +10,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - name: Consultar API sem expor chave
-        env:
+      - env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
-        run: python3 tools/comicvine_contract.py
+        run: python3 tools/comicvine_filters.py
       - uses: actions/upload-artifact@v7
         with:
-          name: comicvine-real-contract
-          path: comicvine-contract.json
-          if-no-files-found: error
+          name: comicvine-filters
+          path: comicvine-filters.json
           retention-days: 7
+          if-no-files-found: error
