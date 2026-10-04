@@ -12,7 +12,7 @@
                 <TextView android:id="@+id/brand_caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"
                     android:textAppearance="@style/TextAppearance.Marvel.Caption" />
                 <TextView android:id="@+id/screen_title" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" />
+                    android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
             </LinearLayout>
             <ImageView android:layout_width="76dp" android:layout_height="33dp" android:scaleType="fitCenter"
                 android:src="@drawable/logo_marvel" android:contentDescription="@string/brand_content_description" />

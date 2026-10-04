@@ -2,7 +2,7 @@
     android:id="@+id/auth_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/space_lg">
         <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xl"
-            android:text="@string/auth_login_title" android:fontFamily="@font/bebas_neue_regular" android:textAppearance="@style/TextAppearance.Marvel.Display" />
+            android:text="@string/auth_login_title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" android:textAppearance="@style/TextAppearance.Marvel.Display" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" android:orientation="horizontal" android:gravity="center_vertical">
             <ImageView android:id="@+id/marv" android:layout_width="72dp" android:layout_height="84dp" android:src="@drawable/marv_welcome" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
             <TextView android:id="@+id/intro" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/space_md"

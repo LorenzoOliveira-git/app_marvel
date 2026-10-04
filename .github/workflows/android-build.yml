@@ -62,13 +62,13 @@ jobs:
           done
           adb shell input keyevent 82
           adb install -r app/build/outputs/apk/debug/app-debug.apk
-          python3 .github/scripts/capture-preview.py
+          python3 .github/scripts/capture-preview.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
       - name: Disponibilizar capturas do emulador
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: android-preview
-          path: app/build/previews/*.png
+          path: app/build/previews/*
           if-no-files-found: ignore
           retention-days: 7
       - name: Disponibilizar relatórios de lint
