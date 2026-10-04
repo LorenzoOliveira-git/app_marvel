@@ -27,6 +27,14 @@ def main():
         for offset in [0,100]:
             probe('stable_'+str(offset), 'issues/', {'sort':'store_date:desc,id:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'offset':offset,'field_list':fields})
         rows = probe('recent', 'issues/', {'sort':'store_date:desc','filter':'store_date:1900-01-01|'+today,'limit':100,'field_list':fields})
+        day = rows[-1]['store_date']
+        for offset in [0,100]:
+            daily = probe('date_bucket_'+str(offset), 'issues/', {'sort':'id:desc','filter':'store_date:'+day+'|'+day,'limit':100,'offset':offset,'field_list':fields})
+            assert all(i['store_date'] == day for i in daily)
+            assert all(a['id'] > b['id'] for a,b in zip(daily,daily[1:]))
+        first = report['probes']['date_bucket_0']['response']['results']
+        next_page = report['probes']['date_bucket_100']['response']['results']
+        assert {i['id'] for i in first}.isdisjoint(i['id'] for i in next_page)
         ids = list(dict.fromkeys(i['volume']['id'] for i in rows if i['volume']['id'] in refs))[:3]
         assert ids
         report['selected_volumes'] = [refs[i] for i in ids]

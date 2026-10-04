@@ -446,8 +446,11 @@ public final class MarvelRepository {
         });
     }
 
-    public void comics(int volumeId, boolean oldest, int offset, Callback<ComicsPage> callback) {
-        if (volumeId < 0 || offset < 0) { deliver(callback, Result.failed(Failure.DATA)); return; }
+    public void comics(int volumeId, boolean oldest, ComicsCursor cursor, Callback<ComicsPage> callback) {
+        if (volumeId < 0 || cursor == null || cursor.offset < -1 || cursor.examined < 0
+                || (!cursor.date.isEmpty() && !cursor.date.matches("\\d{4}-\\d{2}-\\d{2}"))) {
+            deliver(callback, Result.failed(Failure.DATA)); return;
+        }
         publisher(pub -> {
             if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
             index(pub.data, "volumes", indexed -> {
@@ -456,42 +459,86 @@ public final class MarvelRepository {
                 for (Reference ref : indexed.data) volumes.put(ref.id, ref);
                 if (volumeId != 0 && !volumes.containsKey(volumeId)) { deliver(callback, Result.failed(Failure.DATA)); return; }
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(new Date());
-                comicsPage(volumes, volumeId, oldest, today, offset, 0, callback);
+                comicsPage(volumes, volumeId, oldest, today, cursor, 0, callback);
             });
         });
     }
-    private void comicsPage(Map<Integer, Reference> volumes, int volumeId, boolean oldest, String today,
-            int offset, int attempt, Callback<ComicsPage> callback) {
-        int limit = volumeId == 0 ? 100 : 12;
-        String filter = (volumeId == 0 ? "" : "volume:" + volumeId + ",") + "store_date:1900-01-01|" + today;
-        request("issues/", params("filter", filter, "sort", "store_date:" + (oldest ? "asc" : "desc"),
-                "offset", String.valueOf(offset), "limit", String.valueOf(limit), "field_list", ISSUE_FIELDS + ",api_detail_url"), DAY, result -> {
+    private void comicsPage(Map<Integer, Reference> volumes, int scope, boolean oldest, String today,
+            ComicsCursor cursor, int attempt, Callback<ComicsPage> callback) {
+        if (cursor.offset >= 0) { comicsBucket(volumes, scope, oldest, today, cursor, attempt, new ArrayList<>(), callback); return; }
+        String lower = oldest && !cursor.date.isEmpty() ? cursor.date : "1900-01-01";
+        String upper = !oldest && !cursor.date.isEmpty() ? cursor.date : today;
+        if (lower.compareTo(upper) > 0) { deliver(callback, Result.success(new ComicsPage(Collections.emptyList(), cursor, false))); return; }
+        int limit = scope == 0 ? 100 : 12;
+        request("issues/", params("filter", comicsFilter(scope, lower, upper), "sort", "store_date:" + (oldest ? "asc" : "desc"),
+                "limit", String.valueOf(limit), "field_list", ISSUE_FIELDS + ",api_detail_url"), DAY, result -> {
+            JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+            if (rows == null) { deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return; }
+            if (rows.length() == 0) { deliver(callback, Result.success(new ComicsPage(Collections.emptyList(), cursor, false))); return; }
+            try {
+                JSONObject last = rows.getJSONObject(rows.length()-1); String boundary = text(last, "store_date"), previous = null;
+                List<Issue> complete = new ArrayList<>(); Set<Integer> ids = new HashSet<>(); int committed = 0;
+                for (int i = 0; i < rows.length(); i++) {
+                    JSONObject row = rows.getJSONObject(i); String date = text(row, "store_date");
+                    Issue item = comic(row, volumes, scope, lower, upper);
+                    if (!ids.add(row.optInt("id")) || (previous != null && (oldest ? date.compareTo(previous) < 0 : date.compareTo(previous) > 0)))
+                        throw new IllegalArgumentException("Ordem inválida");
+                    previous = date;
+                    // A última data pode ter sido cortada pela API: nenhuma referência parcial dela é consumida.
+                    if (!date.equals(boundary)) { committed++; if (item != null) complete.add(item); }
+                }
+                Comparator<Issue> order = Comparator.comparing((Issue item) -> item.publicationDate).thenComparingInt(item -> item.id);
+                complete.sort(oldest ? order : order.reversed());
+                comicsBucket(volumes, scope, oldest, today, new ComicsCursor(boundary, 0, cursor.examined + committed), attempt, complete, callback);
+            } catch (Exception invalid) { deliver(callback, Result.failed(Failure.DATA)); }
+        });
+    }
+    private void comicsBucket(Map<Integer, Reference> volumes, int scope, boolean oldest, String today,
+            ComicsCursor cursor, int attempt, List<Issue> items, Callback<ComicsPage> callback) {
+        int limit = scope == 0 ? 100 : 12;
+        request("issues/", params("filter", comicsFilter(scope, cursor.date, cursor.date), "sort", "id:" + (oldest ? "asc" : "desc"),
+                "offset", String.valueOf(cursor.offset), "limit", String.valueOf(limit), "field_list", ISSUE_FIELDS + ",api_detail_url"), DAY, result -> {
             JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
             if (rows == null || !result.data.has("number_of_total_results")) {
                 deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
             }
-            List<Issue> items = new ArrayList<>(); Set<Integer> ids = new HashSet<>(); String previous = null;
-            for (int i = 0; i < rows.length(); i++) {
-                JSONObject row = rows.optJSONObject(i); if (row == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
-                int id = row.optInt("id"); JSONObject volume = row.optJSONObject("volume");
-                String path = resourcePath(text(row, "api_detail_url"), "issue"), date = text(row, "store_date");
-                if (id <= 0 || path == null || !path.endsWith("-" + id + "/") || !ids.add(id)
-                        || !date.matches("\\d{4}-\\d{2}-\\d{2}") || date.compareTo("1900-01-01") < 0 || date.compareTo(today) > 0
-                        || (previous != null && (oldest ? date.compareTo(previous) < 0 : date.compareTo(previous) > 0))) {
-                    deliver(callback, Result.failed(Failure.DATA)); return;
+            try {
+                int previous = -1;
+                for (int i = 0; i < rows.length(); i++) {
+                    JSONObject row = rows.getJSONObject(i); int id = row.optInt("id");
+                    Issue item = comic(row, volumes, scope, cursor.date, cursor.date);
+                    if (previous >= 0 && (oldest ? id <= previous : id >= previous)) throw new IllegalArgumentException("Ordem inválida");
+                    previous = id; if (item != null) items.add(item);
                 }
-                previous = date;
-                if (volumeId != 0 && (volume == null || volume.optInt("id") != volumeId)) { deliver(callback, Result.failed(Failure.DATA)); return; }
-                Reference known = volume == null ? null : volumes.get(volume.optInt("id"));
-                if (known == null || !known.path.equals(resourcePath(text(volume, "api_detail_url"), "volume")) || text(volume, "name").isEmpty()) continue;
-                String name = text(volume, "name"), number = text(row, "issue_number");
-                items.add(new Issue(id, known.id, name + (number.isEmpty() ? "" : " #" + number), name,
-                        date, image(row), website(text(row, "site_detail_url"))));
-            }
-            int next = offset + rows.length(); boolean more = rows.length() > 0 && next < result.data.optInt("number_of_total_results");
-            if (items.isEmpty() && more && attempt < 2) comicsPage(volumes, volumeId, oldest, today, next, attempt + 1, callback);
-            else deliver(callback, Result.success(new ComicsPage(items, next, more)));
+                int examined = cursor.examined + rows.length(), nextOffset = cursor.offset + rows.length();
+                boolean sameDay = rows.length() > 0 && nextOffset < result.data.optInt("number_of_total_results");
+                ComicsCursor next;
+                boolean more;
+                if (sameDay) { next = new ComicsCursor(cursor.date, nextOffset, examined); more = true; }
+                else {
+                    SimpleDateFormat dates = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); dates.setLenient(false);
+                    Calendar date = Calendar.getInstance(); date.setTime(dates.parse(cursor.date)); date.add(Calendar.DAY_OF_MONTH, oldest ? 1 : -1);
+                    String bound = dates.format(date.getTime()); next = new ComicsCursor(bound, -1, examined);
+                    more = bound.compareTo("1900-01-01") >= 0 && bound.compareTo(today) <= 0;
+                }
+                if (items.isEmpty() && more && attempt < 2) comicsPage(volumes, scope, oldest, today, next, attempt + 1, callback);
+                else deliver(callback, Result.success(new ComicsPage(items, next, more)));
+            } catch (Exception invalid) { deliver(callback, Result.failed(Failure.DATA)); }
         });
+    }
+    private static String comicsFilter(int scope, String lower, String upper) {
+        return (scope == 0 ? "" : "volume:" + scope + ",") + "store_date:" + lower + "|" + upper;
+    }
+    private static Issue comic(JSONObject row, Map<Integer, Reference> volumes, int scope, String lower, String upper) {
+        int id = row.optInt("id"); String path = resourcePath(text(row, "api_detail_url"), "issue"), date = text(row, "store_date");
+        JSONObject volume = row.optJSONObject("volume");
+        if (id <= 0 || path == null || !path.endsWith("-" + id + "/") || !date.matches("\\d{4}-\\d{2}-\\d{2}")
+                || date.compareTo(lower) < 0 || date.compareTo(upper) > 0
+                || (scope != 0 && (volume == null || volume.optInt("id") != scope))) throw new IllegalArgumentException("Edição inválida");
+        Reference known = volume == null ? null : volumes.get(volume.optInt("id"));
+        if (known == null || !known.path.equals(resourcePath(text(volume, "api_detail_url"), "volume")) || text(volume, "name").isEmpty()) return null;
+        String name = text(volume, "name"), number = text(row, "issue_number");
+        return new Issue(id, known.id, name + (number.isEmpty() ? "" : " #" + number), name, date, image(row), website(text(row, "site_detail_url")));
     }
 
     public void recent(Callback<List<Issue>> callback) {

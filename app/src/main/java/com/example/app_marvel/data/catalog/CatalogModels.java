@@ -74,12 +74,19 @@ public final class CatalogModels {
             this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
         }
     }
+    public static final class ComicsCursor {
+        public final String date;
+        public final int offset, examined;
+        public ComicsCursor(String date, int offset, int examined) { this.date = date; this.offset = offset; this.examined = examined; }
+        public static ComicsCursor start() { return new ComicsCursor("", -1, 0); }
+    }
     public static final class ComicsPage {
         public final List<Issue> items;
+        public final ComicsCursor nextCursor;
         public final int nextOffset;
         public final boolean hasMore;
-        public ComicsPage(List<Issue> items, int nextOffset, boolean hasMore) {
-            this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
+        public ComicsPage(List<Issue> items, ComicsCursor nextCursor, boolean hasMore) {
+            this.items = immutable(items); this.nextCursor = nextCursor; this.nextOffset = nextCursor.examined; this.hasMore = hasMore;
         }
     }
     private static <T> List<T> immutable(List<T> items) { return Collections.unmodifiableList(new ArrayList<>(items)); }

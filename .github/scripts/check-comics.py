@@ -17,7 +17,7 @@ def run(name):
     adb('shell','am','force-stop',PACKAGE)
     adb('shell','run-as',PACKAGE,'rm','-f',f'files/diagnostics/{name}.json')
     adb('shell','am','start','-n',PACKAGE+'/.diagnostics.ComicsCheckActivity','--es','check',name)
-    deadline = time.monotonic()+150
+    deadline = time.monotonic()+180
     while time.monotonic()<deadline:
         result = adb('shell','run-as',PACKAGE,'cat',f'files/diagnostics/{name}.json',check=False)
         if result.returncode == 0:

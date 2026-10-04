@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.example.app_marvel.data.catalog.CatalogModels.Issue;
+import com.example.app_marvel.data.catalog.CatalogModels.ComicsCursor;
 import com.example.app_marvel.data.catalog.CatalogModels.Reference;
 import com.example.app_marvel.data.catalog.MarvelRepository;
 import com.example.app_marvel.ui.common.UiState;
@@ -23,7 +24,8 @@ public final class ComicsViewModel extends ViewModel {
     private final MutableLiveData<Issue> selected = new MutableLiveData<>();
     private final MutableLiveData<Boolean> hasMore = new MutableLiveData<>(false), loadingMore = new MutableLiveData<>(false), moreError = new MutableLiveData<>(false);
     private final Map<Integer, Issue> accumulated = new LinkedHashMap<>();
-    private int cursor, generation, featuredGeneration;
+    private ComicsCursor cursor = ComicsCursor.start();
+    private int generation, featuredGeneration;
     public ComicsViewModel(MarvelRepository repository, SavedStateHandle saved) {
         this.repository = repository; this.saved = saved; reload(); loadFeatured();
     }
@@ -58,7 +60,7 @@ public final class ComicsViewModel extends ViewModel {
                 : result.data.isEmpty() ? UiState.empty() : UiState.content(result.data)));
     }
     public void reload() {
-        generation++; cursor = 0; accumulated.clear(); selected.setValue(null);
+        generation++; cursor = ComicsCursor.start(); accumulated.clear(); selected.setValue(null);
         state.setValue(UiState.loading()); hasMore.setValue(false); loadingMore.setValue(false); moreError.setValue(false); load(false);
     }
     public void more() { if (Boolean.TRUE.equals(hasMore.getValue()) && !Boolean.TRUE.equals(loadingMore.getValue())) load(true); }
@@ -68,7 +70,7 @@ public final class ComicsViewModel extends ViewModel {
             if (stamp != generation) return;
             loadingMore.setValue(false);
             if (result.failure != null) { if (append) moreError.setValue(true); else state.setValue(UiState.error()); return; }
-            cursor = result.data.nextOffset; hasMore.setValue(result.data.hasMore);
+            cursor = result.data.nextCursor; hasMore.setValue(result.data.hasMore);
             for (Issue issue : result.data.items) accumulated.putIfAbsent(issue.id, issue);
             List<Issue> items = Collections.unmodifiableList(new ArrayList<>(accumulated.values()));
             state.setValue(items.isEmpty() ? UiState.empty() : UiState.content(items));

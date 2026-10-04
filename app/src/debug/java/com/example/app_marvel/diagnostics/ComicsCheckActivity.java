@@ -33,9 +33,9 @@ public final class ComicsCheckActivity extends Activity {
             }
             if (count != 1) { fail("sample_volume_identity"); return; }
             put("volume_count",volumes.size()); put("sample_volume",sampleVolume); put("sample_name","Marvel Rivals Infinity Comic");
-            repository.comics(0,false,0,first -> {
+            repository.comics(0,false,CatalogModels.ComicsCursor.start(),first -> {
                 if (!page("first",first,0,false)) return;
-                repository.comics(0,false,first.data.nextOffset,next -> {
+                repository.comics(0,false,first.data.nextCursor,next -> {
                     if (!page("next",next,0,false)) return;
                     scoped();
                 });
@@ -43,13 +43,13 @@ public final class ComicsCheckActivity extends Activity {
         });
     }
     private void scoped() {
-        repository.comics(sampleVolume,false,0,first -> {
+        repository.comics(sampleVolume,false,CatalogModels.ComicsCursor.start(),first -> {
             if (!page("scoped",first,sampleVolume,false)) return;
-            repository.comics(sampleVolume,false,first.data.nextOffset,next -> {
+            repository.comics(sampleVolume,false,first.data.nextCursor,next -> {
                 if (!page("scoped_next",next,sampleVolume,false)) return;
-                repository.comics(sampleVolume,true,0,old -> {
+                repository.comics(sampleVolume,true,CatalogModels.ComicsCursor.start(),old -> {
                     if (!page("oldest",old,sampleVolume,true)) return;
-                    repository.comics(Integer.MAX_VALUE,false,0,invalid -> {
+                    repository.comics(Integer.MAX_VALUE,false,CatalogModels.ComicsCursor.start(),invalid -> {
                         if (volumes.contains(Integer.MAX_VALUE) || invalid.failure == null) { fail("foreign_volume"); return; }
                         put("foreign_volume_rejected",true); put("success",true); save();
                     });
@@ -70,7 +70,7 @@ public final class ComicsCheckActivity extends Activity {
                     .put("store_date",issue.publicationDate).put("site_url",issue.siteUrl).put("image_url",issue.imageUrl)); }
             catch (Exception ignored) { fail("serialize"); return false; }
         }
-        put(name,rows); put(name+"_offset",result.data.nextOffset); put(name+"_more",result.data.hasMore); return true;
+        put(name,rows); put(name+"_offset",result.data.nextOffset); put(name+"_day",result.data.nextCursor.date); put(name+"_day_offset",result.data.nextCursor.offset); put(name+"_more",result.data.hasMore); return true;
     }
     private void put(String name,Object value) { try { report.put(name,value); } catch (Exception ignored) { } }
     private void fail(String stage) { put("success",false); put("failed_stage",stage); save(); }
