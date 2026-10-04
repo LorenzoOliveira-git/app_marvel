@@ -12,7 +12,7 @@ def adb(*args):
     return subprocess.check_output(["adb", *args], timeout=30)
 
 def tap_label(label):
-    size = list(map(int, re.findall(r"\d+", adb("shell", "wm", "size").decode())[:2]))
+    size = list(map(int, re.findall(r"\d+", adb("shell", "wm", "size").decode())[-2:]))
     width, height = size
     for attempt in range(7):
         adb("shell", "uiautomator", "dump", "/sdcard/marv-window.xml")
@@ -40,14 +40,13 @@ adb("shell", "wm", "size", "430x932")
 adb("shell", "wm", "density", "160")
 adb("shell", "am", "force-stop", "com.example.app_marvel")
 launch = subprocess.Popen(["adb", "shell", "am", "start", "-W", "-n", "com.example.app_marvel/.MainActivity"], stdout=subprocess.DEVNULL)
-for index in range(8):
+for index in range(16):
     (OUT / ("abertura-%02d.png" % index)).write_bytes(adb("exec-out", "screencap", "-p"))
     time.sleep(0.08)
 launch.wait(timeout=30)
 time.sleep(5)
 capture("login")
 tap_label("Entrar")
-adb("shell", "input", "keyevent", "4")
 capture("login-validacao")
 tap_label("Não tem conta? Cadastre-se")
 capture("cadastro")
@@ -57,7 +56,7 @@ adb("shell", "input", "keyevent", "4")
 time.sleep(1)
 tap_label("Explorar sem entrar")
 capture("inicio")
-size = list(map(int, re.findall(r"\d+", adb("shell", "wm", "size").decode())[:2]))
+size = list(map(int, re.findall(r"\d+", adb("shell", "wm", "size").decode())[-2:]))
 w, h = size
 adb("shell", "input", "swipe", str(w//2), str(h*3//4), str(w//2), str(h//3), "600")
 time.sleep(1)
@@ -77,4 +76,13 @@ capture("inicio-tela-pequena")
 adb("shell", "settings", "put", "system", "font_scale", "2.0")
 time.sleep(2)
 capture("inicio-fonte-200")
+adb("shell", "settings", "put", "system", "font_scale", "1.0")
+
+tap_label("Perfil")
+tap_label("Entrar")
+adb("shell", "settings", "put", "system", "font_scale", "2.0")
+time.sleep(2)
+capture("login-fonte-200")
+tap_label("Não tem conta? Cadastre-se")
+capture("cadastro-fonte-200")
 adb("shell", "settings", "put", "system", "font_scale", "1.0")
