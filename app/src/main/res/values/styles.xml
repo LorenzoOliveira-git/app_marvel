@@ -1,5 +1,5 @@
 <resources>
-    <style name="ShapeAppearance.Marvel.Avatar"><item name="cornerFamily">rounded</item><item name="cornerSize">50%</item></style>
+    <style name="ShapeAppearance.Marvel.Avatar" parent=""><item name="cornerFamily">rounded</item><item name="cornerSize">50%</item></style>
     <style name="TextAppearance.Marvel.Display" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:fontFamily">@font/bebas_neue_regular</item><item name="fontFamily">@font/bebas_neue_regular</item>
         <item name="android:textSize">@dimen/text_display</item><item name="android:textColor">@color/marvel_text</item>
