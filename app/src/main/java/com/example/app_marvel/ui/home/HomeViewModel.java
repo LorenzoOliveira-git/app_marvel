@@ -16,8 +16,8 @@ public final class HomeViewModel extends ViewModel {
     private final TranslationRepository translations;
     private final MutableLiveData<UiState<Character>> featured = new MutableLiveData<>(UiState.loading());
     private final MutableLiveData<UiState<List<Issue>>> recent = new MutableLiveData<>(UiState.loading());
-    private final MutableLiveData<UiState<String>> fact = new MutableLiveData<>(UiState.loading());
-    private final MutableLiveData<UiState<String>> origin = new MutableLiveData<>(UiState.loading());
+    private final MutableLiveData<UiState<String>> fact = new MutableLiveData<>(UiState.unavailable());
+    private final MutableLiveData<UiState<String>> origin = new MutableLiveData<>(UiState.unavailable());
     private boolean characterPending, issuesPending;
     private int generation;
 
@@ -31,6 +31,8 @@ public final class HomeViewModel extends ViewModel {
     public LiveData<UiState<String>> getOrigin() { return origin; }
     public void loadFeatured() {
         if (characterPending) return;
+        generation++;
+        fact.setValue(UiState.unavailable()); origin.setValue(UiState.unavailable());
         characterPending = true; featured.setValue(UiState.loading());
         repository.featured(result -> {
             characterPending = false;

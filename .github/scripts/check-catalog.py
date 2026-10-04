@@ -109,4 +109,5 @@ adb('shell','run-as',PACKAGE,'rm','-f','databases/comicvine-cache.db','databases
 adb('shell','run-as',PACKAGE,'rm','-rf','files/comicvine-responses')
 adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(2); tap('Explorar sem entrar')
 time.sleep(4); capture('catalog-error')
+assert not any(node.get('resource-id','').endswith('/fact_state') for node in nodes()), 'Curiosidade não deve continuar carregando sem personagem'
 print('Catálogo real, filtros, páginas, tradução/cache offline e navegação conferidos no Android.')
