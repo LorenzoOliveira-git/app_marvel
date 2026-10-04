@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.app_marvel.MarvelApplication;
 import com.example.app_marvel.data.model.AppFeature;
@@ -15,7 +16,7 @@ import com.example.app_marvel.ui.common.AppViewModelFactory;
 import com.example.app_marvel.ui.common.FeatureResources;
 import com.example.app_marvel.ui.navigation.AppNavigator;
 
-/** Destinos ainda não integrados compartilham somente o aviso; cada um mantém sua própria pilha. */
+/** Destinos compartilham a apresentação; cada um mantém sua própria pilha. */
 public final class SectionFragment extends Fragment {
     private FragmentSectionBinding binding;
 
@@ -32,13 +33,15 @@ public final class SectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         view.post(() -> { if (binding != null) ((com.example.app_marvel.MainActivity) requireActivity()).updateContentInsets(); });
         AppFeature feature = AppFeature.valueOf(requireArguments().getString("feature", ""));
+        binding.sectionTitle.setText(FeatureResources.title(feature));
+        binding.sectionDescription.setText(FeatureResources.description(feature));
+        ViewCompat.setAccessibilityHeading(binding.sectionTitle, true);
         MarvelApplication application = (MarvelApplication) requireActivity().getApplication();
         SectionViewModel viewModel = new ViewModelProvider(this,
                 new AppViewModelFactory(application.getContainer().getFeatures(), feature))
                 .get(SectionViewModel.class);
         viewModel.getState().observe(getViewLifecycleOwner(), state ->
-                binding.stateView.render(state.getStatus(),
-                        getString(FeatureResources.unavailableMessage(feature)), null));
+                binding.stateView.render(state.getStatus(), null));
         binding.returnHome.setOnClickListener(clicked ->
                 ((AppNavigator) requireActivity()).openFeature(AppFeature.HOME));
     }

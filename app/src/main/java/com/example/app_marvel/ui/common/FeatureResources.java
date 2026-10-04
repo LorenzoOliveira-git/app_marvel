@@ -28,16 +28,6 @@ public final class FeatureResources {
         }
     }
 
-    public static int unavailableMessage(AppFeature feature) {
-        switch (feature) {
-            case CHARACTERS: return R.string.characters_unavailable;
-            case STORIES: return R.string.stories_unavailable;
-            case CREATE_HERO: return R.string.create_unavailable;
-            case PROFILE: return R.string.profile_unavailable;
-            default: throw new IllegalArgumentException("Destino sem aviso");
-        }
-    }
-
     public static int icon(AppFeature feature) {
         switch (feature) {
             case CHARACTERS: return R.drawable.ic_characters;

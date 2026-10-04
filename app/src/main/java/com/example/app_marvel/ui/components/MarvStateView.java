@@ -29,13 +29,13 @@ public final class MarvStateView extends LinearLayout {
         ViewCompat.setAccessibilityHeading(binding.statusTitle, true);
     }
 
-    public void render(UiState.Status status, String unavailableBody, @Nullable Runnable retry) {
+    public void render(UiState.Status status, @Nullable Runnable retry) {
         // Sempre limpar o callback anterior antes de alterar o estado.
         binding.retryButton.setOnClickListener(null);
         binding.retryButton.setVisibility(GONE);
         binding.progress.setVisibility(status == UiState.Status.LOADING ? VISIBLE : GONE);
-        setVisibility(status == UiState.Status.CONTENT ? GONE : VISIBLE);
-        if (status == UiState.Status.CONTENT) {
+        setVisibility(status == UiState.Status.CONTENT || status == UiState.Status.UNAVAILABLE ? GONE : VISIBLE);
+        if (status == UiState.Status.CONTENT || status == UiState.Status.UNAVAILABLE) {
             return;
         }
         int title;
@@ -57,10 +57,6 @@ public final class MarvStateView extends LinearLayout {
                     binding.retryButton.setVisibility(VISIBLE);
                     binding.retryButton.setOnClickListener(view -> retry.run());
                 }
-                break;
-            case UNAVAILABLE:
-                title = R.string.unavailable_title;
-                body = unavailableBody;
                 break;
             default:
                 throw new IllegalArgumentException("Estado desconhecido");

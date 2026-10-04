@@ -16,8 +16,7 @@ public final class AuthViewModel extends ViewModel {
     private String password = "", confirmation = "";
     public AuthViewModel(AuthRepository repository, SavedStateHandle saved) {
         this.repository = repository; this.saved = saved;
-        boolean configured = repository.getSession().getValue().isConfigured();
-        state.setValue(new AuthState(configured ? AuthState.Status.READY : AuthState.Status.UNAVAILABLE, null, true));
+        state.setValue(new AuthState(AuthState.Status.READY, null, true));
     }
     public LiveData<AuthState> getState() { return state; }
     public String getEmail() { String s = saved.get("email"); return s == null ? "" : s; }

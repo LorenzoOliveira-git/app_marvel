@@ -39,12 +39,21 @@ public final class AuthFragment extends Fragment {
         model = new ViewModelProvider(this, new AuthViewModelFactory(repo)).get(AuthViewModel.class);
         ViewCompat.setAccessibilityHeading(binding.title, true);
         binding.title.setText(register ? R.string.auth_register_title : R.string.auth_login_title);
-        binding.intro.setText(register ? R.string.auth_register_intro : R.string.auth_login_intro);
         binding.submit.setText(register ? R.string.auth_sign_up : R.string.auth_sign_in);
         binding.switchForm.setText(register ? R.string.auth_go_login : R.string.auth_go_register);
         binding.nameLayout.setVisibility(register ? View.VISIBLE : View.GONE);
+        binding.nameLabel.setVisibility(register ? View.VISIBLE : View.GONE);
         binding.confirmationLayout.setVisibility(register ? View.VISIBLE : View.GONE);
+        binding.confirmationLabel.setVisibility(register ? View.VISIBLE : View.GONE);
         binding.passwordLayout.setHelperText(register ? getString(R.string.auth_password_help) : null);
+        if (register) {
+            android.widget.LinearLayout.LayoutParams emailParams = (android.widget.LinearLayout.LayoutParams) binding.emailLabel.getLayoutParams();
+            emailParams.topMargin = getResources().getDimensionPixelSize(R.dimen.space_xl);
+            binding.emailLabel.setLayoutParams(emailParams);
+            android.widget.LinearLayout.LayoutParams passwordParams = (android.widget.LinearLayout.LayoutParams) binding.passwordLabel.getLayoutParams();
+            passwordParams.topMargin = getResources().getDimensionPixelSize(R.dimen.space_xl);
+            binding.passwordLabel.setLayoutParams(passwordParams);
+        }
         binding.password.setImeOptions(register ? EditorInfo.IME_ACTION_NEXT : EditorInfo.IME_ACTION_DONE);
         if (android.os.Build.VERSION.SDK_INT >= 26) binding.password.setAutofillHints(register ? "newPassword" : "password");
         binding.email.setText(model.getEmail()); binding.name.setText(model.getName());
@@ -77,7 +86,6 @@ public final class AuthFragment extends Fragment {
     }
     private void submit() {
         if (model.getState().getValue().status == AuthState.Status.LOADING) return;
-        if (model.getState().getValue().status == AuthState.Status.UNAVAILABLE) return;
         binding.nameLayout.setError(null); binding.emailLayout.setError(null);
         binding.passwordLayout.setError(null); binding.confirmationLayout.setError(null);
         Map<AuthViewModel.Field, AuthViewModel.Validation> errors = model.validate(register);
@@ -106,15 +114,14 @@ public final class AuthFragment extends Fragment {
     private void render(AuthState state) {
         boolean pending = state.status == AuthState.Status.LOADING;
         binding.progress.setVisibility(pending ? View.VISIBLE : View.GONE);
-        binding.submit.setEnabled(!pending && state.status != AuthState.Status.UNAVAILABLE);
+        binding.submit.setEnabled(!pending);
         binding.switchForm.setEnabled(!pending); binding.browse.setEnabled(!pending);
         binding.email.setEnabled(!pending); binding.name.setEnabled(!pending);
         binding.password.setEnabled(!pending); binding.confirmation.setEnabled(!pending);
-        binding.marv.setImageResource(pending || state.status == AuthState.Status.ERROR || state.status == AuthState.Status.UNAVAILABLE
+        binding.marv.setImageResource(pending || state.status == AuthState.Status.ERROR
                 ? R.drawable.marv_thinking : R.drawable.marv_welcome);
         int message = 0;
         if (pending) message = register ? R.string.auth_loading_register : R.string.auth_loading_login;
-        else if (state.status == AuthState.Status.UNAVAILABLE) message = R.string.auth_unavailable;
         else if (state.status == AuthState.Status.ERROR) message = errorMessage(state.failure);
         binding.status.setVisibility(message == 0 ? View.GONE : View.VISIBLE);
         if (message != 0) binding.status.setText(message);
@@ -132,7 +139,7 @@ public final class AuthFragment extends Fragment {
             case EMAIL_IN_USE: return R.string.auth_error_email_used;
             case WEAK_PASSWORD: return R.string.auth_error_weak;
             case RATE_LIMIT: return R.string.auth_error_rate;
-            case UNAVAILABLE: return R.string.auth_unavailable;
+            case UNAVAILABLE: return R.string.auth_error_unknown;
             default: return R.string.auth_error_unknown;
         }
     }
