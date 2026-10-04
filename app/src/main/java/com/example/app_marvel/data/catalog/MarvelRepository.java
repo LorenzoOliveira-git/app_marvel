@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 /** Contrato validado com respostas reais. Relações são verificadas antes da exibição. */
 public final class MarvelRepository {
     private static final long DAY = 86_400_000L;
-    private static final String CHARACTER_FIELDS = "id,name,real_name,publisher,origin,gender,image,deck,site_detail_url";
+    private static final String CHARACTER_FIELDS = "id,name,real_name,publisher,origin,gender,image,deck,site_detail_url,aliases";
     private static final String ISSUE_FIELDS = "id,name,issue_number,volume,image,store_date,site_detail_url";
     private final ComicVineClient client;
     private final CatalogCache cache;
@@ -143,7 +143,7 @@ public final class MarvelRepository {
         if (pub == null || pub.optInt("id") != publisherId || row.optInt("id") <= 0 || text(row, "name").isEmpty()) return null;
         return new CatalogModels.Character(row.optInt("id"), publisherId, text(row, "name"), text(row, "real_name"),
                 origin == null ? 0 : origin.optInt("id"), text(origin, "name"), row.optInt("gender"),
-                text(row, "deck"), image(row), website(text(row, "site_detail_url")));
+                text(row, "deck"), image(row), website(text(row, "site_detail_url")), text(row, "aliases"));
     }
 
     public void featured(Callback<CatalogModels.Character> callback) {

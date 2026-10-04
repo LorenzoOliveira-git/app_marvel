@@ -31,7 +31,7 @@ def run(name):
             assert set(x['id'] for x in report['first']).isdisjoint(x['id'] for x in report['next']), 'Paginação duplicada'
             assert set(x['id'] for x in report['details_friends']).isdisjoint(x['id'] for x in report['details_friends_next']), 'Relações duplicadas'
             assert report['details']['id'] == report['featured']['id'] and report['details']['publisher_id'] == owner
-            assert report['invalid_character_rejected']
+            assert report['invalid_character_rejected'] and report['foreign_publisher_rejected']
             assert all('Spider-Man' in x['name'] for x in report['search']), 'Busca incoerente'
             assert [x['store_date'] for x in report['issues']] == sorted([x['store_date'] for x in report['issues']], reverse=True)
             return report
@@ -43,7 +43,7 @@ try:
     adb('shell','cmd','connectivity','airplane-mode','enable')
     adb('shell','svc','wifi','disable'); adb('shell','svc','data','disable')
     offline = run('catalog-cache')
-    assert offline['translation_from_cache'], 'Tradução não recuperada do cache'
+    assert offline['translation_from_cache'] and offline['powers_from_cache'], 'Tradução não recuperada do cache'
     for field in ['featured','issues','first','next','search','origin_gender','team','translated_deck','details','appearance_count','powers','details_teams','details_friends','details_friends_next','details_enemies','first_appearance']:
         assert offline[field] == online[field], 'Cache divergiu: '+field
 finally:
@@ -73,6 +73,17 @@ def tap(text=None, resource=None, contains=None):
         adb('shell','input','swipe','215','730','215','250','500'); time.sleep(1)
     raise RuntimeError('Controle não encontrado: '+str(text or resource))
 
+def heading(text):
+    tap(text=text)
+    for attempt in range(2):
+        for node in nodes():
+            if node.get('text') == text:
+                x1,y1,x2,y2 = map(int,re.findall(r'\d+',node.get('bounds','')))
+                delta = min(500, max(0, y1-130))
+                if delta > 20:
+                    adb('shell','input','swipe','215','750','215',str(750-delta),'500'); time.sleep(1)
+                break
+
 def top():
     for attempt in range(3): adb('shell','input','swipe','215','300','215','780','400')
     time.sleep(1)
@@ -99,11 +110,11 @@ tap(resource='featured_more'); wait('details_name','Spider-Man'); capture('detai
 tap(resource='description_heading'); wait('details_description'); capture('details-description')
 tap(resource='first_heading'); wait('first_title', online['first_appearance']['title']); capture('details-first')
 tap(resource='powers_heading'); wait('power_labels'); capture('details-powers')
-tap(text='Equipes'); wait('related_name'); capture('details-teams')
-tap(text='Aliados'); wait('related_name'); capture('details-friends')
+heading('Equipes'); wait('related_name'); capture('details-teams')
+heading('Aliados'); wait('related_name'); capture('details-friends')
 friend = online['details_friends'][0]['name']
 tap(resource='related_more', contains=friend); wait('details_name',friend); capture('details-related-profile')
-tap(resource='header_back'); tap(text='Inimigos'); wait('related_name'); capture('details-enemies')
+tap(resource='header_back'); heading('Inimigos'); wait('related_name'); capture('details-enemies')
 tap(resource='header_back'); wait('featured_name','Spider-Man')
 adb('shell','input','swipe','215','730','215','480','600'); wait('fact_text'); capture('catalog-home-fact')
 tap('Personagens'); wait('character_name','Spider-Man'); capture('catalog-characters')

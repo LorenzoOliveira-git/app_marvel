@@ -78,6 +78,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.screenTitle.setText(destination.getLabel());
             boolean details = destination.getId() == R.id.characterDetailsFragment;
             boolean catalog = destination.getId() == R.id.charactersFragment || details;
+            if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
             binding.headerBack.setContentDescription(getString(details ? R.string.details_back : R.string.catalog_back));
             boolean home = destination.getId() == R.id.homeFragment;
             binding.titleHeader.setVisibility(home ? View.GONE : View.VISIBLE);

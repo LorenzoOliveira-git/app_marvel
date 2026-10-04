@@ -88,7 +88,7 @@ public final class CharacterDetailsViewModel extends ViewModel {
         int[] remaining = {item.powers.size()}; boolean[] failed = {false};
         for (int i = 0; i < item.powers.size(); i++) {
             int position = i; Reference power = item.powers.get(i);
-            translations.translate("power:" + power.id, "name", power.name, result -> {
+            CatalogDescriptions.translatePower(translations, power, result -> {
                 if (stamp != translationGeneration || failed[0]) return;
                 if (result.getFailure() != null) { failed[0] = true; powers.setValue(UiState.error()); return; }
                 translated.set(position, new Reference(power.id, result.getText(), power.path));

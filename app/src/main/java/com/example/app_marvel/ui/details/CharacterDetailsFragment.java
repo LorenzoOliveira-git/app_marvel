@@ -62,7 +62,7 @@ public final class CharacterDetailsFragment extends Fragment {
             binding.detailsRealName.setVisibility(item.realName.isEmpty() ? View.GONE : View.VISIBLE);
             binding.countSection.setVisibility(details.appearanceCount < 0 ? View.GONE : View.VISIBLE);
             if (details.appearanceCount >= 0) binding.appearanceCount.setText(getResources().getQuantityString(R.plurals.details_appearances,
-                    details.appearanceCount, NumberFormat.getIntegerInstance(new Locale("pt", "BR")).format(details.appearanceCount)));
+                    details.appearanceCount == 1 ? 1 : 2, NumberFormat.getIntegerInstance(new Locale("pt", "BR")).format(details.appearanceCount)));
             binding.detailsSource.setVisibility(item.siteUrl.isEmpty() ? View.GONE : View.VISIBLE);
             binding.detailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(), item.siteUrl));
         });

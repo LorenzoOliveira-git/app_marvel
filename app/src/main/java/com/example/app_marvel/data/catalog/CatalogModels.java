@@ -13,12 +13,12 @@ public final class CatalogModels {
     }
     public static final class Character {
         public final int id, publisherId, originId, gender;
-        public final String name, realName, origin, originalDeck, imageUrl, siteUrl;
+        public final String name, realName, origin, originalDeck, imageUrl, siteUrl, aliases;
         public Character(int id, int publisherId, String name, String realName, int originId, String origin,
-                         int gender, String originalDeck, String imageUrl, String siteUrl) {
+                         int gender, String originalDeck, String imageUrl, String siteUrl, String aliases) {
             this.id = id; this.publisherId = publisherId; this.name = name; this.realName = realName;
             this.originId = originId; this.origin = origin; this.gender = gender;
-            this.originalDeck = originalDeck; this.imageUrl = imageUrl; this.siteUrl = siteUrl;
+            this.originalDeck = originalDeck; this.imageUrl = imageUrl; this.siteUrl = siteUrl; this.aliases = aliases;
         }
     }
     public static final class Issue {

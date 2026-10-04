@@ -108,17 +108,18 @@ public final class CatalogCheckActivity extends Activity {
             details = result.data;
             put("details", character(details.character)); put("appearance_count", details.appearanceCount);
             if (details.powers.isEmpty()) { fail("powers_missing"); return; }
-            JSONArray rows = new JSONArray(); int[] remaining = {details.powers.size()}; boolean[] failed = {false};
-            for (var power : details.powers) translations.translate("power:" + power.id, "name", power.name, translated -> {
+            JSONArray rows = new JSONArray(); int[] remaining = {details.powers.size()}; boolean[] failed = {false}, cached = {true};
+            for (var power : details.powers) CatalogDescriptions.translatePower(translations, power, translated -> {
                 if (failed[0]) return;
                 if (translated.getFailure() != null) { failed[0] = true; fail("power_translation"); return; }
+                cached[0] &= translated.isFromCache();
                 try { rows.put(new JSONObject().put("id", power.id).put("original", power.name).put("translated", translated.getText())); }
                 catch (Exception ignored) { failed[0] = true; fail("serialize_powers"); return; }
                 if (--remaining[0] == 0) {
                     java.util.List<JSONObject> sorted = new java.util.ArrayList<>();
                     for (int i = 0; i < rows.length(); i++) sorted.add(rows.optJSONObject(i));
                     sorted.sort(java.util.Comparator.comparingInt(row -> row.optInt("id")));
-                    put("powers", new JSONArray(sorted)); relations("teams");
+                    put("powers", new JSONArray(sorted)); put("powers_from_cache", cached[0]); put("alias_count", details.character.aliases.isEmpty() ? 0 : details.character.aliases.split("[\\r\\n]+").length); relations("teams");
                 }
             });
         });
@@ -140,7 +141,12 @@ public final class CatalogCheckActivity extends Activity {
                 catch (Exception ignored) { fail("serialize_first"); return; }
                 repository.details(0, invalid -> {
                     if (invalid.failure == null) { fail("invalid_character_accepted"); return; }
-                    put("invalid_character_rejected", true); put("success", true); save();
+                    put("invalid_character_rejected", true);
+                    // ID de Lightning Lad/DC observado na sondagem real anterior, apenas diagnóstico debug.
+                    repository.details(1253, foreign -> {
+                        if (foreign.failure == null) { fail("foreign_publisher_accepted"); return; }
+                        put("foreign_publisher_rejected", true); put("success", true); save();
+                    });
                 });
             });
         });

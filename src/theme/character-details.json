@@ -1,0 +1,16 @@
+{
+  "frame": "42:478",
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb",
+  "referenceSize": {"width": 430, "height": 932},
+  "observedColors": {"identity": "#302E46", "power": "#323048", "statGradientStart": "#49435E", "statGradientEnd": "#302E46"},
+  "observedShape": {"identityRadius": 20, "imageRadius": 20, "statRadius": 10, "powerRadius": 10},
+  "implementation": {
+    "headings": "Bebas Neue / 40sp",
+    "body": "Inter / 16sp, adaptação para leitura de resumos reais e fonte ampliada",
+    "navigation": "painel até a borda inferior; menu sobreposto; insets de rolagem",
+    "description": "deck traduzido, como resumo no frame; biografia longa pertence ao bloco de história",
+    "relations": "carrosséis com páginas de até 24 referências, verificação de editora antes de exibir",
+    "firstAppearance": "vínculo direto da ComicVine, edição associada a um volume Marvel",
+    "referenceContent": "nenhum texto ou personagem de exemplo do Figma usado como dado"
+  }
+}
