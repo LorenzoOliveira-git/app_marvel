@@ -1,0 +1,22 @@
+<resources>
+    <string name="details_back">Voltar à tela anterior</string>
+    <string name="details_description">Descrição</string>
+    <string name="details_first_appearance">Primeira aparição</string>
+    <string name="details_appearance_count">Quantidade de aparições</string>
+    <string name="details_cover_date">Data da capa: %1$s</string>
+    <string name="details_powers">Poderes</string>
+    <string name="details_teams">Equipes</string>
+    <string name="details_friends">Aliados</string>
+    <string name="details_enemies">Inimigos</string>
+    <string name="details_external">Abrir na ComicVine ↗</string>
+    <string name="details_team_external">Na ComicVine ↗</string>
+    <string name="details_more_teams">Carregar mais equipes</string>
+    <string name="details_more_friends">Carregar mais aliados</string>
+    <string name="details_more_enemies">Carregar mais inimigos</string>
+    <string name="details_relation_empty">Nenhum resultado nesta página</string>
+    <string name="details_relation_next">Continue carregando para consultar as próximas relações.</string>
+    <plurals name="details_appearances">
+        <item quantity="one">%1$s aparição</item>
+        <item quantity="other">%1$s aparições</item>
+    </plurals>
+</resources>

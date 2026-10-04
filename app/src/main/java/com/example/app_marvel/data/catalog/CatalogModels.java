@@ -29,6 +29,37 @@ public final class CatalogModels {
             this.publicationDate = publicationDate; this.imageUrl = imageUrl; this.siteUrl = siteUrl;
         }
     }
+    public static final class CharacterDetails {
+        public final Character character;
+        public final int appearanceCount;
+        public final Reference firstAppearance;
+        public final List<Reference> powers, teams, friends, enemies;
+        public CharacterDetails(Character character, int appearanceCount, Reference firstAppearance,
+                List<Reference> powers, List<Reference> teams, List<Reference> friends, List<Reference> enemies) {
+            this.character = character; this.appearanceCount = appearanceCount; this.firstAppearance = firstAppearance;
+            this.powers = immutable(powers); this.teams = immutable(teams); this.friends = immutable(friends); this.enemies = immutable(enemies);
+        }
+        public List<Reference> relations(String kind) {
+            switch (kind) { case "teams": return teams; case "friends": return friends; case "enemies": return enemies;
+                default: throw new IllegalArgumentException("Relação desconhecida"); }
+        }
+    }
+    public static final class RelatedItem {
+        public final int id, publisherId;
+        public final String name, imageUrl, siteUrl;
+        public RelatedItem(int id, int publisherId, String name, String imageUrl, String siteUrl) {
+            this.id = id; this.publisherId = publisherId; this.name = name; this.imageUrl = imageUrl; this.siteUrl = siteUrl;
+        }
+    }
+    public static final class RelationPage {
+        public final List<RelatedItem> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public RelationPage(List<RelatedItem> items, int nextOffset, boolean hasMore) {
+            this.items = immutable(items); this.nextOffset = nextOffset; this.hasMore = hasMore;
+        }
+    }
+    private static <T> List<T> immutable(List<T> items) { return Collections.unmodifiableList(new ArrayList<>(items)); }
     public static final class Page {
         public final List<Character> characters;
         public final int nextOffset;

@@ -31,7 +31,6 @@ import com.example.app_marvel.R;
 import com.example.app_marvel.databinding.FragmentCharactersBinding;
 import com.example.app_marvel.di.AppContainer;
 import com.example.app_marvel.ui.characters.CharactersViewModel.Choice;
-import com.example.app_marvel.ui.common.ComicVineNavigation;
 import com.example.app_marvel.ui.common.UiState;
 import com.example.app_marvel.ui.components.CharacterPortraitAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -92,7 +91,7 @@ public final class CharactersFragment extends Fragment {
         binding.previousCharacter.setOnClickListener(v -> move(model.selectedPosition() - 1));
         binding.nextCharacter.setOnClickListener(v -> move(model.selectedPosition() + 1));
         binding.characterMore.setOnClickListener(v -> {
-            var item = model.getSelected().getValue(); if (item != null) ComicVineNavigation.open(requireContext(), item.siteUrl);
+            var item = model.getSelected().getValue(); if (item != null) ((MainActivity) requireActivity()).openCharacter(item.id);
         });
         binding.retryOrigin.setOnClickListener(v -> model.retryOrigin());
         model.getState().observe(getViewLifecycleOwner(), state -> {
@@ -142,7 +141,7 @@ public final class CharactersFragment extends Fragment {
         binding.characterMeta.setText(item.realName + (item.realName.isEmpty() || label.isEmpty() ? "" : " — ") + label);
         binding.characterMeta.setVisibility(item.realName.isEmpty() && label.isEmpty() ? View.GONE : View.VISIBLE);
         binding.retryOrigin.setVisibility(origin.getStatus() == UiState.Status.ERROR ? View.VISIBLE : View.GONE);
-        binding.characterMore.setEnabled(!item.siteUrl.isEmpty());
+        binding.characterMore.setEnabled(item.id > 0);
         int position = model.selectedPosition();
         binding.selectionCount.setText(getString(R.string.catalog_count, position + 1, portraits.getItemCount()));
         binding.previousCharacter.setEnabled(position > 0); binding.nextCharacter.setEnabled(position + 1 < portraits.getItemCount());
