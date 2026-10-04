@@ -88,6 +88,7 @@ def capture(name):
 adb('shell','wm','size','430x932'); adb('shell','wm','density','160')
 adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE); adb('shell','am','start','-n',PACKAGE+'/.MainActivity'); time.sleep(3)
+capture('login'); tap('Não tem conta? Cadastre-se'); capture('cadastro'); adb('shell','input','keyevent','4'); time.sleep(1)
 tap('Explorar sem entrar'); wait('issue_title'); capture('catalog-home')
 adb('shell','input','swipe','215','730','215','480','600'); wait('featured_name','Spider-Man'); capture('catalog-home-featured')
 adb('shell','input','swipe','215','730','215','480','600'); wait('fact_text'); capture('catalog-home-fact')
@@ -100,7 +101,7 @@ tap('Início'); tap('Personagens'); wait('search_name','Spider-Man'); wait('char
 adb('shell','wm','size','640x1000'); time.sleep(2); capture('catalog-large')
 adb('shell','wm','size','320x640'); time.sleep(2); capture('catalog-small')
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2); capture('catalog-font-200')
-adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932')
+adb('shell','settings','put','system','font_scale','1.0'); adb('shell','wm','size','430x932'); time.sleep(3)
 tap('Início'); time.sleep(2)
 # Ausência de chave em instalação nova: falha comum com Marv, sem aviso técnico.
 adb('shell','run-as',PACKAGE,'rm','-f','no_backup/comicvine-api-key')

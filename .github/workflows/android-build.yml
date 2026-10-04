@@ -40,14 +40,15 @@ jobs:
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - name: Compilar e verificar lint (sem testes unitários)
         run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
-      - name: Disponibilizar APK de depuração
+      - name: Disponibilizar APK somente em execução manual
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v7
         with:
           name: app-marvel-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
-      - name: Capturar login, cadastro e painel no emulador
+      - name: Iniciar emulador para verificar a aplicação
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         timeout-minutes: 10
@@ -64,13 +65,12 @@ jobs:
           adb shell input keyevent 82
           adb install -r app/build/outputs/apk/debug/app-debug.apk
           python3 tools/comicvine.py device
-          python3 .github/scripts/capture-preview.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
       - name: Verificar ML Kit e cache persistente no emulador
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
         timeout-minutes: 10
-        run: python3 .github/scripts/check-catalog.py
+        run: python3 .github/scripts/check-catalog.py || { adb logcat -d -s AndroidRuntime:E; exit 1; }
       - name: Disponibilizar evidências do catálogo
         if: always()
         uses: actions/upload-artifact@v7
