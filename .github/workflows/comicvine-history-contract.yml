@@ -2,7 +2,7 @@ name: Contrato real de aparições ComicVine
 on:
   push:
     branches: ["codex/bloco-4-historias-aparicoes"]
-    paths: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml"]
+    paths: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml", ".github/workflows/android-build.yml"]
 permissions:
   contents: read
 jobs:

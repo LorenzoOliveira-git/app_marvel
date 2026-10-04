@@ -3,6 +3,7 @@ name: Android build e lint
 on:
   push:
     branches: [main, "codex/**"]
+    paths-ignore: ["tools/comicvine_history_contract.py", ".github/workflows/comicvine-history-contract.yml"]
   pull_request:
   workflow_dispatch:
 
