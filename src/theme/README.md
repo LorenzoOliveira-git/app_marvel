@@ -17,3 +17,7 @@ O bloco 1 estabelece a identidade e a navegação. A home de recepção é provi
 - Perfil futuro: avatar selecionável apenas entre imagens aprovadas; não há conta fictícia neste bloco.
 
 Os dois PNGs foram preparados pelo ImageGen a partir do guia anexado. São assets derivados da referência, não recortes determinísticos. Não foi configurada geração paga de heróis.
+
+## Bloco 2
+
+Sem novas chamadas ao Figma. Login/Home reutilizados do cache. Painel até o rodapé, menu sobreposto e fonte de títulos explícita. Login/cadastro reutilizam Marv existente junto ao formulário/status. Cadastro adaptado dos componentes locais; splash nativa, sem cópia das três telas ainda não consultadas.

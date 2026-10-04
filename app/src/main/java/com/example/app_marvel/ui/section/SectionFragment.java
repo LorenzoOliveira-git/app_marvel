@@ -30,6 +30,7 @@ public final class SectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        view.post(() -> { if (binding != null) ((com.example.app_marvel.MainActivity) requireActivity()).updateContentInsets(); });
         AppFeature feature = AppFeature.valueOf(requireArguments().getString("feature", ""));
         MarvelApplication application = (MarvelApplication) requireActivity().getApplication();
         SectionViewModel viewModel = new ViewModelProvider(this,
