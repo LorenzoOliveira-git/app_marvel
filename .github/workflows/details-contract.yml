@@ -1,0 +1,21 @@
+name: Contrato real detalhes
+on:
+  push:
+    branches: [diagnostic/detalhes-contract]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validar contrato público
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: python3 tools/comicvine_details_contract.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: details-contract
+          path: details-contract.json
+          retention-days: 3
