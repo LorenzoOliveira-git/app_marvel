@@ -43,4 +43,5 @@
     <fragment android:id="@+id/seriesDetailsFragment" android:name="com.example.app_marvel.ui.series.SeriesDetailsFragment" android:label="@string/series_details_title">
         <argument android:name="seriesId" app:argType="integer" />
     </fragment>
+    <fragment android:id="@+id/myHeroesFragment" android:name="com.example.app_marvel.ui.myheroes.MyHeroesFragment" android:label="@string/my_heroes_title" />
 </navigation>
