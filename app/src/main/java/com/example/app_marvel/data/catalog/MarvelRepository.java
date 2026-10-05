@@ -603,7 +603,7 @@ public final class MarvelRepository {
                 JSONObject row = rows.optJSONObject(i);
                 int id = row == null ? 0 : row.optInt("id");
                 String name = text(row, "name"), path = resourcePath(text(row, "api_detail_url"), "power");
-                if (id <= 0 || name.isEmpty() || path.isEmpty() || !ids.add(id)) {
+                if (id <= 0 || name.isEmpty() || !path.equals("power/4035-" + id + "/") || !ids.add(id)) {
                     deliver(callback, Result.failed(Failure.DATA)); return;
                 }
                 refs.add(new Reference(id, name, path));

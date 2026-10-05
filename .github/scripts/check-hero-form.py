@@ -80,6 +80,8 @@ def wait(resource, text=None):
     while time.monotonic() < deadline:
         node = find(nodes(), resource)
         if node is not None and (text is None or text in node.get('text', '')): return node
+        if resource == 'hero_power_status' and node is None:
+            adb('shell', 'input', 'swipe', str(W//2), str(H*3//4), str(W//2), str(H//3), '250')
         time.sleep(1)
     raise RuntimeError('Conteúdo não apareceu: ' + resource)
 
@@ -105,7 +107,7 @@ tap(resource='hero_next'); top(); wait('hero_origin_error'); capture('hero-abili
 # Opções vêm do diagnóstico real, não de uma lista simulada.
 tap(resource='hero_origin'); tap(text=online['origins'][0]['label']); top()
 tap(text=online['powers'][0]['label']); wait('hero_selected_count', '1'); capture('hero-selected')
-tap(resource='hero_power_more'); wait('hero_power_status', '40'); top()
+tap(resource='hero_power_more'); tap(resource='hero_power_status'); wait('hero_power_status', '40'); top()
 enter('hero_description', 'Protege sua cidade com coragem e usa seus poderes para ajudar as pessoas.')
 tap(resource='hero_next'); top(); review = wait('hero_review_data', 'Guardiao Aurora')
 assert 'Alex Sol' in review.get('text') and online['powers'][0]['label'] in review.get('text') and 'Não informado' in review.get('text')

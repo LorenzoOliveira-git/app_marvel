@@ -33,7 +33,10 @@
     <string name="hero_loading_powers">Marv está carregando e traduzindo os poderes…</string>
     <string name="hero_catalog_error">Não foi possível carregar ou traduzir as opções. Seu rascunho foi mantido.</string>
     <string name="hero_catalog_empty">A fonte não retornou opções neste catálogo.</string>
-    <string name="hero_loaded_powers">%1$d de %2$d poderes carregados</string>
+    <plurals name="hero_loaded_powers">
+        <item quantity="one">%1$d de %2$d poder carregado</item>
+        <item quantity="other">%1$d de %2$d poderes carregados</item>
+    </plurals>
     <string name="hero_no_birthday">Não informado</string>
     <string name="hero_review_item">%1$s\n%2$s</string>
     <string name="hero_review_note">Dados prontos para a próxima etapa. Nenhuma imagem foi gerada e este rascunho ainda não é um herói salvo.</string>

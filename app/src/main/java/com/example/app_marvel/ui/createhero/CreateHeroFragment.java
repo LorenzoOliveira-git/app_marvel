@@ -2,6 +2,7 @@ package com.example.app_marvel.ui.createhero;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.graphics.Rect;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -96,7 +97,7 @@ public final class CreateHeroFragment extends Fragment {
         if (step == 1) model.loadChoices();
         if (step == 2) review();
         binding.heroScroll.post(() -> { if (binding != null) binding.heroScroll.smoothScrollTo(0, 0); });
-        binding.heroHeading.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        ViewCompat.setAccessibilityPaneTitle(binding.getRoot(), getString(titles[step]));
     }
     private void next() {
         if (!model.identityValid()) {
@@ -112,7 +113,7 @@ public final class CreateHeroFragment extends Fragment {
             binding.heroDescriptionInput.setError(missing.contains("description") ? getString(R.string.hero_required) : null);
             if (!missing.isEmpty()) {
                 View target = missing.contains("origin") ? binding.heroOrigin : missing.contains("powers") ? binding.heroPowersLabel : binding.heroDescription;
-                target.requestFocus(); binding.heroScroll.smoothScrollTo(0, target.getTop() + binding.heroAbilities.getTop()); return;
+                target.requestFocus(); target.requestRectangleOnScreen(new Rect(0, 0, target.getWidth(), target.getHeight()), false); return;
             }
         }
         InputMethodManager keyboard = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -179,7 +180,7 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroOrigin.setEnabled(origin == UiState.Status.CONTENT);
         binding.heroOriginRetry.setVisibility(origin == UiState.Status.ERROR || origin == UiState.Status.EMPTY ? View.VISIBLE : View.GONE);
         catalogText(binding.heroPowerStatus, power, R.string.hero_loading_powers);
-        if (power == UiState.Status.CONTENT) binding.heroPowerStatus.setText(getString(R.string.hero_loaded_powers, model.loadedCount(), model.total()));
+        if (power == UiState.Status.CONTENT) binding.heroPowerStatus.setText(getResources().getQuantityString(R.plurals.hero_loaded_powers, model.total(), model.loadedCount(), model.total()));
         boolean busy = origin == UiState.Status.LOADING || power == UiState.Status.LOADING;
         binding.heroCatalogProgress.setVisibility(busy ? View.VISIBLE : View.GONE);
         binding.heroPowerMore.setVisibility(model.hasMore() || power == UiState.Status.ERROR || power == UiState.Status.EMPTY ? View.VISIBLE : View.GONE);
