@@ -587,6 +587,31 @@ public final class MarvelRepository {
         });
     }
 
+    /** Catálogo auxiliar geral da ComicVine; não atribui estes poderes à editora Marvel. */
+    public void powers(int offset, Callback<ReferencePage> callback) {
+        if (offset < 0) { deliver(callback, Result.failed(Failure.DATA)); return; }
+        request("powers/", params("limit", "20", "offset", String.valueOf(offset),
+                "sort", "name:asc", "field_list", "id,name,api_detail_url"), DAY, result -> {
+            JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
+            int total = result.data == null ? -1 : result.data.optInt("number_of_total_results", -1);
+            int count = result.data == null ? -1 : result.data.optInt("number_of_page_results", -1);
+            if (rows == null || total < 0 || count != rows.length() || (count == 0 && offset < total)) {
+                deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+            }
+            List<Reference> refs = new ArrayList<>(); Set<Integer> ids = new HashSet<>();
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.optJSONObject(i);
+                int id = row == null ? 0 : row.optInt("id");
+                String name = text(row, "name"), path = resourcePath(text(row, "api_detail_url"), "power");
+                if (id <= 0 || name.isEmpty() || path.isEmpty() || !ids.add(id)) {
+                    deliver(callback, Result.failed(Failure.DATA)); return;
+                }
+                refs.add(new Reference(id, name, path));
+            }
+            deliver(callback, Result.success(new ReferencePage(refs, offset + count, total)));
+        });
+    }
+
     public void teams(Callback<List<Reference>> callback) {
         publisher(pub -> {
             if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }

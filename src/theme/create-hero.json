@@ -1,0 +1,10 @@
+{
+  "screen": "create-hero",
+  "figmaFrame": null,
+  "basis": "Existing auth inputs, Bebas Neue headings, Inter body, Marvel theme and supplied Marv assets",
+  "steps": ["identity", "origin-powers-description", "draft-review"],
+  "marv": {"identity": "marv_welcome", "abilities": "marv_thinking", "review": "marv_welcome"},
+  "layout": {"scroll": true, "padding": "screen_padding", "touchMinimumDp": 48, "dynamicHeight": true},
+  "data": {"origins": "ComicVine origins/", "powers": "ComicVine powers/, 20 per page", "labels": "existing ML Kit/cache", "membership": "general auxiliary catalogs"},
+  "draft": {"scope": "session saved state", "generation": false, "cloudSave": false}
+}

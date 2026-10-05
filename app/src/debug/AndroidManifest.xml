@@ -12,5 +12,6 @@
         <activity android:name=".diagnostics.MovieDetailsCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.SeriesCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.SeriesDetailsCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.HeroFormCheckActivity" android:exported="true" />
     </application>
 </manifest>
