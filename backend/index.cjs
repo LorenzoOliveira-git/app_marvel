@@ -19,3 +19,8 @@ exports.localSessionCheck = onCall({region: 'us-central1'}, async request => {
 
 exports.saveHeroDraft = onCall({region: 'us-central1'}, require('./hero-drafts.cjs').saveHeroDraft);
 exports.prepareHeroCreation = onCall({region: 'us-central1'}, require('./hero-creation.cjs').prepareHeroCreation);
+const generation = require('./hero-generation.cjs');
+exports.executeHeroCreation = onCall({region: 'us-central1', timeoutSeconds: 540, memory: '512MiB'}, generation.executeHeroCreation);
+exports.resumeHeroCreation = onCall({region: 'us-central1', timeoutSeconds: 540, memory: '512MiB'}, generation.resumeHeroCreation);
+exports.retryHeroGeneration = onCall({region: 'us-central1'}, generation.retryHeroGeneration);
+exports.heroImageUrl = onCall({region: 'us-central1'}, generation.heroImageUrl);

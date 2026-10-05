@@ -22,7 +22,7 @@ function parse(data) {
 }
 function response(job) {
   return {uid: job.uid, draftId: job.draftId, operationId: job.operationId,
-    contentHash: job.contentHash, state: job.state, generatedImage: false, policy: job.policy};
+    contentHash: job.contentHash, state: job.state, generatedImage: job.generatedImage === true, policy: job.policy};
 }
 function prompt(snapshot) {
   // JSON delimita dados do usuário; nunca interpolar como instruções do serviço.
@@ -90,4 +90,4 @@ async function prepareHeroCreation(request) {
     return response(job);
   });
 }
-module.exports = {prepareHeroCreation};
+module.exports = {prepareHeroCreation, POLICY};
