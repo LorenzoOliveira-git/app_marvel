@@ -9,6 +9,14 @@ import urllib.request
 state = runpy.run_path('.github/scripts/check-hero-drafts-local.py')
 tap, wait, adb, nodes, find, top = [state[key] for key in ('tap','wait','adb','nodes','find','top')]
 identity, OUT, PACKAGE = [state[key] for key in ('identity','OUT','PACKAGE')]
+base_wait = wait
+def wait(resource, text=None, timeout=75):
+    try:
+        return base_wait(resource, text, timeout)
+    except RuntimeError:
+        (OUT/'hero-generation-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+        print('Tela de falha:', [(n.get('resource-id','').split('/')[-1], n.get('text','')) for n in nodes() if n.get('text')], flush=True)
+        raise
 
 def server(collection):
     url = f"http://127.0.0.1:8080/v1/projects/demo-marvel-local/databases/(default)/documents/users/{identity['localId']}/{collection}"
@@ -37,6 +45,7 @@ assert server('heroCreationJobs')[0]['name'] == operation
 # Recuperação após encerramento do processo: estado vem do servidor, não de sucesso artificial/cache.
 adb('shell','am','force-stop',PACKAGE)
 adb('shell','am','start','-n',PACKAGE+'/.MainActivity')
+wait('user_name','Conta de Teste',timeout=90)
 tap(resource='createHeroFragment'); wait('hero_creation_status','Personagem preparado',timeout=90)
 top(); review=wait('hero_review_data','Guardiao Local',timeout=90)
 assert 'Pessoa de Teste' in review.get('text')
