@@ -132,3 +132,7 @@ Revisão → preparação real → confirmação de tentativa paga → estados d
 ## Bloco 19 — Meus heróis
 
 Perfil → coleção privada paginada → edição de nome, identidade e descrição, com imagem fixa e controle de revisão no backend. Guia e limites em [docs/bloco-19-meus-herois.md](docs/bloco-19-meus-herois.md). Coleção preenchida/edição sobre um herói real ainda dependem da primeira criação concluída com os provedores privados.
+
+## Bloco 20 — Perfil e acesso ao herói
+
+Edição do nome da conta confirmada pela releitura do Firebase Auth e atalho da criação concluída para o próprio herói na coleção. Guia e limites em [docs/bloco-20-perfil-acesso.md](docs/bloco-20-perfil-acesso.md). O novo atalho sobre um herói real ainda depende da primeira criação concluída.

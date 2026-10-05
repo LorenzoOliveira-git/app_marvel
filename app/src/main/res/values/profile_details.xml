@@ -1,0 +1,14 @@
+<resources>
+    <string name="profile_edit_name">Editar nome da conta</string>
+    <string name="profile_name_label">Nome da conta</string>
+    <string name="profile_name_help">Este nome aparece no seu perfil. O nome dos seus heróis permanece o mesmo.</string>
+    <string name="profile_name_save">Salvar nome</string>
+    <string name="profile_name_invalid">Informe um nome com até 100 caracteres.</string>
+    <string name="profile_name_saving">Salvando o nome…</string>
+    <string name="profile_name_saved">Nome confirmado na sua conta.</string>
+    <string name="profile_name_network">Não foi possível confirmar o nome agora. Seus campos foram mantidos. Tente novamente.</string>
+    <string name="profile_name_auth">Entre novamente para editar sua conta.</string>
+    <string name="profile_name_unavailable">A edição do nome não está disponível agora.</string>
+    <string name="hero_open_saved">Abrir herói na coleção</string>
+    <string name="hero_access_unavailable">Não foi possível abrir este herói na sua conta. Você pode verificar novamente ou voltar à coleção.</string>
+</resources>

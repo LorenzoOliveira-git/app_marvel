@@ -49,14 +49,32 @@ public final class MyHeroesViewModel extends ViewModel {
     private void emit(){state.setValue(new State(rows,selected,busy,more,saved,error));}
     private void accountChanged() {
         String uid=repository.account();if(initialized&&uid.equals(account))return;
+        if(initialized&&!uid.equals(account))fields.remove("requestedHero");
         initialized=true;account=uid;epoch++;imageEpoch++;rows.clear();cursor=null;selected=null;busy=false;more=false;saved=false;error=null;image.setValue(null);imageFailed.setValue(false);
         String owner=fields.get("owner");String id=fields.get("selectedId");
-        if(!uid.equals(owner)){clearFields();id=null;}
+        if(!uid.equals(owner)){clearFields();fields.remove("openedArgument");id=null;}
         emit();
         if(uid.isEmpty()){error=MyHeroesRepository.Failure.AUTH;emit();return;}
+        String requested=fields.get("requestedHero");
+        if(requested!=null&&!requested.equals(fields.get("openedArgument"))){openHero(requested);return;}
         if(id!=null)restore(id);else refresh();
     }
-    private void clearFields(){for(String key:new String[]{"owner","selectedId","revision","heroName","realName","description"})fields.remove(key);}
+    public void openHero(String id) {
+        if (id == null || id.isEmpty()) return;
+        fields.set("requestedHero",id);
+        if(!initialized)return;
+        if(id.equals(fields.get("openedArgument")))return;
+        fields.set("openedArgument", id);
+        if (!id.matches("(?i)[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}") || account.isEmpty()) {
+            error = MyHeroesRepository.Failure.UNAVAILABLE; emit(); return;
+        }
+        epoch++; imageEpoch++; busy=false; selected=null; image.setValue(null); imageFailed.setValue(false);clearFields();
+        fields.set("owner",account); fields.set("selectedId",id);fields.set("directPending",true);
+        int stamp=epoch;busy=true;error=null;emit();
+        repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;selected=hero;if(hero!=null){fill(hero);fields.remove("directPending");loadImage();}emit();});
+    }
+    public boolean pendingHero() { return selected == null && fields.get("selectedId") != null; }
+    private void clearFields(){for(String key:new String[]{"owner","selectedId","directPending","revision","heroName","realName","description"})fields.remove(key);}
     public void refresh(){if(busy||selected!=null)return;String id=fields.get("selectedId");if(id!=null){restore(id);return;}rows.clear();cursor=null;more=false;load(false);}
     public void more(){if(!busy&&more&&selected==null)load(true);}
     private void load(boolean append){
@@ -72,7 +90,7 @@ public final class MyHeroesViewModel extends ViewModel {
     }
     private void fill(MyHeroesRepository.Hero hero){fields.set("revision",hero.revision);fields.set("heroName",hero.name);fields.set("realName",hero.realName);fields.set("description",hero.description);}
     private void restore(String id){
-        int stamp=epoch;busy=true;emit();repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;selected=hero;Long revision=fields.get("revision");if(hero!=null&&(revision==null||revision!=hero.revision))error=MyHeroesRepository.Failure.CONFLICT;emit();if(hero!=null)loadImage();});
+        int stamp=epoch;busy=true;emit();repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;selected=hero;Long revision=fields.get("revision");if(hero!=null&&Boolean.TRUE.equals(fields.get("directPending"))){fill(hero);fields.remove("directPending");}else if(hero!=null&&(revision==null||revision!=hero.revision))error=MyHeroesRepository.Failure.CONFLICT;emit();if(hero!=null)loadImage();});
     }
     public void reloadSelected(){if(busy||selected==null)return;int stamp=epoch;String id=selected.id;busy=true;error=null;emit();repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;if(hero!=null){selected=hero;fill(hero);saved=false;}emit();});}
     public void save(){

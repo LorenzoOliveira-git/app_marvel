@@ -38,11 +38,13 @@ public final class MyHeroesFragment extends Fragment {
                 return type.cast(new MyHeroesViewModel(container.getMyHeroes(),container.getHeroCreations(),SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(MyHeroesViewModel.class);
+        model.openHero(getArguments()==null ? "" : getArguments().getString("heroId", ""));
         ViewCompat.setAccessibilityHeading(binding.collectionHeading,true);
         field(binding.editHeroName,"heroName");field(binding.editRealName,"realName");field(binding.editDescription,"description");
         binding.collectionRefresh.setOnClickListener(v->model.refresh());binding.collectionMore.setOnClickListener(v->model.more());binding.collectionSave.setOnClickListener(v->model.save());
         binding.collectionCreate.setOnClickListener(v->((MainActivity)requireActivity()).openFeature(AppFeature.CREATE_HERO));
         binding.collectionClose.setOnClickListener(v->discard(model::closeEditor));binding.collectionReload.setOnClickListener(v->discard(model::reloadSelected));
+        binding.collectionLeavePending.setOnClickListener(v->model.closeEditor());
         binding.collectionImageRetry.setOnClickListener(v->model.loadImage());
         model.state().observe(getViewLifecycleOwner(),this::render);
         model.image().observe(getViewLifecycleOwner(),bitmap->{binding.collectionImage.setImageBitmap(bitmap);binding.collectionImage.setVisibility(bitmap==null?View.GONE:View.VISIBLE);});
@@ -61,18 +63,19 @@ public final class MyHeroesFragment extends Fragment {
             .setPositiveButton(R.string.my_heroes_discard,(dialog,which)->action.run()).setNegativeButton(R.string.catalog_cancel,null).show();
     }
     private void render(MyHeroesViewModel.State state){
-        boolean editor=state.selected!=null;
+        boolean editor=state.selected!=null;boolean pending=model.pendingHero();
         binding.collectionEditor.setVisibility(editor?View.VISIBLE:View.GONE);binding.collectionList.setVisibility(editor?View.GONE:View.VISIBLE);
         binding.collectionIntro.setVisibility(editor?View.GONE:View.VISIBLE);
         binding.collectionProgress.setVisibility(state.busy?View.VISIBLE:View.GONE);
         int message=state.busy?R.string.my_heroes_loading:state.saved?R.string.my_heroes_saved:!editor&&state.rows.isEmpty()?R.string.my_heroes_empty:0;
-        if(state.error!=null)switch(state.error){case AUTH:message=R.string.my_heroes_auth;break;case INVALID:message=R.string.my_heroes_invalid;break;case CONFLICT:message=R.string.my_heroes_conflict;break;case UNAVAILABLE:message=R.string.my_heroes_unavailable;break;default:message=R.string.my_heroes_error;}
+        if(state.error!=null)switch(state.error){case AUTH:message=R.string.my_heroes_auth;break;case INVALID:message=R.string.my_heroes_invalid;break;case CONFLICT:message=R.string.my_heroes_conflict;break;case UNAVAILABLE:message=pending?R.string.hero_access_unavailable:R.string.my_heroes_unavailable;break;default:message=R.string.my_heroes_error;}
         binding.collectionStatus.setVisibility(message==0?View.GONE:View.VISIBLE);if(message!=0)binding.collectionStatus.setText(message);
         binding.collectionRefresh.setVisibility(editor?View.GONE:View.VISIBLE);binding.collectionRefresh.setEnabled(!state.busy);
         binding.collectionMore.setVisibility(!editor&&state.more?View.VISIBLE:View.GONE);binding.collectionMore.setEnabled(!state.busy);
         binding.collectionCreate.setVisibility(!editor?View.VISIBLE:View.GONE);binding.collectionCreate.setEnabled(!state.busy);
         binding.collectionSave.setEnabled(!state.busy&&state.error!=com.example.app_marvel.data.herodraft.MyHeroesRepository.Failure.CONFLICT);binding.collectionClose.setEnabled(!state.busy);binding.collectionReload.setEnabled(!state.busy);
         binding.collectionReload.setVisibility(state.error!=null?View.VISIBLE:View.GONE);
+        binding.collectionLeavePending.setVisibility(pending&&!state.busy?View.VISIBLE:View.GONE);
         for(var input:new TextInputEditText[]{binding.editHeroName,binding.editRealName,binding.editDescription})input.setEnabled(!state.busy);
         if(editor){syncing=true;set(binding.editHeroName,model.field("heroName"));set(binding.editRealName,model.field("realName"));set(binding.editDescription,model.field("description"));syncing=false;}
         binding.collectionList.removeAllViews();

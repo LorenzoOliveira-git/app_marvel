@@ -72,3 +72,7 @@ Portanto, o código pode ser compartilhado, mas a configuração de conexão e o
 ## Coleção e edição textual no Android
 
 O [bloco 19](bloco-19-meus-herois.md) acrescenta Perfil → Meus heróis e a callable local `updateHeroText`. A coleção lê documentos confirmados no servidor e a edição altera somente nome, identidade e descrição. Revisão transacional protege contra sobrescrita de outra edição; imagem/referência e origem/poderes não são alterados. Sem heróis concluídos, a tela mostra o estado vazio real.
+
+## Nome do perfil e acesso ao herói concluído
+
+O [bloco 20](bloco-20-perfil-acesso.md) usa o Firebase Auth emulado para editar/reler o nome da conta. O nome dos heróis permanece independente. Após a criação real concluída, um atalho abre o documento proprietário na coleção, sem gerar novamente ou transportar URL assinada pela navegação.

@@ -73,6 +73,12 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroResumeCreation.setOnClickListener(v -> model.resumeCreation());
         binding.heroRetryGeneration.setOnClickListener(v -> model.requestNewAttempt());
         binding.heroReloadImage.setOnClickListener(v -> model.loadImage());
+        binding.heroOpenSaved.setOnClickListener(v -> {
+            var job = model.creation().getValue();
+            if (job == null || !"completed".equals(job.state) || model.hero().getValue() == null) return;
+            Bundle args = new Bundle(); args.putString("heroId", job.id);
+            androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.myHeroesFragment, args);
+        });
         binding.heroNewCharacter.setOnClickListener(v -> { model.newHero(); syncFields(); renderStep(); });
         model.creation().observe(getViewLifecycleOwner(), value -> renderCreation());
         model.creationFailure().observe(getViewLifecycleOwner(), value -> renderCreation());
@@ -324,6 +330,8 @@ public final class CreateHeroFragment extends Fragment {
             binding.heroGuide.setText(completed ? R.string.hero_creation_saved : R.string.hero_creation_running_guide);
             binding.heroReviewNote.setVisibility(View.GONE);
         } else binding.heroReviewNote.setVisibility(View.VISIBLE);
+        binding.heroOpenSaved.setVisibility(completed ? View.VISIBLE : View.GONE);
+        binding.heroOpenSaved.setEnabled(!busy);
         binding.heroSavedTitle.setVisibility(completed ? View.VISIBLE : View.GONE);
         if (completed) binding.heroSavedTitle.setText(String.valueOf(model.hero().getValue().get("heroName")));
         binding.heroGeneratedImage.setImageBitmap(completed ? model.image().getValue() : null);

@@ -12,6 +12,7 @@ public final class AuthSession {
     }
     public boolean isConfigured() { return configured; }
     public boolean isAuthenticated() { return uid != null; }
+    public String getUid() { return uid == null ? "" : uid; }
     public String getName() { return name == null ? "" : name; }
     public String getEmail() { return email == null ? "" : email; }
     public String getPhotoUrl() { return photoUrl == null ? "" : photoUrl; }

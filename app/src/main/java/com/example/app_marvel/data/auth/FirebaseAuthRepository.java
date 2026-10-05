@@ -44,6 +44,24 @@ public final class FirebaseAuthRepository implements AuthRepository {
                     });
         });
     }
+    @Override public void updateName(String name, Callback callback) {
+        String normalized = name == null ? "" : name.trim();
+        if (normalized.isEmpty() || normalized.length() > 100) { callback.complete(Failure.INVALID, false); return; }
+        FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+        if (user == null) { callback.complete(Failure.CREDENTIALS, false); return; }
+        String uid = user.getUid();
+        user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(normalized).build()).addOnCompleteListener(updated -> {
+            if (auth.getCurrentUser() == null || !uid.equals(auth.getCurrentUser().getUid())) { callback.complete(Failure.CREDENTIALS, false); return; }
+            if (!updated.isSuccessful()) { callback.complete(failure(updated.getException()), false); return; }
+            user.reload().addOnCompleteListener(read -> {
+                if (auth.getCurrentUser() == null || !uid.equals(auth.getCurrentUser().getUid())) { callback.complete(Failure.CREDENTIALS, false); return; }
+                if (!read.isSuccessful()) { callback.complete(failure(read.getException()), false); return; }
+                boolean confirmed = normalized.equals(auth.getCurrentUser().getDisplayName());
+                if (confirmed) publish();
+                callback.complete(confirmed ? null : Failure.UNKNOWN, confirmed);
+            });
+        });
+    }
     @Override public void signOut() { if (auth != null) auth.signOut(); publish(); }
     private Failure failure(Exception error) {
         if (error instanceof FirebaseNetworkException) return Failure.NETWORK;
