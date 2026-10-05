@@ -1,0 +1,7 @@
+{
+  "screen": "Detalhes da série", "dedicatedFigmaFrame": null,
+  "basis": ["fragment_movie_details.xml", "component_details_relations.xml", "component_issue_credit.xml"],
+  "reuse": ["Marvel tokens and fonts", "MarvStateView", "RelatedCharacterAdapter", "ComicVineImages", "shared shell and insets"],
+  "layout": {"posterHeightDp":340,"posterScale":"fitCenter","cardRadiusDp":20,"minimumControlDp":48},
+  "data": "Verified Marvel publisher; episode reference batch and reciprocal series relation. Raw numbering preserved, no seasons inferred. First/last are source claims, not derived chronology."
+}

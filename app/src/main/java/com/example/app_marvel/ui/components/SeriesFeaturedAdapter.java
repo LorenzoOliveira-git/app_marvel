@@ -7,16 +7,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.data.catalog.CatalogModels.Series;
 import com.example.app_marvel.databinding.ItemFeaturedMovieBinding;
-import com.example.app_marvel.ui.common.ComicVineNavigation;
 import com.example.app_marvel.R;
 import java.util.Collections;
 import java.util.List;
 
 public final class SeriesFeaturedAdapter extends RecyclerView.Adapter<SeriesFeaturedAdapter.Holder> {
+    public interface Listener { void open(Series item); }
+    private final Listener listener;
     private final ComicVineImages images;
     private List<Series> items = Collections.emptyList();
     private int width;
-    public SeriesFeaturedAdapter(ComicVineImages images) { this.images=images; setHasStableIds(true); }
+    public SeriesFeaturedAdapter(ComicVineImages images,Listener listener) { this.listener=listener;this.images=images; setHasStableIds(true); }
     public void submit(List<Series> value) { if (items.equals(value)) return; items = value; notifyDataSetChanged(); }
     public void width(int value) { if (width != value) { width = value; notifyDataSetChanged(); } }
     @Override public long getItemId(int position) { return items.get(position).id; }
@@ -41,10 +42,10 @@ public final class SeriesFeaturedAdapter extends RecyclerView.Adapter<SeriesFeat
         view.movieVolume.setVisibility(item.startYear.isEmpty() ? View.GONE:View.VISIBLE);
         view.movieDate.setText(item.episodeCount>=0 ? view.getRoot().getResources().getQuantityString(R.plurals.series_episodes,item.episodeCount,item.episodeCount):"");
         view.movieDate.setVisibility(item.episodeCount>=0 ? View.VISIBLE:View.GONE);
-        view.movieMore.setText(R.string.history_external);
-        view.movieMore.setContentDescription(view.getRoot().getContext().getString(R.string.series_external_named,item.title));
-        view.movieMore.setEnabled(!item.siteUrl.isEmpty());
-        view.movieMore.setOnClickListener(clicked -> ComicVineNavigation.open(clicked.getContext(),item.siteUrl));
+        view.movieMore.setText(R.string.series_details_open);
+        view.movieMore.setContentDescription(view.getRoot().getContext().getString(R.string.series_open_named,item.title));
+        view.movieMore.setEnabled(true);
+        view.movieMore.setOnClickListener(clicked -> listener.open(item));
         images.show(view.movieImage, item.imageUrl);
     }
     static final class Holder extends RecyclerView.ViewHolder {

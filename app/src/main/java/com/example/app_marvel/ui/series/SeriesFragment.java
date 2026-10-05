@@ -22,7 +22,6 @@ import com.example.app_marvel.MainActivity;
 import com.example.app_marvel.MarvelApplication;
 import com.example.app_marvel.R;
 import com.example.app_marvel.databinding.FragmentSeriesBinding;
-import com.example.app_marvel.ui.common.ComicVineNavigation;
 import com.example.app_marvel.ui.common.UiState;
 import com.example.app_marvel.ui.components.SeriesCoverAdapter;
 import com.example.app_marvel.ui.components.SeriesFeaturedAdapter;
@@ -48,7 +47,7 @@ public final class SeriesFragment extends Fragment {
                 return type.cast(new SeriesViewModel(container.getCatalog(), SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(SeriesViewModel.class);
-        SeriesFeaturedAdapter highlight = new SeriesFeaturedAdapter(container.getImages());
+        SeriesFeaturedAdapter highlight = new SeriesFeaturedAdapter(container.getImages(),item -> ((MainActivity) requireActivity()).openSeriesDetails(item.id));
         binding.seriesFeaturedList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.seriesFeaturedList.setAdapter(highlight);
         model.featured().observe(getViewLifecycleOwner(), state -> {
@@ -72,7 +71,7 @@ public final class SeriesFragment extends Fragment {
         binding.previousSeries.setOnClickListener(v -> move(model.position()-1));
         binding.nextSeries.setOnClickListener(v -> move(model.position()+1));
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.seriesMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ComicVineNavigation.open(requireContext(),item.siteUrl); });
+        binding.seriesMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ((MainActivity) requireActivity()).openSeriesDetails(item.id); });
         model.state().observe(getViewLifecycleOwner(), state -> {
             binding.seriesState.render(state.getStatus(), model::reload);
             if (state.getStatus() == UiState.Status.EMPTY) binding.seriesState.emptyMessage(R.string.series_empty_title, R.string.series_empty_body);
@@ -105,8 +104,8 @@ public final class SeriesFragment extends Fragment {
         binding.seriesYear.setVisibility(item.startYear.isEmpty() ? View.GONE:View.VISIBLE);
         binding.seriesEpisodes.setText(item.episodeCount>=0 ? getResources().getQuantityString(R.plurals.series_episodes,item.episodeCount,item.episodeCount):"");
         binding.seriesEpisodes.setVisibility(item.episodeCount>=0 ? View.VISIBLE:View.GONE);
-        binding.seriesMore.setText(R.string.history_external);binding.seriesMore.setEnabled(!item.siteUrl.isEmpty());
-        binding.seriesMore.setContentDescription(getString(R.string.series_external_named,item.title));
+        binding.seriesMore.setText(R.string.series_details_open);binding.seriesMore.setEnabled(true);
+        binding.seriesMore.setContentDescription(getString(R.string.series_open_named,item.title));
         int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
         binding.previousSeries.setEnabled(position > 0); binding.nextSeries.setEnabled(position+1 < covers.getItemCount());
     }

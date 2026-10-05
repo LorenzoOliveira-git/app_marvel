@@ -12,7 +12,6 @@
     <string name="series_order_selected">Ordem selecionada</string>
     <string name="series_year">Ano inicial informado: %1$s</string>
     <plurals name="series_episodes"><item quantity="one">Episódio cadastrado na fonte: %1$d</item><item quantity="other">Episódios cadastrados na fonte: %1$d</item></plurals>
-    <string name="series_external_named">Abrir %1$s no site da ComicVine</string>
     <string name="series_previous">Série anterior</string>
     <string name="series_next">Próxima série</string>
     <string name="series_empty_title">Nenhuma série neste lote</string>

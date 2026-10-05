@@ -162,7 +162,7 @@ for width,height,font,label in [(320,640,'1.0','small'),(640,1000,'1.0','large')
     wait('series_year',online['descending'][0]['start_year'])
     wait('series_episodes',str(online['descending'][0]['episode_count']))
     source=wait('series_more')
-    assert source.get('enabled')=='true' and source.get('content-desc')=='Abrir '+online['descending'][0]['name']+' no site da ComicVine'
+    assert source.get('enabled')=='true' and source.get('content-desc')=='Abrir detalhes de '+online['descending'][0]['name']
     capture('series-'+label+'-metadata')
 adb('shell','wm','size','430x932');adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
 tap(resource='header_back');tap(text='Início');wait('issue_title')

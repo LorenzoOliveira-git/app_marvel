@@ -1,0 +1,43 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/series_details_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_details_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <LinearLayout android:id="@+id/series_details_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" app:cardCornerRadius="20dp" app:cardBackgroundColor="@color/marvel_surface_raised" app:strokeWidth="0dp" app:cardElevation="0dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                    <ImageView android:id="@+id/series_details_image" android:layout_width="match_parent" android:layout_height="340dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+                    <TextView android:id="@+id/series_details_heading" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" />
+                    <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/series_association" />
+                    <TextView android:id="@+id/series_details_year" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+                    <TextView android:id="@+id/series_details_count" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+                    <TextView android:id="@+id/series_details_publisher" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <LinearLayout android:id="@+id/series_deck_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
+                <TextView android:id="@+id/series_deck_heading" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_summary" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_deck_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/series_deck" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
+            </LinearLayout>
+            <include android:id="@+id/series_characters_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" />
+            <LinearLayout android:id="@+id/series_episodes_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
+                <TextView android:id="@+id/series_episodes_heading" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/series_episode_list" />
+                <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/series_episode_order" />
+                <TextView android:id="@+id/series_first_episode" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
+                <TextView android:id="@+id/series_last_episode" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_episodes_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/series_loaded_episodes" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
+                <LinearLayout android:id="@+id/series_episode_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+                <ProgressBar android:id="@+id/series_episodes_progress" android:layout_width="48dp" android:layout_height="48dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/series_episodes_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/series_more_episodes" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/series_description_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
+                <TextView android:id="@+id/series_description_heading" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_description" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_description_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/series_read_description" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/series_read_description" />
+                <TextView android:id="@+id/series_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
+            </LinearLayout>
+            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/issue_source" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/series_details_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_external" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -76,6 +76,15 @@ public final class CatalogDescriptions {
         while (names.find()) known.add(names.group());
         translateProtected(repository,"movie:"+item.movie.id,field+"-proper-names-v1",MarvelRepository.plain(html),known,callback);
     }
+    public static void translateSeries(TranslationRepository repository,CatalogModels.SeriesDetails item,String field,TranslationRepository.Callback callback) {
+        String html=field.equals("deck") ? item.originalDeck:item.originalDescription;
+        Set<String> known=new LinkedHashSet<>();known.add(item.series.title);
+        for(CatalogModels.Reference ref:item.characters) known.add(ref.name);
+        for(CatalogModels.Episode episode:item.episodes) known.add(episode.name);
+        Matcher anchors=Pattern.compile("(?is)<a\\b[^>]*>(.*?)</a>").matcher(html);
+        while(anchors.find()) { String name=MarvelRepository.plain(anchors.group(1));if(!name.isEmpty()) known.add(name); }
+        translateProtected(repository,"series:"+item.series.id,field+"-proper-names-v1",MarvelRepository.plain(html),known,callback);
+    }
     private static void translateProtected(TranslationRepository repository, String entity, String field, String source,
             Set<String> known, TranslationRepository.Callback callback) {
         known.removeIf(String::isEmpty);
