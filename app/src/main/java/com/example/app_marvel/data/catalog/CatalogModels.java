@@ -11,6 +11,15 @@ public final class CatalogModels {
         public final String name, path;
         public Reference(int id, String name, String path) { this.id = id; this.name = name; this.path = path; }
     }
+    public static final class ReferencePage {
+        public final List<Reference> items;
+        public final int nextOffset, total;
+        public final boolean hasMore;
+        public ReferencePage(List<Reference> items, int nextOffset, int total) {
+            this.items = Collections.unmodifiableList(new ArrayList<>(items));
+            this.nextOffset = nextOffset; this.total = total; this.hasMore = nextOffset < total;
+        }
+    }
     public static final class Character {
         public final int id, publisherId, originId, gender;
         public final String name, realName, origin, originalDeck, imageUrl, siteUrl, aliases;
