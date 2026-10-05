@@ -6,10 +6,18 @@ import json
 # Apenas helpers de UiAutomator existentes; não executa o roteiro de geração novamente.
 helper = Path('.github/scripts/check-hero-drafts-local.py').read_text().split("subprocess.run(['python3'")[0]
 exec(compile(helper, 'hero-ui-helpers', 'exec'))
+original_wait=wait
+def wait(resource,text=None,timeout=75):
+    try: return original_wait(resource,text,timeout)
+    except RuntimeError:
+        (OUT/'my-heroes-ui-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+        print('Tela no erro:', [(n.get('resource-id','').split('/')[-1],n.get('text','')) for n in nodes() if n.get('text')],flush=True)
+        print(adb('logcat','-d','-s','AndroidRuntime:E',check=False).stdout.decode(errors='replace')[-5000:],flush=True)
+        raise
 subprocess.run(['python3','.github/scripts/check-firebase-local.py'],check=True)
 subprocess.run(['node','tools/check-hero-profile-local.cjs'],check=True)
 adb('shell','wm','size',f'{W}x{H}');adb('shell','wm','density','160')
-adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity')
+adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-f','0x10008000','-n',PACKAGE+'/.MainActivity')
 wait('submit');tap(resource='switch_form');wait('name')
 enter('name','Conta Colecao');enter('email',f'collection-{int(time.time())}@example.test');enter('password','local-emulator-only-928374');enter('confirmation','local-emulator-only-928374')
 tap(resource='submit');wait('user_name','Conta Colecao');tap(resource='profileFragment');tap(resource='account_my_heroes')
