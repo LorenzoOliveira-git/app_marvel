@@ -5,6 +5,7 @@ import time
 import json
 # Apenas helpers de UiAutomator existentes; não executa o roteiro de geração novamente.
 helper = Path('.github/scripts/check-hero-drafts-local.py').read_text().split("subprocess.run(['python3'")[0]
+helper=helper.replace("resource=='createHeroFragment'", "resource in ('createHeroFragment','profileFragment')")
 exec(compile(helper, 'hero-ui-helpers', 'exec'))
 original_wait=wait
 def wait(resource,text=None,timeout=75):
