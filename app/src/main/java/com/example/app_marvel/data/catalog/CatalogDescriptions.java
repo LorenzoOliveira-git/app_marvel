@@ -62,6 +62,20 @@ public final class CatalogDescriptions {
         while (anchors.find()) { String name=MarvelRepository.plain(anchors.group(1)); if (!name.isEmpty()) known.add(name); }
         translateProtected(repository,"arc:"+item.arc.id,field+"-proper-names-v1",MarvelRepository.plain(html),known,callback);
     }
+    public static void translateMovie(TranslationRepository repository,CatalogModels.MovieDetails item,String field,TranslationRepository.Callback callback) {
+        String html=field.equals("deck") ? item.originalDeck:item.originalDescription;
+        Set<String> known=new LinkedHashSet<>();known.add(item.movie.title);
+        for (CatalogModels.Reference ref:item.characters) known.add(ref.name);
+        for (CatalogModels.Reference ref:item.teams) known.add(ref.name);
+        for (List<CatalogModels.Credit> list:Arrays.asList(item.studios,item.producers,item.writers,item.locations,item.objects,item.concepts))
+            for (CatalogModels.Credit credit:list) known.add(credit.reference.name);
+        Matcher anchors=Pattern.compile("(?is)<a\\b[^>]*>(.*?)</a>").matcher(item.originalDeck+" "+item.originalDescription);
+        while (anchors.find()) { String name=MarvelRepository.plain(anchors.group(1));if (!name.isEmpty()) known.add(name); }
+        // Sequências de nomes com capitalização vêm do resumo original (inclusive nomes de atores).
+        Matcher names=Pattern.compile("\\b[A-Z][\\p{L}]+(?: [A-Z][\\p{L}]+)+\\b").matcher(MarvelRepository.plain(item.originalDeck));
+        while (names.find()) known.add(names.group());
+        translateProtected(repository,"movie:"+item.movie.id,field+"-proper-names-v1",MarvelRepository.plain(html),known,callback);
+    }
     private static void translateProtected(TranslationRepository repository, String entity, String field, String source,
             Set<String> known, TranslationRepository.Callback callback) {
         known.removeIf(String::isEmpty);

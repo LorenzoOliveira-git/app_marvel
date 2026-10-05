@@ -36,6 +36,25 @@ public final class CatalogModels {
             this.id=id; this.publisherId=publisherId; this.title=title; this.runtime=runtime; this.imageUrl=imageUrl; this.siteUrl=siteUrl;
         }
     }
+    public static final class MovieDetails {
+        public final Movie movie;
+        public final String rating, distributor, originalDeck, originalDescription;
+        public final List<Reference> characters, teams;
+        public final List<Credit> studios, producers, writers, locations, objects, concepts;
+        public MovieDetails(Movie movie,String rating,String distributor,String originalDeck,String originalDescription,
+                List<Reference> characters,List<Reference> teams,List<Credit> studios,List<Credit> producers,List<Credit> writers,
+                List<Credit> locations,List<Credit> objects,List<Credit> concepts) {
+            this.movie=movie;this.rating=rating;this.distributor=distributor;this.originalDeck=originalDeck;this.originalDescription=originalDescription;
+            this.characters=immutable(characters);this.teams=immutable(teams);this.studios=immutable(studios);
+            this.producers=immutable(producers);this.writers=immutable(writers);this.locations=immutable(locations);
+            this.objects=immutable(objects);this.concepts=immutable(concepts);
+        }
+        public List<Reference> relations(String kind) {
+            if (kind.equals("characters")) return characters;
+            if (kind.equals("teams")) return teams;
+            throw new IllegalArgumentException("Relação desconhecida");
+        }
+    }
     public static final class MoviesPage {
         public final List<Movie> items;
         public final int nextOffset;

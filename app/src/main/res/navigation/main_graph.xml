@@ -34,4 +34,7 @@
         <argument android:name="feature" app:argType="string" android:defaultValue="PROFILE" />
     </fragment>
     <fragment android:id="@+id/moviesFragment" android:name="com.example.app_marvel.ui.movies.MoviesFragment" android:label="@string/movies_title" />
+    <fragment android:id="@+id/movieDetailsFragment" android:name="com.example.app_marvel.ui.movies.MovieDetailsFragment" android:label="@string/movie_details_title">
+        <argument android:name="movieId" app:argType="integer" />
+    </fragment>
 </navigation>

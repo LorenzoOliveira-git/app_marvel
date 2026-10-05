@@ -49,6 +49,7 @@ public final class MoviesFragment extends Fragment {
             }
         }).get(MoviesViewModel.class);
         MovieFeaturedAdapter highlight = new MovieFeaturedAdapter(container.getImages());
+        highlight.openWith(id -> ((MainActivity) requireActivity()).openMovie(id));
         binding.moviesFeaturedList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.moviesFeaturedList.setAdapter(highlight);
         model.featured().observe(getViewLifecycleOwner(), state -> {
@@ -72,7 +73,7 @@ public final class MoviesFragment extends Fragment {
         binding.previousMovie.setOnClickListener(v -> move(model.position()-1));
         binding.nextMovie.setOnClickListener(v -> move(model.position()+1));
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.movieMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ComicVineNavigation.open(requireContext(),item.siteUrl); });
+        binding.movieMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ((MainActivity) requireActivity()).openMovie(item.id); });
         model.state().observe(getViewLifecycleOwner(), state -> {
             binding.moviesState.render(state.getStatus(), model::reload);
             if (state.getStatus() == UiState.Status.EMPTY) binding.moviesState.emptyMessage(R.string.movies_empty_title, R.string.movies_empty_body);
@@ -103,8 +104,8 @@ public final class MoviesFragment extends Fragment {
         binding.movieTitle.setText(item.title);
         binding.movieDate.setText(item.runtime>0 ? getString(R.string.movies_runtime,item.runtime):"");
         binding.movieDate.setVisibility(item.runtime>0 ? View.VISIBLE:View.GONE);
-        binding.movieMore.setText(R.string.history_external); binding.movieMore.setEnabled(!item.siteUrl.isEmpty());
-        binding.movieMore.setContentDescription(getString(R.string.movies_external_named,item.title));
+        binding.movieMore.setText(R.string.movie_open);binding.movieMore.setEnabled(true);
+        binding.movieMore.setContentDescription(getString(R.string.movie_open_named,item.title));
         int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
         binding.previousMovie.setEnabled(position > 0); binding.nextMovie.setEnabled(position+1 < covers.getItemCount());
     }
