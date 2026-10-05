@@ -37,17 +37,22 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           npm ci --prefix backend --ignore-scripts --no-audit --no-fund
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
-      - name: Compilar perfil normal e conferir isolamento da variante release
+      - name: Conferir configuração padrão
         run: |
-          bash gradlew :app:assembleDebug --no-daemon --console=plain
-          bash gradlew :app:assembleRelease -PfirebaseEmulators=true --no-daemon --console=plain
+          bash gradlew :app:generateDebugBuildConfig --no-daemon --console=plain
+          python3 - <<'PY'
+          from pathlib import Path
+          config = next(p for p in Path('app/build/generated').rglob('BuildConfig.java') if 'debug' in p.parts)
+          assert 'FIREBASE_EMULATORS = false' in config.read_text()
+          PY
+      - name: Compilar variantes, verificar lint local e isolamento release
+        run: |
+          bash gradlew :app:assembleDebug :app:lintDebug :app:assembleRelease -PfirebaseEmulators=true --no-daemon --console=plain
           python3 - <<'PY'
           from pathlib import Path
           config = next(p for p in Path('app/build/generated').rglob('BuildConfig.java') if 'release' in p.parts)
           assert 'FIREBASE_EMULATORS = false' in config.read_text()
           PY
-      - name: Compilar e verificar lint do perfil local
-        run: bash gradlew :app:assembleDebug :app:lintDebug -PfirebaseEmulators=true --no-daemon --console=plain
       - name: Iniciar emulador Android
         timeout-minutes: 5
         run: |
@@ -72,6 +77,5 @@ jobs:
           path: |
             firebase-local-check/*.json
             app/build/reports/lint-results-debug.*
-            *-debug.log
           if-no-files-found: ignore
           retention-days: 7
