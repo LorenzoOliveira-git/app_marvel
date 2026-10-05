@@ -77,8 +77,9 @@ function document(uid, collection, id) {
   const base = jobUrl.slice(0, jobUrl.lastIndexOf('/'));
   assert.equal((await (await request(base, owner.idToken)).json()).documents.length, 2);
   // Conferência administrativa no emulador: prompt real, política privada e sem lançamento financeiro.
-  const {initializeApp} = require('../backend/node_modules/firebase-admin/app');
-  const {getFirestore} = require('../backend/node_modules/firebase-admin/firestore');
+  const backendRequire = require('node:module').createRequire(require.resolve('../backend/package.json'));
+  const {initializeApp} = backendRequire('firebase-admin/app');
+  const {getFirestore} = backendRequire('firebase-admin/firestore');
   initializeApp({projectId: project});
   const db = getFirestore();
   const privateInput = (await db.doc(`users/${owner.localId}/heroCreationInputs/${job.operationId}`).get()).data();
