@@ -1,6 +1,6 @@
 # Bloco 14 — Proposta de geração e persistência
 
-Status: proposta futura de geração paga, ainda não implementada. O usuário escolheu testar somente nos emuladores Firebase. A implementação atual está em [firebase-local.md](firebase-local.md); as configurações de produção, contas externas, custos e direção visual abaixo continuam pendentes. O bloco 13 foi integrado no PR 22, commit de merge `2dcaffbbbd5f372c52f0708c3b68a88433189df9`. Nenhuma integração paga ou configuração de serviço foi ativada nesta proposta.
+Status atualizado em 05/10/2026: o usuário aprovou estilo de HQ colorida/corpo inteiro, proporção 2:3, `gpt-image-2`/`low`, uma imagem, US$ 5/mês para OpenAI, 3 tentativas por usuário/dia, 100 tentativas totais/mês e ausência de repetição automática de geração. O piloto continua somente nos emuladores Firebase. A preparação da operação foi implementada no [bloco 16](bloco-16-preparacao-criacao.md); geração, upload e bloqueio financeiro permanecem próximos passos. A infraestrutura de produção abaixo continua sendo proposta futura e não foi ativada.
 
 ## Decisões propostas
 
@@ -46,7 +46,7 @@ A chave ComicVine permanece fora do APK. No novo backend, a validação dos IDs 
 
 ## Configuração necessária — até seis passos
 
-1. Confirmar a proposta acima. Informar apenas o Firebase project ID e o Cloudinary cloud name, caso as contas já existam; são identificadores públicos. Não enviar chaves/senhas.
+1. A direção visual e os limites acima já foram confirmados; não solicitar novamente. Para uma futura implantação em produção, informar apenas o Firebase project ID e o Cloudinary cloud name, caso as contas já existam; são identificadores públicos. Não enviar chaves/senhas.
 2. No Firebase, registrar `com.example.app_marvel`, habilitar E-mail/Senha e colocar `google-services.json` em `app/` localmente ou no secret de CI `GOOGLE_SERVICES_JSON`. Neste workspace o arquivo ainda está ausente; não se inferiu a configuração do seu console.
 3. Ativar Firestore, Functions/Cloud Tasks e armazenamento temporário privado no projeto Blaze aprovado; selecionar uma região comum aos recursos onde suportado e configurar alertas de infraestrutura. Regras/IAM serão entregues para revisão antes do deploy.
 4. No projeto OpenAI, configurar faturamento, verificar disponibilidade de `gpt-image-2` e os limites da conta. Preparar credencial restrita no ambiente privado; um teste de geração só ocorrerá após aprovação dos custos/limites.
@@ -57,7 +57,7 @@ A chave ComicVine permanece fora do APK. No novo backend, a validação dos IDs 
 
 Bloco funcional seguinte: revisão → autenticação/retorno ao rascunho → confirmação de custo → geração → upload → gravação → apresentação do herói criado. Critérios: segredos ausentes no APK/logs; identidade/propriedade verificadas no serviço; cotas/orçamento concorrentes; toques duplicados sem duplicação; retomada sem nova imagem; campos preservados; estados reais e falhas compreensíveis. A coleção completa e edição de heróis podem ser um bloco posterior, mantendo imagem fixa.
 
-Não implementar backend antes de confirmar a proposta, conforme a instrução original: “Se não existir backend para operações que exijam segredo, proponha uma solução mínima e confirme antes de implementá-la.” O pedido de confirmação se aplica especificamente ao novo serviço e às decisões de custo/direção visual, não a uma nova aprovação do bloco 13.
+A confirmação de backend local, direção visual e limites foi realizada em 05/10/2026. A preparação pode avançar dentro desse escopo; produção e seu deploy continuam fora do piloto local.
 
 ## Fontes oficiais consultadas
 
