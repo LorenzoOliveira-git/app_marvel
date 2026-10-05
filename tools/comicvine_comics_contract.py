@@ -1,34 +1,27 @@
 #!/usr/bin/env python3
-"""Contrato real dirigido de séries; somente respostas sanitizadas."""
+"""Contrato dirigido de detalhes de séries e episódios, sem credenciais."""
 import json
 from pathlib import Path
-from comicvine import fetch, read_key
+from comicvine import fetch,read_key
 from comicvine_contract import resource_path
 
 def main():
  key=read_key();report={'probes':{}}
- def probe(label,path,params,required=True):
-  value=fetch(path,params,key,4_000_000);report['probes'][label]={'path':path,'query_without_key':params,**value}
-  payload=value.get('response',{})
-  if required:assert payload.get('status_code')==1,label
-  return payload.get('results') if payload.get('status_code')==1 else None
+ def probe(label,path,params={}):
+  r=fetch(path,params,key,4_000_000);report['probes'][label]={'path':path,'query_without_key':params,**r}
+  p=r.get('response',{});return p.get('results') if p.get('status_code')==1 else None
  try:
-  fields='id,name,api_detail_url,image,site_detail_url,publisher,start_year,count_of_episodes,date_last_updated'
-  probe('publisher_identity','publisher/4010-31/',{'field_list':'id,name,api_detail_url,series'},False)
-  baseline=probe('baseline','series_list/',{'limit':100,'sort':'name:asc','field_list':fields})
-  probe('descending','series_list/',{'limit':12,'sort':'name:desc','field_list':fields})
-  probe('publisher_filter','series_list/',{'limit':12,'filter':'publisher:31','sort':'name:asc','field_list':fields},False)
-  probe('name_filter','series_list/',{'limit':12,'filter':'name:Agents of S.H.I.E.L.D.','field_list':fields},False)
-  probe('page_two','series_list/',{'offset':100,'limit':100,'sort':'name:asc','field_list':fields})
-  candidates=[r for r in baseline if isinstance(r.get('publisher'),dict) and r['publisher'].get('id')==31]
-  report['marvel_baseline_ids']=[r['id'] for r in candidates]
-  if candidates:
-   path=resource_path(candidates[0].get('api_detail_url'),'series')
-   if path:probe('marvel_detail',path,{},False)
-  other=next((r for r in baseline if isinstance(r.get('publisher'),dict) and r['publisher'].get('id')==10),None)
-  if other:
-   path=resource_path(other.get('api_detail_url'),'series')
-   if path:probe('foreign_detail',path,{},False)
- finally:Path('comicvine-series-contract.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
- print('Contrato real de séries registrado.')
+  for label,id in [('featured',1),('agatha',1315),('foreign',331)]:
+   s=probe(label,'series/4075-'+str(id)+'/')
+   if label=='featured' and isinstance(s,dict):
+    refs=s.get('episodes') or [];report['episode_reference_count']=len(refs)
+    for i,ref in enumerate(refs[:2]):
+     path=resource_path(ref.get('api_detail_url'),'episode')
+     if path:probe('episode_detail_'+str(i),path)
+    ids=[str(x['id']) for x in refs[:3] if isinstance(x.get('id'),int)]
+    if ids:probe('episode_id_batch','episodes/',{'filter':'id:'+'|'.join(ids),'limit':100})
+    probe('episodes_series_filter','episodes/',{'filter':'series:1','sort':'episode_number:asc','limit':10})
+    probe('episodes_series_desc','episodes/',{'filter':'series:1','sort':'episode_number:desc','limit':10})
+ finally:Path('comicvine-series-details-contract.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+ print('Contrato de detalhes registrado.')
 if __name__=='__main__':main()
