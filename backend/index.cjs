@@ -25,3 +25,4 @@ exports.resumeHeroCreation = onCall({region: 'us-central1', timeoutSeconds: 540,
 exports.retryHeroGeneration = onCall({region: 'us-central1'}, generation.retryHeroGeneration);
 exports.heroImageUrl = onCall({region: 'us-central1'}, generation.heroImageUrl);
 exports.updateHeroText = onCall({region: 'us-central1'}, require('./hero-profile.cjs').updateHeroText);
+exports.providerConfigurationCheck = onCall({region: 'us-central1', timeoutSeconds: 60}, require('./provider-check.cjs').providerConfigurationCheck);

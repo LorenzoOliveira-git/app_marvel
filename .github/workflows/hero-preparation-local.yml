@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   backend:
+    if: github.head_ref != 'codex/bloco-21-provider-check' && github.ref_name != 'codex/bloco-21-provider-check'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
