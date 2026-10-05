@@ -1,6 +1,6 @@
 # Firebase local — Bloco 14
 
-Escopo: Authentication, Functions, Firestore e Storage nos emuladores locais. O perfil usa `demo-marvel-local`, sem projeto real, conta Firebase, cartão ou plano Blaze. Não há deploy. A geração OpenAI, o upload Cloudinary e a persistência de heróis ainda não estão implementados; não são simulados por esses emuladores.
+Escopo: Authentication, Functions, Firestore e Storage nos emuladores locais. O perfil usa `demo-marvel-local`, sem projeto real, conta Firebase, cartão ou plano Blaze. Não há deploy. O backend de geração OpenAI/upload Cloudinary/persistência foi acrescentado no bloco 17, desativado por padrão e ainda sem validação externa; esses provedores não são simulados pelos emuladores.
 
 ## Configurar em até seis passos
 
@@ -39,7 +39,9 @@ Não executar deploy dessas regras esperando persistência de heróis: elas perm
 
 O bloco 15 conecta a revisão à função local `saveHeroDraft`. Para validar origens/poderes na fonte, a ComicVine precisa estar configurada no ambiente privado do backend. Veja [bloco-15-rascunho-local.md](bloco-15-rascunho-local.md). As regras agora também permitem leitura dos rascunhos pelo proprietário, com escrita exclusiva do backend. A persistência de rascunhos não equivale à conclusão de heróis.
 
-O [bloco 16](bloco-16-preparacao-criacao.md) acrescenta `prepareHeroCreation`: versão imutável, prompt privado e operação sem duplicação, com a política visual e os limites já aprovados. A preparação não gera imagem nem reserva dinheiro/cotas. A execução dos provedores e o bloqueio financeiro ainda são o próximo passo.
+O [bloco 16](bloco-16-preparacao-criacao.md) acrescenta `prepareHeroCreation`: versão imutável, prompt privado e operação sem duplicação, com a política visual e os limites já aprovados. A preparação não gera imagem nem reserva dinheiro/cotas. A execução dos provedores e o bloqueio financeiro são descritos no bloco 17.
+
+O [bloco 17](bloco-17-execucao-local.md) implementa no backend a execução com reserva financeira/cotas, geração única e recuperação de envio/salvamento. A CI mantém a execução paga desativada e verifica controles nos emuladores. As integrações OpenAI/Cloudinary ainda precisam da configuração privada e da verificação externa; a execução ainda não está conectada ao formulário Android.
 
 ## Migrar futuramente para produção
 
