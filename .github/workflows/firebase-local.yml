@@ -3,7 +3,7 @@ on:
   push:
     branches: [codex/bloco-14-generation-proposal, codex/bloco-15-local-drafts, codex/bloco-18-android-generation, codex/bloco-19-meus-herois, codex/bloco-20-perfil-acesso, codex/bloco-21-provider-check]
   pull_request:
-    paths: ["backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
+    paths: [".github/scripts/check-profile-android.py", "backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
   workflow_dispatch:
 permissions:
   contents: read

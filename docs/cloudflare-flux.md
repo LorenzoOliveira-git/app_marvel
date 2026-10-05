@@ -20,3 +20,9 @@ A política sobe para versão 2. Repetir a preparação de uma operação antiga
 Validação local: diagnóstico com Auth Emulator e callable real do SDK; decodificação/conversão com Sharp e rejeição de dimensões/conteúdo inválidos. Functions Emulator nativo continua bloqueado pelo socket Unix neste ambiente; a CI focal verifica preparação, reserva e diagnóstico. Geração externa e upload reais ainda dependem das credenciais privadas e não foram executados nesta refatoração.
 
 Referências: [modelo](https://developers.cloudflare.com/workers-ai/models/flux-2-klein-9b/), [multipart e parâmetros](https://developers.cloudflare.com/changelog/post/2026-01-28-flux-2-klein-9b-workers-ai/), [consulta do catálogo e autenticação](https://developers.cloudflare.com/api/resources/ai/subresources/models/methods/list/).
+
+## Evidência da CI após a troca de provedor
+
+A [execução 37387716419](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37387716419) passou em Node 22 com Auth, Firestore, Functions e Storage reais emulados. Verificou preparação concorrente, migração de preparações antigas, reserva/cotas, isolamento e diagnóstico dos provedores ausentes. Nenhuma inferência externa foi executada.
+
+A [execução Android 37387716573](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37387716573) compilou e passou no lint e no diagnóstico dos quatro SDKs, mas falhou no roteiro do perfil: o envio repetido de DEL pelo ADB deixou texto autocorrigido no campo. O roteiro foi ajustado para selecionar tudo, apagar e verificar o valor exato antes de salvar. A passagem completa do perfil segue pendente até a nova CI concluir.

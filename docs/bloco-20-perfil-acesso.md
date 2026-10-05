@@ -36,3 +36,5 @@ Diagnóstico local da configuração dos provedores e preparação do primeiro t
 ## Atualização após o merge
 
 O PR 29 foi incorporado ao `main` em `2a5d763`. A execução 37364335395 foi cancelada sem executar etapas; não valida compilação/lint ou o perfil Android. O workflow do bloco 21 inclui novamente essa validação, ainda pendente enquanto aguarda executor.
+
+A CI [37387716573](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37387716573) compilou e passou no lint/diagnóstico dos SDKs, salvamento e cancelamento do nome, mas parou na entrada vazia do roteiro: o campo ainda continha texto autocorrigido. O script agora seleciona todo o conteúdo e verifica o valor exato antes de continuar. Rede/retomada e fonte ampliada ainda precisam da passagem completa corrigida.
