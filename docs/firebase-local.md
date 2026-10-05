@@ -35,6 +35,10 @@ Os dados não são exportados automaticamente; ao encerrar os emuladores, o esta
 
 Não executar deploy dessas regras esperando persistência de heróis: elas permitem somente os diagnósticos locais especificados. A função local é deliberadamente bloqueada em produção. O fluxo real de criação será implementado em outro bloco.
 
+## Rascunhos do formulário
+
+O bloco 15 conecta a revisão à função local `saveHeroDraft`. Para validar origens/poderes na fonte, a ComicVine precisa estar configurada no ambiente privado do backend. Veja [bloco-15-rascunho-local.md](bloco-15-rascunho-local.md). As regras agora também permitem leitura dos rascunhos pelo proprietário, com escrita exclusiva do backend. A persistência de rascunhos não equivale à conclusão de heróis.
+
 ## Migrar futuramente para produção
 
 | Reaproveitar | Ajustar ou configurar |
