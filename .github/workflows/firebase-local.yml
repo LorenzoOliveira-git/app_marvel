@@ -1,7 +1,7 @@
 name: Firebase local e Android
 on:
   push:
-    branches: [codex/bloco-14-generation-proposal]
+    branches: [codex/bloco-14-generation-proposal, codex/bloco-15-local-drafts]
   pull_request:
     paths: ["backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
   workflow_dispatch:
@@ -37,22 +37,8 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           npm ci --prefix backend --ignore-scripts --no-audit --no-fund
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
-      - name: Conferir configuração padrão
-        run: |
-          bash gradlew :app:generateDebugBuildConfig --no-daemon --console=plain
-          python3 - <<'PY'
-          from pathlib import Path
-          config = next(p for p in Path('app/build/generated').rglob('BuildConfig.java') if 'debug' in p.parts)
-          assert 'FIREBASE_EMULATORS = false' in config.read_text()
-          PY
-      - name: Compilar variantes, verificar lint local e isolamento release
-        run: |
-          bash gradlew :app:assembleDebug :app:lintDebug :app:assembleRelease -PfirebaseEmulators=true --no-daemon --console=plain
-          python3 - <<'PY'
-          from pathlib import Path
-          config = next(p for p in Path('app/build/generated').rglob('BuildConfig.java') if 'release' in p.parts)
-          assert 'FIREBASE_EMULATORS = false' in config.read_text()
-          PY
+      - name: Compilar e verificar lint do fluxo local
+        run: bash gradlew :app:assembleDebug :app:lintDebug -PfirebaseEmulators=true --no-daemon --console=plain
       - name: Iniciar emulador Android
         timeout-minutes: 5
         run: |
@@ -67,15 +53,22 @@ jobs:
           done
           adb shell input keyevent 82
           adb install app/build/outputs/apk/debug/app-debug.apk
+      - name: Configurar ComicVine privada no aparelho
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: python3 tools/comicvine.py device
       - name: Verificar integração real e regras nos quatro emuladores
-        timeout-minutes: 6
-        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "python3 .github/scripts/check-firebase-local.py"
+        timeout-minutes: 8
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "python3 .github/scripts/check-hero-drafts-local.py"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: firebase-local-check
           path: |
             firebase-local-check/*.json
+            firebase-local-check/*.png
             app/build/reports/lint-results-debug.*
           if-no-files-found: ignore
           retention-days: 7

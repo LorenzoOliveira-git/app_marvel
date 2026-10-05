@@ -68,7 +68,10 @@ public final class AuthFragment extends Fragment {
         binding.switchForm.setOnClickListener(v -> {
             model.setPassword(""); model.setConfirmation("");
             if (register) NavHostFragment.findNavController(this).popBackStack();
-            else NavHostFragment.findNavController(this).navigate(R.id.registerFragment);
+            else {
+                Bundle args = new Bundle(); args.putBoolean("returnToHero", requireArguments().getBoolean("returnToHero", false));
+                NavHostFragment.findNavController(this).navigate(R.id.registerFragment, args);
+            }
         });
         binding.browse.setOnClickListener(v -> {
             model.setPassword(""); model.setConfirmation("");

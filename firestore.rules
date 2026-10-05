@@ -5,6 +5,10 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;
     }
+    match /users/{uid}/heroDrafts/{draftId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
     match /{document=**} { allow read, write: if false; }
   }
 }

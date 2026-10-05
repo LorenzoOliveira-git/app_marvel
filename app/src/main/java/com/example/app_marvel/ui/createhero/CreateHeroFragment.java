@@ -47,7 +47,7 @@ public final class CreateHeroFragment extends Fragment {
         model = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull @Override public <T extends ViewModel> T create(@NonNull Class<T> type, @NonNull CreationExtras extras) {
                 if (type != CreateHeroViewModel.class) throw new IllegalArgumentException("ViewModel não registrado");
-                return type.cast(new CreateHeroViewModel(container.getCatalog(), container.getTranslations(), SavedStateHandleSupport.createSavedStateHandle(extras)));
+                return type.cast(new CreateHeroViewModel(container.getCatalog(), container.getTranslations(), SavedStateHandleSupport.createSavedStateHandle(extras), container.getHeroDrafts()));
             }
         }).get(CreateHeroViewModel.class);
         field(binding.heroName, binding.heroNameInput, "heroName");
@@ -60,10 +60,20 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroOrigin.setOnClickListener(v -> chooseOrigin());
         binding.heroOriginRetry.setOnClickListener(v -> model.loadOrigins());
         binding.heroPowerMore.setOnClickListener(v -> model.loadPowers());
+        binding.heroSaveDraft.setVisibility(model.localDraftsAvailable() ? View.VISIBLE : View.GONE);
+        binding.heroSaveDraft.setOnClickListener(v -> {
+            if (!container.getAuth().getSession().getValue().isAuthenticated()) ((MainActivity) requireActivity()).openHeroLogin();
+            else model.saveDraft();
+        });
+        model.draftStatus().observe(getViewLifecycleOwner(), value -> renderDraft());
+        container.getAuth().getSession().observe(getViewLifecycleOwner(), session -> {
+            model.accountChanged();
+            binding.heroSaveDraft.setText(session.isAuthenticated() ? R.string.hero_save_draft : R.string.hero_login_save_draft);
+        });
         binding.heroNext.setOnClickListener(v -> next());
         binding.heroPrevious.setOnClickListener(v -> model.step(model.step() == 2 ? 0 : model.step() - 1));
         back = new OnBackPressedCallback(model.step() > 0) {
-            @Override public void handleOnBackPressed() { model.step(model.step() - 1); }
+            @Override public void handleOnBackPressed() { if (!model.saving()) model.step(model.step() - 1); }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), back);
         model.stepState().observe(getViewLifecycleOwner(), value -> renderStep());
@@ -73,6 +83,7 @@ public final class CreateHeroFragment extends Fragment {
         view.post(() -> { if (binding != null) ((MainActivity) requireActivity()).updateContentInsets(); });
     }
     private void field(TextInputEditText edit, TextInputLayout input, String key) {
+        edit.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter("description".equals(key) ? 2000 : 100)});
         edit.setText(model.text(key));
         edit.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence text, int start, int count, int after) { }
@@ -96,6 +107,7 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroPrevious.setText(step == 2 ? R.string.hero_edit : R.string.hero_previous);
         if (step == 1) model.loadChoices();
         if (step == 2) review();
+        renderDraft();
         binding.heroScroll.post(() -> { if (binding != null) binding.heroScroll.smoothScrollTo(0, 0); });
         ViewCompat.setAccessibilityPaneTitle(binding.getRoot(), getString(titles[step]));
     }
@@ -199,6 +211,27 @@ public final class CreateHeroFragment extends Fragment {
         StringBuilder powers = new StringBuilder(); for (var power : model.selectedPowers()) { if (powers.length() > 0) powers.append(", "); powers.append(power.label); }
         row(summary, R.string.hero_powers, powers.toString()); row(summary, R.string.hero_description, model.text("description").trim());
         binding.heroReviewData.setText(summary.toString());
+    }
+    private void renderDraft() {
+        boolean busy = model.saving();
+        binding.heroSaveDraft.setEnabled(!busy); binding.heroPrevious.setEnabled(!busy);
+        binding.heroDraftProgress.setVisibility(busy ? View.VISIBLE : View.GONE);
+        binding.heroMarv.setImageResource(busy ? R.drawable.marv_thinking : model.step() == 1 ? R.drawable.marv_thinking : R.drawable.marv_welcome);
+        int message;
+        switch (model.draftStatus().getValue()) {
+            case SAVING: message = R.string.hero_draft_saving; break;
+            case SAVED: message = R.string.hero_draft_saved; break;
+            case AUTH: message = R.string.hero_draft_auth; break;
+            case INVALID: message = R.string.hero_draft_invalid; break;
+            case CONFIGURATION: message = R.string.hero_draft_configuration; break;
+            case NETWORK: case ERROR: message = R.string.hero_draft_failure; break;
+            default: message = 0;
+        }
+        binding.heroDraftStatus.setVisibility(message == 0 ? View.GONE : View.VISIBLE);
+        if (message != 0) binding.heroDraftStatus.setText(message);
+        binding.heroReviewNote.setText(model.localDraftsAvailable() ? R.string.hero_local_review_note : R.string.hero_review_note);
+        binding.heroDraftNote.setText(model.localDraftsAvailable() ? R.string.hero_local_draft_note : R.string.hero_draft_note);
+        if (back != null) back.setEnabled(busy || model.step() > 0);
     }
     private void row(StringBuilder output, int label, String value) {
         if (output.length() > 0) output.append("\n\n"); output.append(getString(R.string.hero_review_item, getString(label), value));

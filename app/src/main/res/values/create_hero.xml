@@ -40,4 +40,14 @@
     <string name="hero_no_birthday">Não informado</string>
     <string name="hero_review_item">%1$s\n%2$s</string>
     <string name="hero_review_note">Dados prontos para a próxima etapa. Nenhuma imagem foi gerada e este rascunho ainda não é um herói salvo.</string>
+    <string name="hero_save_draft">Salvar rascunho</string>
+    <string name="hero_login_save_draft">Entrar para salvar rascunho</string>
+    <string name="hero_draft_saving">Marv está validando seus dados e salvando o rascunho…</string>
+    <string name="hero_draft_saved">Rascunho salvo na sua conta. Nenhuma imagem foi gerada.</string>
+    <string name="hero_draft_auth">Entre na sua conta para salvar. Seus campos foram mantidos.</string>
+    <string name="hero_draft_invalid">Confira os campos e as escolhas de origem e poderes. Seus dados foram mantidos.</string>
+    <string name="hero_draft_configuration">Não foi possível validar o rascunho. Confira a configuração do ambiente de teste e tente novamente.</string>
+    <string name="hero_draft_failure">Não foi possível confirmar o salvamento. Seu rascunho foi mantido; tente novamente.</string>
+    <string name="hero_local_review_note">Você pode salvar os dados como rascunho na sua conta. A geração da imagem será disponibilizada em outra etapa.</string>
+    <string name="hero_local_draft_note">Nomes: até 100 caracteres. Descrição: até 2.000. O rascunho salvo ainda não é um herói da coleção.</string>
 </resources>
