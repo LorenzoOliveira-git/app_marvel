@@ -123,4 +123,8 @@ Backend local com operação autenticada, cópia imutável do rascunho, deduplic
 
 ## Bloco 17 — Execução no backend local
 
-Reserva transacional de orçamento/cotas, geração única, temporário privado, upload Cloudinary autenticado, retomada sem regeneração e referência privada do herói. Configuração e limites em [docs/bloco-17-execucao-local.md](docs/bloco-17-execucao-local.md). Desativado por padrão; integração externa ainda depende das credenciais privadas e da primeira verificação real. A conexão da execução ao Android é o próximo bloco.
+Reserva transacional de orçamento/cotas, geração única, temporário privado, upload Cloudinary autenticado, retomada sem regeneração e referência privada do herói. Configuração e limites em [docs/bloco-17-execucao-local.md](docs/bloco-17-execucao-local.md). Desativado por padrão; integração externa ainda depende das credenciais privadas e da primeira verificação real. A conexão da execução ao Android está no [bloco 18](docs/bloco-18-android-criacao.md).
+
+## Bloco 18 — Criação no Android
+
+Revisão → preparação real → confirmação de tentativa paga → estados do servidor → retomada → herói confirmado e download privado. Recuperação da operação após encerramento do processo e descarte de estado ao trocar a conta. Guia e limites em [docs/bloco-18-android-criacao.md](docs/bloco-18-android-criacao.md). A geração/upload/imagem reais continuam sem validação externa até configurar as credenciais privadas.
