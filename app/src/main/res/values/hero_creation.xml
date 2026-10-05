@@ -3,7 +3,7 @@
     <string name="hero_login_generate">Entrar para criar meu herói</string>
     <string name="hero_creation_confirm_title">Confirmar criação paga</string>
     <string name="hero_creation_confirm">Uma ilustração de HQ colorida, corpo inteiro, formato vertical 2:3.\n\nEsta tentativa pode ser cobrada e reserva US$ 0,05 do limite mensal de US$ 5. A reserva é conservadora; o custo real pode ser diferente.\n\nLimites: 3 tentativas por conta/dia e 100 no total/mês. Falhas também contam. A geração não se repete automaticamente.\n\nDeseja confirmar esta tentativa?</string>
-    <string name="hero_confirm_generate">Confirmar e gerar</string>
+    <string name="hero_confirm_generate">Gerar</string>
     <string name="hero_retry_confirm_title">Confirmar nova tentativa paga</string>
     <string name="hero_retry_confirm">Outra tentativa pode gerar nova cobrança e consumir nova cota. Primeiro use a retomada para buscar a imagem anterior.\n\nA nova tentativa reserva US$ 0,05 do limite mensal de US$ 5; a reserva não é o custo real. Limites: 3 tentativas por conta/dia e 100 no total/mês, incluindo falhas.\n\nDeseja confirmar uma nova geração?</string>
     <string name="hero_creation_preparing">Marv está validando e preparando seu personagem…</string>

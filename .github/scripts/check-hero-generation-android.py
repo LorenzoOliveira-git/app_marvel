@@ -16,7 +16,7 @@ def server(collection):
     return json.load(urllib.request.urlopen(request, timeout=20)).get('documents', [])
 
 tap(resource='hero_generate')
-wait('button1', 'Confirmar e gerar', timeout=90)
+wait('button1', 'Gerar', timeout=90)
 message = find(nodes(), resource='message')
 assert message is not None and 'US$ 0,05' in message.get('text') and '3 tentativas' in message.get('text')
 jobs = server('heroCreationJobs'); assert len(jobs) == 1
@@ -25,7 +25,7 @@ assert jobs[0]['fields']['generatedImage']['booleanValue'] is False
 # Cancelar não despacha executeHeroCreation; a versão preparada é reutilizada.
 tap(resource='button2'); wait('hero_creation_status','Personagem preparado')
 assert not server('heroes')
-tap(resource='hero_generate'); wait('button1','Confirmar e gerar')
+tap(resource='hero_generate'); wait('button1','Gerar')
 tap(resource='button1'); wait('hero_creation_status','A geração não está disponível',timeout=90)
 jobs = server('heroCreationJobs'); assert len(jobs) == 1 and jobs[0]['name'] == operation
 assert jobs[0]['fields']['state']['stringValue'] == 'prepared'
@@ -43,8 +43,11 @@ assert 'Pessoa de Teste' in review.get('text')
 assert server('heroCreationJobs')[0]['name'] == operation
 # Consentimento e falha legíveis com fonte ampliada, mantendo botões alcançáveis.
 adb('shell','settings','put','system','font_scale','2.0'); time.sleep(2)
-tap(resource='hero_generate'); wait('button1','Confirmar e gerar')
+tap(resource='hero_generate'); wait('button1','Gerar')
 (OUT/'hero-generation-confirm-font200.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+tap(resource='button2'); wait('hero_creation_status','Personagem preparado')
+assert not server('heroes')
+tap(resource='hero_generate'); wait('button1','Gerar')
 tap(resource='button1'); wait('hero_creation_status','A geração não está disponível',timeout=90)
 (OUT/'hero-generation-unavailable-font200.png').write_bytes(adb('exec-out','screencap','-p').stdout)
 adb('shell','settings','put','system','font_scale','1.0')
