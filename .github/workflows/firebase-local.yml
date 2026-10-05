@@ -1,7 +1,7 @@
 name: Firebase local e Android
 on:
   push:
-    branches: [codex/bloco-14-generation-proposal, codex/bloco-15-local-drafts, codex/bloco-18-android-generation, codex/bloco-19-meus-herois]
+    branches: [codex/bloco-14-generation-proposal, codex/bloco-15-local-drafts, codex/bloco-18-android-generation, codex/bloco-19-meus-herois, codex/bloco-20-perfil-acesso]
   pull_request:
     paths: ["backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
   workflow_dispatch:
@@ -63,7 +63,7 @@ jobs:
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
           HERO_GENERATION_ENABLED: "false"
-        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "python3 .github/scripts/check-my-heroes-android.py"
+        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "python3 .github/scripts/check-profile-android.py"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
