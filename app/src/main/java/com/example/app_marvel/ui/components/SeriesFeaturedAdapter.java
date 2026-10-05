@@ -42,7 +42,7 @@ public final class SeriesFeaturedAdapter extends RecyclerView.Adapter<SeriesFeat
         view.movieVolume.setVisibility(item.startYear.isEmpty() ? View.GONE:View.VISIBLE);
         view.movieDate.setText(item.episodeCount>=0 ? view.getRoot().getResources().getQuantityString(R.plurals.series_episodes,item.episodeCount,item.episodeCount):"");
         view.movieDate.setVisibility(item.episodeCount>=0 ? View.VISIBLE:View.GONE);
-        view.movieMore.setText(R.string.series_open);
+        view.movieMore.setText(R.string.series_details_open);
         view.movieMore.setContentDescription(view.getRoot().getContext().getString(R.string.series_open_named,item.title));
         view.movieMore.setEnabled(true);
         view.movieMore.setOnClickListener(clicked -> listener.open(item));

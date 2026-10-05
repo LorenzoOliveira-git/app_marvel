@@ -104,7 +104,7 @@ public final class SeriesFragment extends Fragment {
         binding.seriesYear.setVisibility(item.startYear.isEmpty() ? View.GONE:View.VISIBLE);
         binding.seriesEpisodes.setText(item.episodeCount>=0 ? getResources().getQuantityString(R.plurals.series_episodes,item.episodeCount,item.episodeCount):"");
         binding.seriesEpisodes.setVisibility(item.episodeCount>=0 ? View.VISIBLE:View.GONE);
-        binding.seriesMore.setText(R.string.series_open);binding.seriesMore.setEnabled(true);
+        binding.seriesMore.setText(R.string.series_details_open);binding.seriesMore.setEnabled(true);
         binding.seriesMore.setContentDescription(getString(R.string.series_open_named,item.title));
         int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
         binding.previousSeries.setEnabled(position > 0); binding.nextSeries.setEnabled(position+1 < covers.getItemCount());

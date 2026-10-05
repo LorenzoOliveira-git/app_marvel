@@ -49,7 +49,7 @@ def network_ready():
         time.sleep(1)
     raise RuntimeError('Rede do emulador não validada após modo offline.')
 network_ready()
-print('Detalhes de séries: conferir dados online e tradução.',flush=True)
+print('Detalhes de séries: conferir identidade, episódios online e tradução.',flush=True)
 online=run('series-detail')
 try:
     adb('shell','cmd','connectivity','airplane-mode','enable');adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
