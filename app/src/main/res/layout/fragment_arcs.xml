@@ -1,0 +1,24 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/arcs_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
+        <TextView android:id="@+id/arcs_heading" style="@style/TextAppearance.Marvel.HistoryHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/arcs_heading" />
+        <TextView style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/arcs_intro" />
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Marvel.AuthInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/arc_search" style="@style/Widget.Marvel.AuthEditText" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/arcs_search" android:inputType="text" android:imeOptions="actionSearch" android:maxLines="1" android:maxLength="200" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/arcs_search_button" style="@style/Widget.Marvel.HistoryButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/arcs_search_action" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/arcs_clear" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/arcs_clear" android:visibility="gone" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="16dp">
+            <com.google.android.material.button.MaterialButton android:id="@+id/arcs_ascending" style="@style/Widget.Marvel.ComicsOrder" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/arcs_ascending" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/arcs_descending" style="@style/Widget.Marvel.ComicsOrder" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/arcs_descending" />
+        </LinearLayout>
+        <TextView android:id="@+id/arcs_order_label" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/arcs_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/arcs_count" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:visibility="gone" />
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/arcs_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:nestedScrollingEnabled="false" android:visibility="gone" />
+        <ProgressBar android:id="@+id/arcs_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
+        <TextView android:id="@+id/arcs_page_error" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:accessibilityLiveRegion="polite" android:text="@string/arcs_page_error" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/arcs_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:text="@string/catalog_load_more" android:visibility="gone" />
+        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/arcs_source" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

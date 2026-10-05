@@ -1,0 +1,21 @@
+<resources>
+    <string name="arcs_title">Arcos de história</string>
+    <string name="arcs_open">Explorar arcos de história</string>
+    <string name="arcs_heading">Narrativas que conectam edições</string>
+    <string name="arcs_intro">Encontre arcos publicados pela Marvel. Os títulos originais identificam as narrativas na ComicVine.</string>
+    <string name="arcs_search">Buscar arco pelo nome</string>
+    <string name="arcs_search_action">Buscar</string>
+    <string name="arcs_clear">Limpar busca</string>
+    <string name="arcs_ascending">A–Z</string>
+    <string name="arcs_descending">Z–A</string>
+    <string name="arcs_order_ascending">Ordem por nome: A–Z</string>
+    <string name="arcs_order_descending">Ordem por nome: Z–A</string>
+    <string name="arcs_loaded">Arcos carregados: %1$d</string>
+    <string name="arcs_publisher">Editora: Marvel</string>
+    <string name="arcs_external">Ver arco na ComicVine ↗</string>
+    <string name="arcs_source_named">Ver %1$s na ComicVine, abre no navegador</string>
+    <string name="arcs_source">Fonte: ComicVine. Novos arcos são carregados por página.</string>
+    <string name="arcs_empty_title">Nenhum arco encontrado</string>
+    <string name="arcs_empty_body">Tente outro nome ou limpe a busca para explorar os arcos Marvel.</string>
+    <string name="arcs_page_error">Não foi possível carregar a próxima página. Os arcos já carregados continuam disponíveis.</string>
+</resources>

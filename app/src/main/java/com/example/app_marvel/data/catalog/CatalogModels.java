@@ -116,6 +116,21 @@ public final class CatalogModels {
             this.items = immutable(items); this.nextCursor = nextCursor; this.nextOffset = nextCursor.examined; this.hasMore = hasMore;
         }
     }
+    public static final class StoryArc {
+        public final int id, publisherId;
+        public final String name, imageUrl, siteUrl;
+        public StoryArc(int id, int publisherId, String name, String imageUrl, String siteUrl) {
+            this.id=id; this.publisherId=publisherId; this.name=name; this.imageUrl=imageUrl; this.siteUrl=siteUrl;
+        }
+    }
+    public static final class ArcsPage {
+        public final List<StoryArc> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public ArcsPage(List<StoryArc> items, int nextOffset, boolean hasMore) {
+            this.items=immutable(items); this.nextOffset=nextOffset; this.hasMore=hasMore;
+        }
+    }
     private static <T> List<T> immutable(List<T> items) { return Collections.unmodifiableList(new ArrayList<>(items)); }
     public static final class Page {
         public final List<Character> characters;

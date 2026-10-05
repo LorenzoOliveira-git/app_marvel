@@ -1,0 +1,9 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="24dp" app:cardCornerRadius="10dp" app:strokeWidth="0dp" app:cardBackgroundColor="@color/marvel_surface_raised">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <ImageView android:id="@+id/arc_image" android:layout_width="match_parent" android:layout_height="240dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+        <TextView android:id="@+id/arc_name" style="@style/TextAppearance.Marvel.CatalogTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
+        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/arcs_publisher" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/arc_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/arcs_external" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

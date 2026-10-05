@@ -1,7 +1,7 @@
-name: Contrato real de detalhes de quadrinho ComicVine
+name: Contrato real de arcos ComicVine
 on:
   push:
-    branches: ["codex/bloco-6-detalhes-quadrinho"]
+    branches: ["codex/bloco-7-arcos"]
     paths: ["tools/comicvine_comics_contract.py", ".github/workflows/comicvine-comics-contract.yml"]
 permissions:
   contents: read
@@ -11,14 +11,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - name: Conferir detalhes e vínculos reais
+      - name: Conferir índice e lotes reais de arcos
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: python3 tools/comicvine_comics_contract.py
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: comicvine-issue-contract
-          path: comicvine-issue-contract.json
+          name: comicvine-arcs-contract
+          path: comicvine-arcs-contract.json
           if-no-files-found: error
           retention-days: 7
