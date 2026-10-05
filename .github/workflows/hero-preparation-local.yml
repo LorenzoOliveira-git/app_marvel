@@ -1,0 +1,46 @@
+name: Preparação de herói no Firebase local
+on:
+  push:
+    branches: [codex/bloco-16-creation-preparation]
+  pull_request:
+    paths: ["backend/**", "firestore.rules", "tools/check-hero-preparation-local.cjs", ".github/workflows/hero-preparation-local.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hero-preparation-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Instalar dependências e conferir sintaxe
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm ci --prefix backend --ignore-scripts --no-audit --no-fund
+          node --check backend/hero-creation.cjs
+          node --check tools/check-hero-preparation-local.cjs
+      - name: Verificar preparação, rascunhos e isolamento em serviços reais locais
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "node tools/check-firebase-local.cjs && node tools/check-hero-drafts-local.cjs && node tools/check-hero-preparation-local.cjs"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hero-preparation-check
+          path: firebase-local-check/*.json
+          if-no-files-found: ignore
+          retention-days: 7

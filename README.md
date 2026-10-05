@@ -116,3 +116,7 @@ Perfil debug para Authentication, Functions, Firestore e Storage no emulador, se
 ## Bloco 15 — Rascunho no Firebase local
 
 Revisão → Login/Cadastro → retorno ao formulário → validação no backend → rascunho privado confirmado no servidor. Falhas mantêm os campos e novas tentativas reutilizam o documento. Configuração e limites em [docs/bloco-15-rascunho-local.md](docs/bloco-15-rascunho-local.md). Sem geração de imagens ou herói concluído nesta etapa.
+
+## Bloco 16 — Preparação da criação
+
+Backend local com operação autenticada, cópia imutável do rascunho, deduplicação concorrente e prompt privado conforme estilo/limites aprovados. Detalhes em [docs/bloco-16-preparacao-criacao.md](docs/bloco-16-preparacao-criacao.md). A execução paga e o bloqueio de orçamento/cotas ainda não estão implementados.

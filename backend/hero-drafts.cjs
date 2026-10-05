@@ -74,4 +74,4 @@ async function saveHeroDraft(request) {
   });
   return {uid, draftId, state: 'draft', generatedImage: false};
 }
-module.exports = {saveHeroDraft, catalogs};
+module.exports = {saveHeroDraft, catalogs, normalizeDraft: input};

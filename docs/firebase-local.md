@@ -39,6 +39,8 @@ Não executar deploy dessas regras esperando persistência de heróis: elas perm
 
 O bloco 15 conecta a revisão à função local `saveHeroDraft`. Para validar origens/poderes na fonte, a ComicVine precisa estar configurada no ambiente privado do backend. Veja [bloco-15-rascunho-local.md](bloco-15-rascunho-local.md). As regras agora também permitem leitura dos rascunhos pelo proprietário, com escrita exclusiva do backend. A persistência de rascunhos não equivale à conclusão de heróis.
 
+O [bloco 16](bloco-16-preparacao-criacao.md) acrescenta `prepareHeroCreation`: versão imutável, prompt privado e operação sem duplicação, com a política visual e os limites já aprovados. A preparação não gera imagem nem reserva dinheiro/cotas. A execução dos provedores e o bloqueio financeiro ainda são o próximo passo.
+
 ## Migrar futuramente para produção
 
 | Reaproveitar | Ajustar ou configurar |
