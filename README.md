@@ -111,7 +111,7 @@ Formulário em três etapas com Marv, origens e poderes reais traduzidos, valida
 
 ## Bloco 14 — Firebase local
 
-Perfil debug para Authentication, Functions, Firestore e Storage no emulador, sem projeto real ou faturamento. Configuração em seis passos e diferenças para produção em [docs/firebase-local.md](docs/firebase-local.md). A geração de imagens e persistência de heróis ainda não estão implementadas.
+Perfil debug para Authentication, Functions, Firestore e Storage no emulador, sem projeto real ou faturamento. Configuração em seis passos e diferenças para produção em [docs/firebase-local.md](docs/firebase-local.md). A execução de geração e persistência no backend está no bloco 17, desativada por padrão e ainda sem validação dos provedores externos.
 
 ## Bloco 15 — Rascunho no Firebase local
 
@@ -119,4 +119,8 @@ Revisão → Login/Cadastro → retorno ao formulário → validação no backen
 
 ## Bloco 16 — Preparação da criação
 
-Backend local com operação autenticada, cópia imutável do rascunho, deduplicação concorrente e prompt privado conforme estilo/limites aprovados. Detalhes em [docs/bloco-16-preparacao-criacao.md](docs/bloco-16-preparacao-criacao.md). A execução paga e o bloqueio de orçamento/cotas ainda não estão implementados.
+Backend local com operação autenticada, cópia imutável do rascunho, deduplicação concorrente e prompt privado conforme estilo/limites aprovados. Detalhes em [docs/bloco-16-preparacao-criacao.md](docs/bloco-16-preparacao-criacao.md). A execução paga e o bloqueio de orçamento/cotas foram acrescentados no bloco 17.
+
+## Bloco 17 — Execução no backend local
+
+Reserva transacional de orçamento/cotas, geração única, temporário privado, upload Cloudinary autenticado, retomada sem regeneração e referência privada do herói. Configuração e limites em [docs/bloco-17-execucao-local.md](docs/bloco-17-execucao-local.md). Desativado por padrão; integração externa ainda depende das credenciais privadas e da primeira verificação real. A conexão da execução ao Android é o próximo bloco.

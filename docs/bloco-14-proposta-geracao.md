@@ -1,6 +1,6 @@
 # Bloco 14 — Proposta de geração e persistência
 
-Status atualizado em 05/10/2026: o usuário aprovou estilo de HQ colorida/corpo inteiro, proporção 2:3, `gpt-image-2`/`low`, uma imagem, US$ 5/mês para OpenAI, 3 tentativas por usuário/dia, 100 tentativas totais/mês e ausência de repetição automática de geração. O piloto continua somente nos emuladores Firebase. A preparação da operação foi implementada no [bloco 16](bloco-16-preparacao-criacao.md); geração, upload e bloqueio financeiro permanecem próximos passos. A infraestrutura de produção abaixo continua sendo proposta futura e não foi ativada.
+Status atualizado em 05/10/2026: o usuário aprovou estilo de HQ colorida/corpo inteiro, proporção 2:3, `gpt-image-2`/`low`, uma imagem, US$ 5/mês para OpenAI, 3 tentativas por usuário/dia, 100 tentativas totais/mês e ausência de repetição automática de geração. O piloto continua somente nos emuladores Firebase. A preparação da operação foi implementada no [bloco 16](bloco-16-preparacao-criacao.md); o código de geração/upload/bloqueio financeiro foi acrescentado no [bloco 17](bloco-17-execucao-local.md), desativado por padrão e sem validação externa até configurar credenciais. A infraestrutura de produção abaixo continua sendo proposta futura e não foi ativada.
 
 ## Decisões propostas
 
