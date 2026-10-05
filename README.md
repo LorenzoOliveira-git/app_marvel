@@ -104,3 +104,7 @@ A tentativa local foi bloqueada no download do Gradle por Network is unreachable
 ## Bloco 12 — Detalhes de séries
 
 Detalhes nativos, personagens Marvel e episódios em lotes, com numeração preservada e descrição traduzida. Evidências e limites em [docs/bloco-12-detalhes-serie.md](docs/bloco-12-detalhes-serie.md).
+
+## Bloco 13 — Criação guiada de herói
+
+Formulário em três etapas com Marv, origens e poderes reais traduzidos, validação, retenção do rascunho e revisão editável antes da geração. Evidências e limites em [docs/bloco-13-criar-heroi.md](docs/bloco-13-criar-heroi.md).
