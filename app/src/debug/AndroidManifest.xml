@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <application>
+    <application android:networkSecurityConfig="@xml/network_security_config_debug">
         <!-- Verificação ADB somente em debug; não aparece na navegação do aplicativo. -->
         <activity android:name=".diagnostics.DataCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.CatalogCheckActivity" android:exported="true" />
@@ -13,5 +13,6 @@
         <activity android:name=".diagnostics.SeriesCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.SeriesDetailsCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.HeroFormCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.FirebaseLocalCheckActivity" android:exported="true" />
     </application>
 </manifest>

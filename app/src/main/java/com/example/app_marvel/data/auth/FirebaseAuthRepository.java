@@ -1,9 +1,8 @@
 package com.example.app_marvel.data.auth;
 
-import android.content.Context;
+import com.example.app_marvel.data.firebase.FirebaseServices;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,9 +13,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public final class FirebaseAuthRepository implements AuthRepository {
     private final FirebaseAuth auth;
     private final MutableLiveData<AuthSession> session = new MutableLiveData<>();
-    public FirebaseAuthRepository(Context context) {
-        FirebaseApp app = FirebaseApp.initializeApp(context.getApplicationContext());
-        auth = app == null ? null : FirebaseAuth.getInstance(app);
+    public FirebaseAuthRepository(FirebaseServices services) {
+        auth = services.auth();
         publish();
         if (auth != null) auth.addAuthStateListener(ignored -> publish());
     }

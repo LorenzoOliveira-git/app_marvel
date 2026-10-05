@@ -1,0 +1,77 @@
+name: Firebase local e Android
+on:
+  push:
+    branches: [codex/bloco-14-generation-proposal]
+  pull_request:
+    paths: ["backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: firebase-local-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  local:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: "platform-tools"
+          log-accepted-android-sdk-licenses: false
+      - name: Instalar dependências locais
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm ci --prefix backend --ignore-scripts --no-audit --no-fund
+          sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+      - name: Compilar perfil normal e conferir isolamento da variante release
+        run: |
+          bash gradlew :app:assembleDebug --no-daemon --console=plain
+          bash gradlew :app:assembleRelease -PfirebaseEmulators=true --no-daemon --console=plain
+          python3 - <<'PY'
+          from pathlib import Path
+          config = next(p for p in Path('app/build/generated').rglob('BuildConfig.java') if 'release' in p.parts)
+          assert 'FIREBASE_EMULATORS = false' in config.read_text()
+          PY
+      - name: Compilar e verificar lint do perfil local
+        run: bash gradlew :app:assembleDebug :app:lintDebug -PfirebaseEmulators=true --no-daemon --console=plain
+      - name: Iniciar emulador Android
+        timeout-minutes: 5
+        run: |
+          sudo chmod a+rw /dev/kvm
+          sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
+          printf 'no\n' | avdmanager create avd -n FirebaseLocal -k "system-images;android-35;google_apis;x86_64" --force
+          "$ANDROID_HOME/emulator/emulator" -avd FirebaseLocal -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader > /tmp/firebase-android.log 2>&1 &
+          timeout 180 adb wait-for-device
+          for attempt in $(seq 1 90); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
+            sleep 2
+          done
+          adb shell input keyevent 82
+          adb install app/build/outputs/apk/debug/app-debug.apk
+      - name: Verificar integração real e regras nos quatro emuladores
+        timeout-minutes: 6
+        run: npx firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage "python3 .github/scripts/check-firebase-local.py"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: firebase-local-check
+          path: |
+            firebase-local-check/*.json
+            app/build/reports/lint-results-debug.*
+            *-debug.log
+          if-no-files-found: ignore
+          retention-days: 7

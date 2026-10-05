@@ -1,0 +1,9 @@
+{
+  "name": "marvel-local-emulators",
+  "private": true,
+  "scripts": {
+    "emulators": "firebase emulators:start --project demo-marvel-local --only auth,firestore,functions,storage",
+    "check:local": "firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage \"node tools/check-firebase-local.cjs\""
+  },
+  "devDependencies": { "firebase-tools": "15.32.1" }
+}
