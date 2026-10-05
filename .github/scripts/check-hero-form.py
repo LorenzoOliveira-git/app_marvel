@@ -64,7 +64,7 @@ def top():
     for _ in range(5): adb('shell', 'input', 'swipe', str(W//2), str(H//3), str(W//2), str(H*4//5), '200')
 
 def tap(resource=None, text=None):
-    for attempt in range(14):
+    for attempt in range(32):
         snapshot = nodes(); node = find(snapshot, resource, text)
         nav = find(snapshot, 'bottom_navigation'); bottom = bounds(nav)[1] if nav is not None else H
         if node is not None:
@@ -72,7 +72,7 @@ def tap(resource=None, text=None):
             if x2 > x1 and y2 > y1 and (resource in ['createHeroFragment', 'homeFragment'] or (y1+y2)//2 < bottom):
                 adb('shell', 'input', 'tap', str((x1+x2)//2), str((y1+y2)//2)); time.sleep(.4); return
         adb('shell', 'input', 'swipe', str(W//2), str(H*3//4), str(W//2), str(H//3), '250')
-        if attempt == 7: top()
+        if attempt == 19: top()
     raise RuntimeError('Controle não encontrado: ' + str(resource or text))
 
 def wait(resource, text=None):
@@ -80,7 +80,7 @@ def wait(resource, text=None):
     while time.monotonic() < deadline:
         node = find(nodes(), resource)
         if node is not None and (text is None or text in node.get('text', '')): return node
-        if resource == 'hero_power_status' and node is None:
+        if node is None:
             adb('shell', 'input', 'swipe', str(W//2), str(H*3//4), str(W//2), str(H//3), '250')
         time.sleep(1)
     raise RuntimeError('Conteúdo não apareceu: ' + resource)
