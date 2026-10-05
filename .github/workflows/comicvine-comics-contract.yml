@@ -1,7 +1,7 @@
-name: Contrato real de séries ComicVine
+name: Contrato real de origens e poderes ComicVine
 on:
   push:
-    branches: ["codex/bloco-12-series-details"]
+    branches: ["codex/bloco-13-create-hero"]
     paths: ["tools/comicvine_comics_contract.py", ".github/workflows/comicvine-comics-contract.yml"]
 permissions:
   contents: read
@@ -11,14 +11,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - name: Conferir detalhes reais de séries e episódios
+      - name: Conferir origens e poderes reais
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: python3 tools/comicvine_comics_contract.py
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: comicvine-series-details-contract
-          path: comicvine-series-details-contract.json
+          name: comicvine-hero-form-contract
+          path: comicvine-hero-form-contract.json
           if-no-files-found: error
           retention-days: 7
