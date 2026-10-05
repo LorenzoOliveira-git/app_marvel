@@ -123,6 +123,17 @@ def search(value):
     if value:adb('shell','input','text',value)
     tap(resource='button1')
     time.sleep(1)
+def align(resource,width,height):
+    node=show(resource,width=width,height=height)
+    snapshot=nodes()
+    headers=[n for n in snapshot if n.get('resource-id','').split('/')[-1] in ['header','main_header','screen_title','expanded_screen_title']]
+    header_bottom=max((int(re.findall(r'\d+',n.get('bounds'))[3]) for n in headers),default=100)
+    y1=int(re.findall(r'\d+',node.get('bounds'))[1])
+    delta=max(0,y1-max(110,header_bottom+24))
+    if delta:
+        start=height*4//5
+        adb('shell','input','swipe',str(width//2),str(start),str(width//2),str(max(110,start-delta)),'1000')
+        time.sleep(.5)
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_series')
@@ -143,6 +154,13 @@ for width,height,font,label in [(320,640,'1.0','small'),(640,1000,'1.0','large')
     adb('shell','wm','size',f'{width}x{height}');adb('shell','settings','put','system','font_scale',font);time.sleep(2);top(width,height)
     wait('series_featured_heading');capture('series-'+label+'-top')
     show('series_title',online['descending'][0]['name'],width,height);capture('series-'+label+'-poster')
+    align('series_title',width,height);capture('series-'+label+'-title')
+    align('series_year',width,height)
+    wait('series_year',online['descending'][0]['start_year'])
+    wait('series_episodes',str(online['descending'][0]['episode_count']))
+    source=wait('series_more')
+    assert source.get('enabled')=='true' and source.get('content-desc')=='Abrir '+online['descending'][0]['name']+' no site da ComicVine'
+    capture('series-'+label+'-metadata')
 adb('shell','wm','size','430x932');adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
 tap(resource='header_back');tap(text='Início');wait('issue_title')
 print('Séries reais, exclusão de DC, paginação, busca, seleção, restauração, cache offline e layouts conferidos.')
