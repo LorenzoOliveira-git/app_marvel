@@ -25,7 +25,8 @@ public final class FirebaseServices {
                 local = FirebaseApp.initializeApp(context.getApplicationContext(), new FirebaseOptions.Builder()
                         .setProjectId("demo-marvel-local")
                         .setApplicationId("1:1234567890:android:abcdef1234567890")
-                        .setApiKey("demo-marvel-local-api-key")
+                        // Chave fictícia com formato aceito pelo SDK; não pertence a um projeto real.
+                        .setApiKey("AIzaSy" + "000000000000000000000000000000000")
                         .setStorageBucket("demo-marvel-local.appspot.com").build(), "marvel-local");
             }
             app = local; auth = FirebaseAuth.getInstance(app);
