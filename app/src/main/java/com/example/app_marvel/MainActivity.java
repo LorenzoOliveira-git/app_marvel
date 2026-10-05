@@ -61,6 +61,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             navController.getGraph().setStartDestination(R.id.homeFragment);
         }
         binding.headerBack.setOnClickListener(view -> {
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.myHeroesFragment) { getOnBackPressedDispatcher().onBackPressed(); return; }
             if (navController.getCurrentDestination() != null && (navController.getCurrentDestination().getId() == R.id.characterDetailsFragment
                     || navController.getCurrentDestination().getId() == R.id.characterHistoryFragment
                     || navController.getCurrentDestination().getId() == R.id.arcDetailsFragment
@@ -88,7 +89,8 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.screenTitle.setText(destination.getLabel());
             boolean details = destination.getId() == R.id.characterDetailsFragment;
             boolean history = destination.getId() == R.id.seriesDetailsFragment || destination.getId() == R.id.seriesFragment || destination.getId() == R.id.movieDetailsFragment || destination.getId() == R.id.moviesFragment || destination.getId() == R.id.arcDetailsFragment || destination.getId() == R.id.arcsFragment || destination.getId() == R.id.characterHistoryFragment || destination.getId() == R.id.comicsFragment || destination.getId() == R.id.issueDetailsFragment;
-            boolean catalog = destination.getId() == R.id.createHeroFragment || destination.getId() == R.id.charactersFragment || details || history || destination.getId() == R.id.storiesFragment;
+            boolean catalog = destination.getId() == R.id.myHeroesFragment || destination.getId() == R.id.createHeroFragment || destination.getId() == R.id.charactersFragment || details || history || destination.getId() == R.id.storiesFragment;
+            if (destination.getId() == R.id.myHeroesFragment) binding.bottomNavigation.getMenu().findItem(R.id.profileFragment).setChecked(true);
             if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
             if (history) binding.bottomNavigation.getMenu().findItem(R.id.storiesFragment).setChecked(true);
             binding.headerBack.setContentDescription(getString(details || history ? R.string.details_back : R.string.catalog_back));

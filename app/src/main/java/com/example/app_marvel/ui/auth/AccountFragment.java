@@ -16,7 +16,7 @@ import com.example.app_marvel.R;
 import com.example.app_marvel.data.auth.AuthRepository;
 import com.example.app_marvel.databinding.FragmentAccountBinding;
 
-/** Somente conta real do Firebase; coleção/avatares serão acrescentados no bloco de perfil. */
+/** Conta Firebase e acesso à coleção privada. */
 public final class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle saved) {
@@ -32,8 +32,10 @@ public final class AccountFragment extends Fragment {
             }
         }).get(AccountViewModel.class);
         ViewCompat.setAccessibilityHeading(binding.heading, true);
+        binding.accountMyHeroes.setOnClickListener(v -> androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.myHeroesFragment));
         model.getSession().observe(getViewLifecycleOwner(), session -> {
             boolean signed = session.isAuthenticated();
+            binding.accountMyHeroes.setVisibility(signed ? View.VISIBLE : View.GONE);
             binding.heading.setText(signed ? R.string.account_title : R.string.account_signed_out);
             binding.name.setText(session.getName()); binding.email.setText(session.getEmail());
             binding.name.setVisibility(signed && !session.getName().isEmpty() ? View.VISIBLE : View.GONE);
