@@ -60,8 +60,8 @@ public final class MyHeroesViewModel extends ViewModel {
     public void refresh(){if(busy||selected!=null)return;String id=fields.get("selectedId");if(id!=null){restore(id);return;}rows.clear();cursor=null;more=false;load(false);}
     public void more(){if(!busy&&more&&selected==null)load(true);}
     private void load(boolean append){
-        int stamp=epoch;busy=true;error=null;saved=false;emit();
-        repository.page(append?cursor:null,(page,failure)->{
+        int stamp=epoch;boolean reconnect=error==MyHeroesRepository.Failure.NETWORK;busy=true;error=null;saved=false;emit();
+        repository.page(append?cursor:null,reconnect,(page,failure)->{
             if(stamp!=epoch)return;busy=false;error=failure;
             if(page!=null){for(var hero:page.heroes)if(rows.stream().noneMatch(existing->existing.id.equals(hero.id)))rows.add(hero);cursor=page.cursor;more=page.more;}
             emit();

@@ -40,8 +40,17 @@ public final class MyHeroesRepository {
             || doc.getString("heroName")==null || doc.getString("realName")==null || doc.getString("description")==null) throw new IllegalStateException();
         return new Hero(doc);
     }
-    public void page(DocumentSnapshot cursor,Callback<Page> callback) {
+    public void page(DocumentSnapshot cursor,boolean reconnect,Callback<Page> callback) {
         if (!ready(callback)) return; String uid=account();
+        if (reconnect) {
+            // Ação explícita após erro: reabre o transporte em vez de esperar o backoff offline.
+            services.firestore().disableNetwork().continueWithTask(done -> services.firestore().enableNetwork()).addOnCompleteListener(task -> {
+                if (!uid.equals(account())) { callback.complete(null,Failure.AUTH); return; }
+                if (!task.isSuccessful()) { callback.complete(null,Failure.NETWORK); return; }
+                page(cursor,false,callback);
+            });
+            return;
+        }
         Query query=services.firestore().collection("users/"+uid+"/heroes").orderBy("createdAt",Query.Direction.DESCENDING).orderBy(com.google.firebase.firestore.FieldPath.documentId(),Query.Direction.DESCENDING).limit(21);
         if (cursor!=null) query=query.startAfter(cursor);
         query.get(Source.SERVER).addOnCompleteListener(task -> {
