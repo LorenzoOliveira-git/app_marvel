@@ -16,7 +16,13 @@ Resumo e descrição passam por HTML seguro → texto → ML Kit pt-BR. Nomes da
 
 Não há frame dedicado de detalhes de filme no mapeamento disponível. A tela reutiliza os componentes e tokens de detalhes de personagem, quadrinho e arco; proveniência em `src/theme/movie-details.json`. Pôster fitCenter, layout fluido, controles de 48dp e rolagem com insets do menu.
 
-Compilação, lint e validação no emulador pendentes. O CI verifica catálogo de filmes, detalhes, tradução/cache offline, exclusão de Batman, vínculos Marvel, perfis e retorno, destaque/carrossel e layouts 320×640, 430×932, 640×1000 e fonte 200%. Os fluxos anteriores não sofreram mudanças de comportamento; sua validação permanece registrada no bloco 9. Nenhum teste unitário e nenhuma publicação automática de APK.
+Validação concluída no [CI 37256217224](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37256217224), commit nativo `ed07759172cf63e67527bb13835978679a0297f0`, com build e lint aprovados: zero erros e 33 avisos, sem aumento em relação ao bloco 9. O emulador aprovou catálogo de filmes, detalhes, tradução/cache offline, exclusão de Batman, vínculos Marvel, abertura dos perfis e retorno, destaque/carrossel e layouts 320×640, 430×932, 640×1000 e fonte 200%.
+
+Iron Man: identidade 17/Marvel 31, duração 126 min, classificação PG-13, 15 referências de personagens reduzidas a 13 verificadas e 5 referências de equipes reduzidas a 4 verificadas pelo índice canônico. O cursor termina sem duplicatas; United States Air Force não é exibida como equipe Marvel. A fonte também forneceu 2 estúdios, 4 produtores e 8 autores vinculados. Ant-Man foi conferido separadamente, com duração 117 min e distribuidora ausente, sem rótulo vazio. Os relatórios online/offline são idênticos, exceto pelo indicador de tradução recuperada do cache.
+
+As 18 capturas de detalhes foram inspecionadas, incluindo os nomes longos, o pôster inteiro e a rolagem com fonte ampliada. Artefatos no CI: `android-catalog-check` (11322824082), `android-preview` (11323650239), `android-lint` (11322589640). Catálogo e detalhes passaram na mesma execução, sem repetir os fluxos completos anteriores; as evidências anteriores permanecem no bloco 9. Nenhum teste unitário executado e nenhuma publicação automática de APK.
+
+Limitação de linguagem: a tradução automática preserva nomes próprios, mas alguns trechos têm concordância ou escolhas literais pouco naturais; não equivale a uma tradução editorial revisada. O HTML original permanece no modelo e a interface identifica a origem e a tradução automática.
 
 ## Roteiro manual
 
