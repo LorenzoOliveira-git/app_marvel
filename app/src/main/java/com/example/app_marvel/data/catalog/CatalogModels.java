@@ -36,6 +36,27 @@ public final class CatalogModels {
             this.id=id;this.publisherId=publisherId;this.title=title;this.startYear=startYear;this.episodeCount=episodeCount;this.imageUrl=imageUrl;this.siteUrl=siteUrl;
         }
     }
+    public static final class SeriesDetails {
+        public final Series series;
+        public final String originalDeck, originalDescription;
+        public final List<Reference> characters;
+        public final List<Episode> episodes;
+        public final Episode firstEpisode, lastEpisode;
+        public SeriesDetails(Series series,String deck,String description,List<Reference> characters,List<Episode> episodes,Episode first,Episode last) {
+            this.series=series;originalDeck=deck;originalDescription=description;this.characters=immutable(characters);this.episodes=immutable(episodes);firstEpisode=first;lastEpisode=last;
+        }
+    }
+    public static final class Episode {
+        public final int id;
+        public final String name, number, airDate, siteUrl, path;
+        public Episode(int id,String name,String number,String airDate,String siteUrl,String path) { this.id=id;this.name=name;this.number=number;this.airDate=airDate;this.siteUrl=siteUrl;this.path=path; }
+    }
+    public static final class EpisodePage {
+        public final List<Episode> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public EpisodePage(List<Episode> items,int offset,boolean more) { this.items=immutable(items);nextOffset=offset;hasMore=more; }
+    }
     public static final class SeriesPage {
         public final List<Series> items;
         public final int nextOffset;

@@ -38,4 +38,7 @@
         <argument android:name="movieId" app:argType="integer" />
     </fragment>
     <fragment android:id="@+id/seriesFragment" android:name="com.example.app_marvel.ui.series.SeriesFragment" android:label="@string/series_title" />
+    <fragment android:id="@+id/seriesDetailsFragment" android:name="com.example.app_marvel.ui.series.SeriesDetailsFragment" android:label="@string/series_details_title">
+        <argument android:name="seriesId" app:argType="integer" />
+    </fragment>
 </navigation>

@@ -716,6 +716,72 @@ public final class MarvelRepository {
         });
     }
 
+    public void seriesDetails(int id,Callback<SeriesDetails> callback) {
+        if (id<=0) { deliver(callback,Result.failed(Failure.DATA));return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            request("series/4075-"+id+"/",params("field_list",SERIES_FIELDS+",deck,description,characters,episodes,first_episode,last_episode"),DAY,result -> {
+                JSONObject row=result.data==null ? null:result.data.optJSONObject("results");Series item=series(row,pub.data);
+                if (item==null || item.id!=id) { deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure));return; }
+                Map<Integer,Episode> unique=new LinkedHashMap<>();JSONArray refs=row.optJSONArray("episodes");
+                if (refs!=null) for (int i=0;i<refs.length();i++) { Episode e=episode(refs.optJSONObject(i));if(e!=null) unique.putIfAbsent(e.id,e); }
+                List<Episode> episodes=new ArrayList<>(unique.values());
+                // Ordenação da numeração integral recebida; jamais extrai temporada desse código.
+                episodes.sort((a,b) -> {
+                    if (a.number.matches("[0-9]+") && b.number.matches("[0-9]+")) {
+                        int compare=new java.math.BigInteger(a.number).compareTo(new java.math.BigInteger(b.number));if(compare!=0) return compare;
+                    } else { int compare=a.number.compareToIgnoreCase(b.number);if(compare!=0) return compare; }
+                    return Integer.compare(a.id,b.id);
+                });
+                Episode first=episode(row.optJSONObject("first_episode")),last=episode(row.optJSONObject("last_episode"));
+                if(first!=null) first=unique.get(first.id);if(last!=null) last=unique.get(last.id);
+                deliver(callback,Result.success(new SeriesDetails(item,text(row,"deck"),text(row,"description"),references(row.optJSONArray("characters"),"character"),episodes,first,last)));
+            });
+        });
+    }
+    private static Episode episode(JSONObject row) {
+        if(row==null) return null;int id=row.optInt("id");String path=resourcePath(text(row,"api_detail_url"),"episode"),name=text(row,"name");
+        if(id<=0 || name.isEmpty() || !("episode/4070-"+id+"/").equals(path)) return null;
+        String site=website(text(row,"site_detail_url"));if(!site.isEmpty() && !Uri.parse(site).getPath().endsWith("/4070-"+id+"/")) site="";
+        String date=text(row,"air_date");try { if(!date.isEmpty()) java.time.LocalDate.parse(date); } catch(java.time.DateTimeException invalid) { date=""; }
+        return new Episode(id,name,text(row,"episode_number"),date,site,path);
+    }
+    public void seriesEpisodes(SeriesDetails detail,int offset,Callback<EpisodePage> callback) {
+        if(offset<0 || detail.series.publisherId!=31) { deliver(callback,Result.failed(Failure.DATA));return; }
+        List<Episode> refs=detail.episodes;int end=Math.min(refs.size(),offset+12);
+        if(offset>=refs.size()) { deliver(callback,Result.success(new EpisodePage(Collections.emptyList(),refs.size(),false)));return; }
+        Map<Integer,Episode> expected=new LinkedHashMap<>();List<String> ids=new ArrayList<>();
+        for(Episode e:refs.subList(offset,end)) { expected.put(e.id,e);ids.add(String.valueOf(e.id)); }
+        request("episodes/",params("filter","id:"+String.join("|",ids),"field_list","id,name,episode_number,air_date,series,api_detail_url,site_detail_url","limit","100"),DAY,result -> {
+            if(result.failure!=null) { deliver(callback,Result.failed(result.failure));return; }
+            JSONArray rows=result.data.optJSONArray("results");Map<Integer,Episode> found=new LinkedHashMap<>();
+            if(rows==null || result.data.optInt("number_of_total_results",-1)!=expected.size() || rows.length()!=expected.size()) { deliver(callback,Result.failed(Failure.DATA));return; }
+            for(int i=0;i<rows.length();i++) {
+                JSONObject row=rows.optJSONObject(i);Episode item=episode(row);JSONObject owner=row==null ? null:row.optJSONObject("series");
+                Episode ref=item==null ? null:expected.get(item.id);
+                if(ref==null || !ref.path.equals(item.path) || owner==null || owner.optInt("id")!=detail.series.id
+                        || !("series/4075-"+detail.series.id+"/").equals(resourcePath(text(owner,"api_detail_url"),"series")) || found.putIfAbsent(item.id,item)!=null) {
+                    deliver(callback,Result.failed(Failure.DATA));return;
+                }
+            }
+            List<Episode> ordered=new ArrayList<>();for(int id:expected.keySet()) ordered.add(found.get(id));
+            deliver(callback,Result.success(new EpisodePage(ordered,end,end<refs.size())));
+        });
+    }
+    public void seriesCharacters(SeriesDetails details,int offset,Callback<RelationPage> callback) {
+        if(offset<0) { deliver(callback,Result.failed(Failure.DATA));return; }
+        publisher(pub -> {
+            if(pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            if(pub.data.id!=details.series.publisherId) { deliver(callback,Result.failed(Failure.DATA));return; }
+            index(pub.data,"characters",indexed -> {
+                if(indexed.failure!=null) { deliver(callback,Result.failed(indexed.failure));return; }
+                Map<Integer,Reference> known=new HashMap<>();for(Reference ref:indexed.data) known.put(ref.id,ref);
+                List<Reference> verified=new ArrayList<>();for(Reference ref:details.characters) { Reference canonical=known.get(ref.id);if(canonical!=null && canonical.path.equals(ref.path)) verified.add(canonical); }
+                relationPage(pub.data,"characters",verified,offset,0,new ArrayList<>(),callback);
+            });
+        });
+    }
+
     private static final String MOVIE_FIELDS = "id,name,image,site_detail_url,runtime,studios";
     /** Studios usa referências 4010 de editoras; o endpoint studio é inexistente. */
     private static Movie movie(JSONObject row, Publisher publisher) {

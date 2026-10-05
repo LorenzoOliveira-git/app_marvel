@@ -100,3 +100,7 @@ O workflow Android build e lint executa essas tarefas e verifica o app no emulad
 A compilação `assembleDebug` e o `lintDebug` do bloco 2 passaram no [GitHub Actions](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37166914245). O run disponibiliza o APK `app-marvel-debug`, os relatórios `android-lint` e capturas `android-preview` por sete dias. Lint: zero erros e 14 avisos (atualizações disponíveis, dois recursos originais sem uso e uma recomendação genérica para dimensão de vetor na splash).
 
 A tentativa local foi bloqueada no download do Gradle por Network is unreachable. No CI, o aplicativo foi instalado e aberto em emulador Android 35, com capturas da splash, Login, Cadastro, cinco destinos do menu, validação, rolagem e fonte 200% inspecionadas. Autenticação com conta real ainda depende da configuração Firebase. Execute as verificações restantes do roteiro manual antes de aprovar o bloco.
+
+## Bloco 12 — Detalhes de séries
+
+Detalhes nativos, personagens Marvel e episódios em lotes, com numeração preservada e descrição traduzida. Evidências e limites em [docs/bloco-12-detalhes-serie.md](docs/bloco-12-detalhes-serie.md).
