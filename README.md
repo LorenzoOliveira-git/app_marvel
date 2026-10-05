@@ -128,3 +128,7 @@ Reserva transacional de orçamento/cotas, geração única, temporário privado,
 ## Bloco 18 — Criação no Android
 
 Revisão → preparação real → confirmação de tentativa paga → estados do servidor → retomada → herói confirmado e download privado. Recuperação da operação após encerramento do processo e descarte de estado ao trocar a conta. Guia e limites em [docs/bloco-18-android-criacao.md](docs/bloco-18-android-criacao.md). A geração/upload/imagem reais continuam sem validação externa até configurar as credenciais privadas.
+
+## Bloco 19 — Meus heróis
+
+Perfil → coleção privada paginada → edição de nome, identidade e descrição, com imagem fixa e controle de revisão no backend. Guia e limites em [docs/bloco-19-meus-herois.md](docs/bloco-19-meus-herois.md). Coleção preenchida/edição sobre um herói real ainda dependem da primeira criação concluída com os provedores privados.

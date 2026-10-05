@@ -68,3 +68,7 @@ Portanto, o código pode ser compartilhado, mas a configuração de conexão e o
 ## Evidências de validação
 
 [Execução dos SDKs e das regras nos emuladores](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37309726711). Os artefatos contêm `backend.json`, `android.json` e relatórios de lint. O workflow compila debug e release, confere que o perfil padrão e release não habilitam emuladores e executa os diagnósticos HTTP e Android. Não executa testes unitários nem publica APK automaticamente.
+
+## Coleção e edição textual no Android
+
+O [bloco 19](bloco-19-meus-herois.md) acrescenta Perfil → Meus heróis e a callable local `updateHeroText`. A coleção lê documentos confirmados no servidor e a edição altera somente nome, identidade e descrição. Revisão transacional protege contra sobrescrita de outra edição; imagem/referência e origem/poderes não são alterados. Sem heróis concluídos, a tela mostra o estado vazio real.
