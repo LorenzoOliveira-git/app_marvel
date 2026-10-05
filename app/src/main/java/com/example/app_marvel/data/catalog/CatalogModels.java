@@ -29,6 +29,21 @@ public final class CatalogModels {
             this.publicationDate = publicationDate; this.imageUrl = imageUrl; this.siteUrl = siteUrl;
         }
     }
+    public static final class Movie {
+        public final int id, publisherId, runtime;
+        public final String title, imageUrl, siteUrl;
+        public Movie(int id, int publisherId, String title, int runtime, String imageUrl, String siteUrl) {
+            this.id=id; this.publisherId=publisherId; this.title=title; this.runtime=runtime; this.imageUrl=imageUrl; this.siteUrl=siteUrl;
+        }
+    }
+    public static final class MoviesPage {
+        public final List<Movie> items;
+        public final int nextOffset;
+        public final boolean hasMore;
+        public MoviesPage(List<Movie> items,int nextOffset,boolean hasMore) {
+            this.items=immutable(items); this.nextOffset=nextOffset; this.hasMore=hasMore;
+        }
+    }
     public static final class CharacterDetails {
         public final Character character;
         public final int appearanceCount;

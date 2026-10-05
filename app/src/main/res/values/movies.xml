@@ -1,0 +1,21 @@
+<resources>
+    <string name="movies_title">Filmes</string>
+    <string name="movies_open">Filmes Marvel</string>
+    <string name="movies_featured">Destaque</string>
+    <string name="movies_az">A–Z</string>
+    <string name="movies_za">Z–A</string>
+    <string name="movies_search">Buscar</string>
+    <string name="movies_search_hint">Título original do filme</string>
+    <string name="movies_clear">Limpar</string>
+    <string name="movies_query">Busca: %1$s</string>
+    <string name="movies_query_invalid">Use um título sem vírgula, dois-pontos ou barra vertical.</string>
+    <string name="movies_order_selected">Ordem selecionada</string>
+    <string name="movies_runtime">Duração informada: %1$d min</string>
+    <string name="movies_external_named">Abrir %1$s no site da ComicVine</string>
+    <string name="movies_previous">Filme anterior</string>
+    <string name="movies_next">Próximo filme</string>
+    <string name="movies_empty_title">Nenhum filme neste lote</string>
+    <string name="movies_empty_body">Tente outra busca ou carregue mais registros, se disponível.</string>
+    <string name="movies_source">Fonte: ComicVine. Filmes associados explicitamente à Marvel. Catálogo parcial. Busque pelo título original.</string>
+    <item name="movies_search_input" type="id" />
+</resources>

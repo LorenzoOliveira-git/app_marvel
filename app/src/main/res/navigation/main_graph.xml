@@ -33,4 +33,5 @@
     <fragment android:id="@id/profileFragment" android:name="com.example.app_marvel.ui.auth.AccountFragment" android:label="@string/nav_profile">
         <argument android:name="feature" app:argType="string" android:defaultValue="PROFILE" />
     </fragment>
+    <fragment android:id="@+id/moviesFragment" android:name="com.example.app_marvel.ui.movies.MoviesFragment" android:label="@string/movies_title" />
 </navigation>
