@@ -131,8 +131,11 @@ public final class SeriesDetailsFragment extends Fragment {
         TextView name=new TextView(requireContext());name.setTextAppearance(R.style.TextAppearance_Marvel_CatalogHeading);name.setTextSize(26);name.setText(item.name);ViewCompat.setAccessibilityHeading(name,true);content.addView(name,new LinearLayout.LayoutParams(-1,-2));
         if(!item.number.isEmpty()) episodeText(content,getString(R.string.series_episode_number,item.number));
         if(!item.airDate.isEmpty()) {
-            String date=java.time.LocalDate.parse(item.airDate).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/uuuu",new java.util.Locale("pt","BR")));
-            episodeText(content,getString(R.string.series_episode_air_date,date));
+            java.text.SimpleDateFormat original=new java.text.SimpleDateFormat("yyyy-MM-dd",java.util.Locale.ROOT);original.setLenient(false);
+            try {
+                String date=new java.text.SimpleDateFormat("dd/MM/yyyy",new java.util.Locale("pt","BR")).format(original.parse(item.airDate));
+                episodeText(content,getString(R.string.series_episode_air_date,date));
+            } catch(java.text.ParseException ignored) { /* Campo inválido é omitido. */ }
         }
         if(!item.siteUrl.isEmpty()) {
             MaterialButton link=(MaterialButton)getLayoutInflater().inflate(R.layout.component_issue_credit,content,false);

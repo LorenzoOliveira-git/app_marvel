@@ -728,7 +728,9 @@ public final class MarvelRepository {
                 List<Episode> episodes=new ArrayList<>(unique.values());
                 // Ordenação da numeração integral recebida; jamais extrai temporada desse código.
                 episodes.sort((a,b) -> {
-                    if (a.number.matches("[0-9]+") && b.number.matches("[0-9]+")) {
+                    boolean numericA=a.number.matches("[0-9]+"),numericB=b.number.matches("[0-9]+");
+                    if(numericA!=numericB) return numericA ? -1:1;
+                    if (numericA) {
                         int compare=new java.math.BigInteger(a.number).compareTo(new java.math.BigInteger(b.number));if(compare!=0) return compare;
                     } else { int compare=a.number.compareToIgnoreCase(b.number);if(compare!=0) return compare; }
                     return Integer.compare(a.id,b.id);
@@ -743,7 +745,12 @@ public final class MarvelRepository {
         if(row==null) return null;int id=row.optInt("id");String path=resourcePath(text(row,"api_detail_url"),"episode"),name=text(row,"name");
         if(id<=0 || name.isEmpty() || !("episode/4070-"+id+"/").equals(path)) return null;
         String site=website(text(row,"site_detail_url"));if(!site.isEmpty() && !Uri.parse(site).getPath().endsWith("/4070-"+id+"/")) site="";
-        String date=text(row,"air_date");try { if(!date.isEmpty()) java.time.LocalDate.parse(date); } catch(java.time.DateTimeException invalid) { date=""; }
+        String date=text(row,"air_date");
+        if(!date.isEmpty()) {
+            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd",Locale.ROOT);format.setLenient(false);
+            java.text.ParsePosition position=new java.text.ParsePosition(0);
+            if(!date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}") || format.parse(date,position)==null || position.getIndex()!=date.length()) date="";
+        }
         return new Episode(id,name,text(row,"episode_number"),date,site,path);
     }
     public void seriesEpisodes(SeriesDetails detail,int offset,Callback<EpisodePage> callback) {
