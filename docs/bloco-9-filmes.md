@@ -16,7 +16,11 @@ Frame Figma Filmes 62:480, contrato registrado em `src/theme/movies.json`. Compo
 
 ## Validação
 
-Compilação e lint passaram (zero erros, 33 avisos). O run [37251257995](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37251257995) aprovou os fluxos anteriores e os dados/cache offline de filmes: primeiro lote com 7 filmes, próximo com 12, ordem descendente com 17 e busca Iron Man com 3. O roteiro visual parou num seletor ambíguo do diálogo de busca; a correção e a verificação isolada de filmes estão em andamento. Roteiro debug verifica destaque, páginas disjuntas, busca Iron Man, exclusão Batman, vazio, entradas inválidas e equivalência offline. Roteiro ADB verifica carrossel, navegação/restauração e capturas em 430×932, 320×640, 640×1000 e fonte 200%. Nenhum teste unitário; nenhum APK publicado automaticamente.
+A verificação final [37253487790](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37253487790) passou no commit `dff5b06`: compilação, lint (zero erros, 33 avisos), tradução/cache persistente e roteiro completo de filmes no emulador Android 35. Os dados online e offline são idênticos. Foram confirmados o destaque Iron Man, páginas disjuntas (7 filmes na primeira ação e mais 12 na seguinte), ordem descendente com 17 registros, busca Iron Man com 3 resultados, exclusão Batman, busca vazia e rejeição de entradas inválidas.
+
+As 15 capturas comprovam carrossel, anterior/próximo, restauração de Iron Man 2 ao voltar a Histórias e reabrir, estados vazios, layouts 430×932, 320×640 e 640×1000 e fonte 200%. As capturas foram inspecionadas: pôsteres inteiros, destaque empilhado nas configurações menores/fonte grande, títulos e duração legíveis, controles acessíveis por rolagem. Os artefatos `android-catalog-check`, `android-preview` e `android-lint` estão disponíveis no run por sete dias.
+
+Os fluxos anteriores (catálogo geral, quadrinhos, detalhes de quadrinhos, arcos e detalhes de arcos) passaram no run [37251257995](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37251257995), com o mesmo código nativo. Esse run terminou com falha no seletor do diálogo de busca do roteiro de filmes; o seletor foi corrigido e o roteiro completo passou na execução final isolada, preservando as verificações anteriores. Nenhum teste unitário foi executado e nenhum APK foi publicado automaticamente.
 
 ## Roteiro manual
 
