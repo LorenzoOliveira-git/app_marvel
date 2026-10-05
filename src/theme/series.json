@@ -1,0 +1,7 @@
+{
+  "fileKey":"avJ7cq3FyO5XOIueiqaYrb","nodeId":"62:338","frame":"Séries","width":430,"height":932,
+  "featured":{"headingSize":32,"posterWidth":137,"posterHeight":203,"radius":10,"titleSize":24},
+  "carousel":{"posterWidth":259,"posterHeight":380,"neighborHeight":277,"titleSize":40},
+  "reuse":["item_featured_movie.xml","item_character_portrait.xml","background_panel","background_recent_issue","Marvel fonts and tokens","MarvStateView","shared shell and navigation"],
+  "adaptations":["real ComicVine artwork","A-Z/Z-A and title search replace fictional dates and Saga","source year and registered episode count replace fictitious arc/volume","explicit external source until native series details","48dp controls, fitCenter posters, scrolling and stacked featured card for narrow width/large font"]
+}

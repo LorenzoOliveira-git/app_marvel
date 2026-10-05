@@ -3,7 +3,7 @@
     <LinearLayout android:id="@+id/movie_row" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/background_recent_issue">
         <ImageView android:id="@+id/movie_image" android:layout_width="134dp" android:layout_height="203dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
         <LinearLayout android:id="@+id/movie_details" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/movies_title" />
+            <TextView android:id="@+id/media_category" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/movies_title" />
             <TextView android:id="@+id/movie_title" style="@style/TextAppearance.Marvel.CatalogTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
             <TextView android:id="@+id/movie_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
             <TextView android:id="@+id/movie_volume" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:visibility="gone" />
