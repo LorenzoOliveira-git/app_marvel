@@ -665,6 +665,61 @@ public final class MarvelRepository {
         });
     }
 
+    private static final String MOVIE_FIELDS = "id,name,image,site_detail_url,runtime,studios";
+    /** Studios usa referências 4010 de editoras; o endpoint studio é inexistente. */
+    private static Movie movie(JSONObject row, Publisher publisher) {
+        if (row==null || row.optInt("id")<=0 || text(row,"name").isEmpty()) return null;
+        JSONArray studios=row.optJSONArray("studios"); boolean verified=false;
+        if (studios!=null) for (int i=0;i<studios.length();i++) {
+            JSONObject studio=studios.optJSONObject(i);
+            if (studio!=null && studio.optInt("id")==publisher.id && "Marvel".equals(text(studio,"name"))) {
+                String path=resourcePath(text(studio,"api_detail_url"),"studio");
+                verified=path!=null && path.equals(publisher.path.replace("publisher/","studio/"));
+                if (verified) break;
+            }
+        }
+        return verified ? new Movie(row.optInt("id"),publisher.id,text(row,"name"),Math.max(0,row.optInt("runtime")),
+                image(row),website(text(row,"site_detail_url"))) : null;
+    }
+    public void featuredMovie(Callback<Movie> callback) {
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
+            request("movies/",params("filter","id:17","field_list",MOVIE_FIELDS,"limit","1"),DAY,result -> {
+                JSONArray rows=result.data==null ? null:result.data.optJSONArray("results");
+                Movie item=rows==null || rows.length()!=1 ? null:movie(rows.optJSONObject(0),pub.data);
+                deliver(callback,item!=null && item.id==17 ? Result.success(item):Result.failed(result.failure==null ? Failure.DATA:result.failure));
+            });
+        });
+    }
+    public void movies(String query,boolean descending,int offset,Callback<MoviesPage> callback) {
+        String value=query.trim();
+        if (offset<0 || value.length()>80 || value.matches(".*[,|:].*")) { deliver(callback,Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
+            movieBatch(pub.data,value,descending,offset,0,new LinkedHashMap<>(),callback);
+        });
+    }
+    private void movieBatch(Publisher publisher,String query,boolean descending,int offset,int batches,
+            Map<Integer,Movie> found,Callback<MoviesPage> callback) {
+        Map<String,String> parameters=params("field_list",MOVIE_FIELDS,"limit","100","offset",String.valueOf(offset),"sort","name:"+(descending ? "desc":"asc"));
+        if (!query.isEmpty()) parameters.put("filter","name:"+query);
+        request("movies/",parameters,DAY,result -> {
+            if (result.failure!=null) { deliver(callback,Result.failed(result.failure)); return; }
+            JSONArray rows=result.data.optJSONArray("results"); int total=result.data.optInt("number_of_total_results",-1);
+            if (rows==null || total<0 || rows.length()>100 || (rows.length()==0 && offset<total)) {
+                deliver(callback,Result.failed(Failure.DATA)); return;
+            }
+            for (int i=0;i<rows.length();i++) {
+                Movie item=movie(rows.optJSONObject(i),publisher);
+                if (item!=null && item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) found.putIfAbsent(item.id,item);
+            }
+            int next=offset+rows.length(); boolean more=next<total;
+            // No máximo três lotes por ação; nenhum detalhe por filme e nenhuma lista global indiscriminada.
+            if (more && found.size()<12 && batches<2) movieBatch(publisher,query,descending,next,batches+1,found,callback);
+            else deliver(callback,Result.success(new MoviesPage(new ArrayList<>(found.values()),next,more)));
+        });
+    }
+
     public void comics(int volumeId, boolean oldest, ComicsCursor cursor, Callback<ComicsPage> callback) {
         if (volumeId < 0 || cursor == null || cursor.offset < -1 || cursor.examined < 0
                 || (!cursor.date.isEmpty() && !cursor.date.matches("\\d{4}-\\d{2}-\\d{2}"))) {

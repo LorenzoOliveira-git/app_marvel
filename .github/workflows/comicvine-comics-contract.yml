@@ -1,7 +1,7 @@
-name: Contrato real de arcos ComicVine
+name: Contrato real de filmes ComicVine
 on:
   push:
-    branches: ["codex/bloco-7-arcos"]
+    branches: ["codex/bloco-9-filmes"]
     paths: ["tools/comicvine_comics_contract.py", ".github/workflows/comicvine-comics-contract.yml"]
 permissions:
   contents: read
@@ -11,14 +11,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - name: Conferir índice e lotes reais de arcos
+      - name: Conferir relações reais de filmes
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: python3 tools/comicvine_comics_contract.py
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: comicvine-arcs-contract
-          path: comicvine-arcs-contract.json
+          name: comicvine-movies-contract
+          path: comicvine-movies-contract.json
           if-no-files-found: error
           retention-days: 7

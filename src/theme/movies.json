@@ -1,0 +1,7 @@
+{
+  "fileKey": "avJ7cq3FyO5XOIueiqaYrb", "nodeId": "62:480", "frame": "Filmes", "width": 430, "height": 932,
+  "featured": {"headingSize":32,"posterWidth":137,"posterHeight":203,"radius":10,"titleSize":24},
+  "carousel": {"posterWidth":259,"posterHeight":380,"neighborHeight":270,"titleSize":40},
+  "reuse": ["background_panel", "background_recent_issue", "item_character_portrait", "Bebas Neue", "Inter", "MarvStateView", "bottom_navigation"],
+  "adaptations": ["real verified Marvel data replaces DC mockup art", "A–Z and Z–A replace unreliable release-date ordering", "title search replaces unverified Saga filter", "runtime replaces unsupported fictional volume and arc metadata", "external source is explicit until native movie detail block", "48dp controls, scrolling and stacked featured card for small width or large font"]
+}

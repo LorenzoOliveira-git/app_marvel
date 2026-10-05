@@ -29,6 +29,7 @@ public final class StoriesFragment extends Fragment {
         for (View heading : new View[]{binding.historyFollowHeading, binding.historyDiscoverHeading, binding.historyRecentHeading}) ViewCompat.setAccessibilityHeading(heading, true);
         var container = ((MarvelApplication) requireActivity().getApplication()).getContainer();
         binding.openComics.setOnClickListener(v -> ((MainActivity) requireActivity()).openComics());
+        binding.openMovies.setOnClickListener(v -> ((MainActivity) requireActivity()).openMovies());
         binding.openArcs.setOnClickListener(v -> ((MainActivity) requireActivity()).openArcs());
         HomeViewModel model = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull @Override public <T extends ViewModel> T create(@NonNull Class<T> type) {

@@ -8,5 +8,6 @@
         <activity android:name=".diagnostics.ArcsCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.ArcDetailsCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.ComicsCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.MoviesCheckActivity" android:exported="true" />
     </application>
 </manifest>
