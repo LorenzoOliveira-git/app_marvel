@@ -17,8 +17,19 @@ def adb(*args, check=True):
     return result
 
 def nodes():
-    adb('shell','uiautomator','dump','/sdcard/draft-window.xml')
-    return list(ET.fromstring(adb('exec-out','cat','/sdcard/draft-window.xml').stdout).iter('node'))
+    for attempt in range(8):
+        adb('shell','uiautomator','dump','/sdcard/draft-window.xml',check=False)
+        raw=adb('shell','cat','/sdcard/draft-window.xml',check=False).stdout
+        start=raw.find(b'<?xml')
+        if start<0: start=raw.find(b'<hierarchy')
+        if start>=0:
+            try: return list(ET.fromstring(raw[start:]).iter('node'))
+            except ET.ParseError: pass
+        time.sleep(1)
+    (OUT/'hero-draft-ui-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+    failure=adb('logcat','-d','-s','AndroidRuntime:E',check=False).stdout.decode(errors='replace')
+    print(failure[-4000:])
+    raise RuntimeError('UiAutomator não encontrou uma árvore XML estável.')
 
 def find(rows,resource=None,text=None):
     return next((n for n in rows if (resource and n.get('resource-id','').endswith('/'+resource)) or (text and n.get('text')==text)),None)
