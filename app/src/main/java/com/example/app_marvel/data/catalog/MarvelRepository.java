@@ -665,6 +665,57 @@ public final class MarvelRepository {
         });
     }
 
+    private static final String SERIES_FIELDS="id,name,api_detail_url,image,site_detail_url,publisher,start_year,count_of_episodes";
+    private static Series series(JSONObject row,Publisher publisher) {
+        if (row==null || row.optInt("id")<=0 || text(row,"name").isEmpty()) return null;
+        JSONObject owner=row.optJSONObject("publisher");String path=resourcePath(text(row,"api_detail_url"),"series");int id=row.optInt("id");
+        if (owner==null || owner.optInt("id")!=publisher.id || !"Marvel".equals(text(owner,"name"))
+                || !publisher.path.equals(resourcePath(text(owner,"api_detail_url"),"publisher")) || path==null || !path.equals("series/4075-"+id+"/")) return null;
+        String year=text(row,"start_year");if (!year.matches("[12][0-9]{3}")) year="";
+        int count=row.has("count_of_episodes") && !row.isNull("count_of_episodes") ? row.optInt("count_of_episodes",-1):-1;
+        String site=website(text(row,"site_detail_url"));
+        if (!site.isEmpty() && !Uri.parse(site).getPath().endsWith("/4075-"+id+"/")) site="";
+        return new Series(id,publisher.id,text(row,"name"),year,Math.max(-1,count),image(row),site);
+    }
+    public void featuredSeries(Callback<Series> callback) {
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            request("series_list/",params("filter","name:Agents of S.H.I.E.L.D.","field_list",SERIES_FIELDS,"limit","100"),DAY,result -> {
+                JSONArray rows=result.data==null ? null:result.data.optJSONArray("results");Series found=null;
+                if (rows!=null) for (int i=0;i<rows.length();i++) {
+                    Series item=series(rows.optJSONObject(i),pub.data);
+                    if (item!=null && item.id==1 && item.title.equals("Agents of S.H.I.E.L.D.")) { found=item;break; }
+                }
+                deliver(callback,found==null ? Result.failed(result.failure==null ? Failure.DATA:result.failure):Result.success(found));
+            });
+        });
+    }
+    public void series(String query,boolean descending,int offset,Callback<SeriesPage> callback) {
+        String value=query.trim();
+        if (offset<0 || value.length()>80 || value.matches(".*[,|:].*")) { deliver(callback,Result.failed(Failure.DATA));return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            seriesBatch(pub.data,value,descending,offset,0,new LinkedHashMap<>(),callback);
+        });
+    }
+    private void seriesBatch(Publisher publisher,String query,boolean descending,int offset,int batches,Map<Integer,Series> found,Callback<SeriesPage> callback) {
+        Map<String,String> parameters=params("field_list",SERIES_FIELDS,"limit","100","offset",String.valueOf(offset),"sort","name:"+(descending ? "desc":"asc"));
+        if (!query.isEmpty()) parameters.put("filter","name:"+query);
+        request("series_list/",parameters,DAY,result -> {
+            if (result.failure!=null) { deliver(callback,Result.failed(result.failure));return; }
+            JSONArray rows=result.data.optJSONArray("results");int total=result.data.optInt("number_of_total_results",-1);
+            if (rows==null || total<0 || rows.length()>100 || (rows.length()==0 && offset<total)) { deliver(callback,Result.failed(Failure.DATA));return; }
+            for (int i=0;i<rows.length();i++) {
+                Series item=series(rows.optJSONObject(i),publisher);
+                if (item!=null && item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) found.putIfAbsent(item.id,item);
+            }
+            int next=offset+rows.length();boolean more=next<total;
+            // No máximo 3 lotes por ação; editora conferida em cada referência, sem detalhes por item.
+            if (more && found.size()<12 && batches<2) seriesBatch(publisher,query,descending,next,batches+1,found,callback);
+            else deliver(callback,Result.success(new SeriesPage(new ArrayList<>(found.values()),next,more)));
+        });
+    }
+
     private static final String MOVIE_FIELDS = "id,name,image,site_detail_url,runtime,studios";
     /** Studios usa referências 4010 de editoras; o endpoint studio é inexistente. */
     private static Movie movie(JSONObject row, Publisher publisher) {

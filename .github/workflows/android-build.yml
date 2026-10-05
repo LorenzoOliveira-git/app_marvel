@@ -66,14 +66,20 @@ jobs:
               'app/src/debug/java/com/example/app_marvel/diagnostics/MovieDetailsCheckActivity.java',
               'README.md', 'docs/bloco-10-detalhes-filme.md'}
           movie_detail_test_only = '.github/scripts/check-movie-detail.py' in paths and paths <= movie_detail_test_allowed
+          series_allowed = {'.github/scripts/check-series.py', 'app/src/main/java/com/example/app_marvel/ui/series/SeriesFragment.java', 'app/src/main/java/com/example/app_marvel/ui/series/SeriesViewModel.java', 'app/src/main/res/navigation/main_graph.xml', 'app/src/main/java/com/example/app_marvel/MainActivity.java', 'app/src/main/res/layout/fragment_series.xml', 'docs/bloco-11-series.md', 'app/src/main/res/layout/fragment_stories.xml', 'src/theme/series.json', 'app/src/main/java/com/example/app_marvel/data/catalog/MarvelRepository.java', 'app/src/debug/AndroidManifest.xml', 'app/src/main/java/com/example/app_marvel/ui/history/StoriesFragment.java', 'app/src/main/java/com/example/app_marvel/ui/components/SeriesFeaturedAdapter.java', 'app/src/main/res/values/series.xml', 'README.md', '.github/workflows/android-build.yml', 'app/src/main/res/layout/item_featured_movie.xml', 'app/src/main/java/com/example/app_marvel/data/catalog/CatalogModels.java', 'app/src/debug/java/com/example/app_marvel/diagnostics/SeriesCheckActivity.java', 'app/src/main/java/com/example/app_marvel/ui/components/SeriesCoverAdapter.java'}
+          series_only = bool(paths & {'.github/scripts/check-series.py', 'app/src/main/java/com/example/app_marvel/ui/series/SeriesFragment.java', 'app/src/main/java/com/example/app_marvel/ui/series/SeriesViewModel.java', 'app/src/main/res/layout/fragment_series.xml', 'app/src/main/res/values/series.xml'}) and paths <= series_allowed
+          series_test_allowed = {'.github/scripts/check-series.py', '.github/workflows/android-build.yml', 'app/src/debug/java/com/example/app_marvel/diagnostics/SeriesCheckActivity.java', 'README.md', 'docs/bloco-11-series.md'}
+          series_test_only = '.github/scripts/check-series.py' in paths and paths <= series_test_allowed
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('series_only=' + str(series_only).lower() + '\n')
+              output.write('series_test_only=' + str(series_test_only).lower() + '\n')
               output.write('movie_detail_test_only=' + str(movie_detail_test_only).lower() + '\n')
               output.write('movie_detail_only=' + str(movie_detail_only).lower() + '\n')
               output.write('movie_only=' + str(movie_only).lower() + '\n')
               output.write('issue_only=' + str(focused).lower() + '\n')
               output.write('arc_detail_only=' + str(arc_detail_only).lower() + '\n')
               output.write('arc_only=' + str(arc_only).lower() + '\n')
-          print('Fluxos de filmes e perfis vinculados.' if movie_detail_only else 'Roteiro de filmes isolado.' if movie_only else 'Roteiro de arcos isolado.' if arc_only else 'Roteiro de detalhes isolado.' if focused else 'Verificação integrada da aplicação.')
+          print('Fluxos de séries e card compartilhado.' if series_only else 'Fluxos de filmes e perfis vinculados.' if movie_detail_only else 'Roteiro de filmes isolado.' if movie_only else 'Roteiro de arcos isolado.' if arc_only else 'Roteiro de detalhes isolado.' if focused else 'Verificação integrada da aplicação.')
           PYTHON
       - uses: actions/setup-java@v6
         with:
@@ -139,11 +145,11 @@ jobs:
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 15
         run: python3 .github/scripts/check-catalog.py --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar quadrinhos reais, cache e navegação
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 7
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -151,7 +157,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-comics.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de quadrinhos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 9
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -159,7 +165,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-issue.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar catálogo nativo de arcos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.issue_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 9
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -167,7 +173,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-arcs.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de arcos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
         timeout-minutes: 10
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -175,7 +181,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-arc-detail.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar catálogo nativo de filmes
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.movie_detail_test_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_test_only != 'true' && steps.scope.outputs.movie_detail_test_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 10
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -183,13 +189,21 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-movies.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de filmes
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' }}
         timeout-minutes: 15
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
           python3 .github/scripts/check-movie-detail.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+      - name: Verificar catálogo nativo de séries
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' }}
+        timeout-minutes: 10
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: |
+          python3 tools/comicvine.py device
+          python3 .github/scripts/check-series.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Disponibilizar evidências do catálogo
         if: always()
         uses: actions/upload-artifact@v7

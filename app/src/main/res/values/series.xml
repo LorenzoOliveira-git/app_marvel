@@ -1,0 +1,22 @@
+<resources>
+    <string name="series_title">Séries</string>
+    <string name="series_open">Séries Marvel</string>
+    <string name="series_featured">Destaque</string>
+    <string name="series_az">A–Z</string>
+    <string name="series_za">Z–A</string>
+    <string name="series_search">Buscar</string>
+    <string name="series_search_hint">Título original da série</string>
+    <string name="series_clear">Limpar</string>
+    <string name="series_query">Busca: %1$s</string>
+    <string name="series_query_invalid">Use um título sem vírgula, dois-pontos ou barra vertical.</string>
+    <string name="series_order_selected">Ordem selecionada</string>
+    <string name="series_year">Ano inicial informado: %1$s</string>
+    <plurals name="series_episodes"><item quantity="one">Episódio cadastrado na fonte: %1$d</item><item quantity="other">Episódios cadastrados na fonte: %1$d</item></plurals>
+    <string name="series_external_named">Abrir %1$s no site da ComicVine</string>
+    <string name="series_previous">Série anterior</string>
+    <string name="series_next">Próxima série</string>
+    <string name="series_empty_title">Nenhuma série neste lote</string>
+    <string name="series_empty_body">Tente outra busca ou carregue mais registros, se disponível.</string>
+    <string name="series_source">Fonte: ComicVine. Séries com editora Marvel na fonte, incluindo títulos licenciados. Catálogo parcial. Busque pelo título original.</string>
+    <item name="series_search_input" type="id" />
+</resources>
