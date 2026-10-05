@@ -124,8 +124,11 @@ def search(value):
     tap(resource='button1')
     time.sleep(1)
 def align(resource,width,height):
-    node=show(resource,width=width,height=height)
     snapshot=nodes()
+    node=next((n for n in snapshot if n.get('resource-id','').endswith('/'+resource)),None)
+    if node is None:
+        node=show(resource,width=width,height=height)
+        snapshot=nodes()
     headers=[n for n in snapshot if n.get('resource-id','').split('/')[-1] in ['header','main_header','screen_title','expanded_screen_title']]
     header_bottom=max((int(re.findall(r'\d+',n.get('bounds'))[3]) for n in headers),default=100)
     y1=int(re.findall(r'\d+',node.get('bounds'))[1])
