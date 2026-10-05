@@ -1,0 +1,15 @@
+<resources>
+    <string name="movie_details_title">Detalhes do filme</string>
+    <string name="movie_open">Detalhes do filme</string>
+    <string name="movie_open_named">Abrir detalhes de %1$s</string>
+    <string name="movies_association">Vínculo Marvel confirmado na ComicVine</string>
+    <string name="movie_rating">Classificação informada na fonte: %1$s</string>
+    <string name="movie_distributor">Distribuidora informada: %1$s</string>
+    <string name="movie_characters">Personagens Marvel vinculados</string>
+    <string name="movie_teams">Equipes Marvel vinculadas</string>
+    <string name="movie_studios">Estúdios indicados na fonte</string>
+    <string name="movie_producers">Produtores indicados na fonte</string>
+    <string name="movie_writers">Autores vinculados na fonte</string>
+    <string name="movie_read_description">Ler descrição completa</string>
+    <string name="movie_credit_external">Abrir %1$s no site da ComicVine</string>
+</resources>

@@ -1,0 +1,8 @@
+{
+  "screen": "Detalhes do filme", "dedicatedFigmaFrame": null,
+  "basis": ["fragment_arc_details.xml", "fragment_issue_details.xml", "component_details_relations.xml", "component_issue_credit.xml"],
+  "reuse": ["Marvel tokens and fonts", "MarvStateView", "RelatedCharacterAdapter", "ComicVineImages", "shared shell and insets"],
+  "layout": {"posterHeightDp":340,"posterScale":"fitCenter","cardRadiusDp":20,"headingSizeSp":40,"minimumControlDp":48},
+  "sourceFrame": "Filmes 62:480 retained for the catalogue; native detail follows existing detail components",
+  "data": "Real movie identity and Marvel relations only; no fictional dates, budgets, cast roles or adaptations"
+}

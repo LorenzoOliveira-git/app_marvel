@@ -681,6 +681,63 @@ public final class MarvelRepository {
         return verified ? new Movie(row.optInt("id"),publisher.id,text(row,"name"),Math.max(0,row.optInt("runtime")),
                 image(row),website(text(row,"site_detail_url"))) : null;
     }
+    public void movieDetails(int movieId,Callback<MovieDetails> callback) {
+        if (movieId<=0) { deliver(callback,Result.failed(Failure.DATA));return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            request("movies/",params("filter","id:"+movieId,"field_list",MOVIE_FIELDS+",api_detail_url","limit","1"),DAY,lookup -> {
+                JSONArray rows=lookup.data==null ? null:lookup.data.optJSONArray("results");
+                JSONObject ref=rows==null || rows.length()!=1 ? null:rows.optJSONObject(0);
+                Movie verified=movie(ref,pub.data);
+                String path=ref==null ? null:resourcePath(text(ref,"api_detail_url"),"movie");
+                if (verified==null || verified.id!=movieId || path==null || !path.endsWith("-"+movieId+"/")) {
+                    deliver(callback,Result.failed(lookup.failure==null ? Failure.DATA:lookup.failure));return;
+                }
+                String fields=MOVIE_FIELDS+",api_detail_url,deck,description,rating,distributor,characters,teams,producers,writers,locations,objects,concepts";
+                request(path,params("field_list",fields),DAY,result -> {
+                    JSONObject row=result.data==null ? null:result.data.optJSONObject("results");Movie item=movie(row,pub.data);
+                    if (item==null || item.id!=movieId || !path.equals(resourcePath(text(row,"api_detail_url"),"movie"))) {
+                        deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure));return;
+                    }
+                    String distributor=row.opt("distributor") instanceof String ? plain(text(row,"distributor")):"";
+                    deliver(callback,Result.success(new MovieDetails(item,text(row,"rating"),distributor,text(row,"deck"),text(row,"description"),
+                        references(row.optJSONArray("characters"),"character"),references(row.optJSONArray("teams"),"team"),
+                        movieCredits(row.optJSONArray("studios"),"studio","publisher"),movieCredits(row.optJSONArray("producers"),"producer","person"),
+                        movieCredits(row.optJSONArray("writers"),"writer","person"),credits(row.optJSONArray("locations"),"location"),
+                        credits(row.optJSONArray("objects"),"object"),credits(row.optJSONArray("concepts"),"concept"))));
+                });
+            });
+        });
+    }
+    private static List<Credit> movieCredits(JSONArray rows,String alias,String canonical) {
+        List<Credit> result=new ArrayList<>();Set<Integer> seen=new HashSet<>();
+        if (rows!=null) for (int i=0;i<rows.length();i++) {
+            JSONObject row=rows.optJSONObject(i);if (row==null) continue;
+            int id=row.optInt("id");String path=resourcePath(text(row,"api_detail_url"),alias),name=text(row,"name");
+            if (id<=0 || name.isEmpty() || path==null || !path.endsWith("-"+id+"/") || !seen.add(id)) continue;
+            String site=website(text(row,"site_detail_url"));
+            if (!site.isEmpty() && !Uri.parse(site).getPath().endsWith("/"+path.split("/")[1]+"/")) site="";
+            result.add(new Credit(new Reference(id,name,path.replace(alias+"/",canonical+"/")),"",site));
+        }
+        return result;
+    }
+    public void movieRelations(MovieDetails details,String kind,int offset,Callback<RelationPage> callback) {
+        if (offset<0 || !(kind.equals("characters") || kind.equals("teams"))) { deliver(callback,Result.failed(Failure.DATA));return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            if (pub.data.id!=details.movie.publisherId) { deliver(callback,Result.failed(Failure.DATA));return; }
+            index(pub.data,kind,indexed -> {
+                if (indexed.failure!=null) { deliver(callback,Result.failed(indexed.failure));return; }
+                Map<Integer,Reference> canonical=new HashMap<>();for (Reference ref:indexed.data) canonical.put(ref.id,ref);
+                List<Reference> verified=new ArrayList<>();
+                for (Reference ref:details.relations(kind)) {
+                    Reference known=canonical.get(ref.id);if (known!=null && known.path.equals(ref.path)) verified.add(known);
+                }
+                relationPage(pub.data,kind,verified,offset,0,new ArrayList<>(),callback);
+            });
+        });
+    }
+
     public void featuredMovie(Callback<Movie> callback) {
         publisher(pub -> {
             if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
