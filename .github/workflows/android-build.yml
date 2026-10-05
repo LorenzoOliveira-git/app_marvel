@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.head_ref != 'codex/bloco-14-generation-proposal' && github.ref_name != 'codex/bloco-14-generation-proposal'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

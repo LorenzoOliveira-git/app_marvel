@@ -21,3 +21,10 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+node_modules/
+.firebase/
+*-debug.log
+*-debug.*.log
+.secret.local
+firebase-local-data/

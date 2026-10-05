@@ -19,11 +19,15 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("boolean", "FIREBASE_EMULATORS", "false")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "FIREBASE_EMULATORS", providers.gradleProperty("firebaseEmulators").map { (it == "true").toString() }.orElse("false").get())
+        }
         release {
             optimization {
                 enable = false
@@ -36,12 +40,16 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.functions)
+    implementation(libs.firebase.storage)
     implementation(libs.core.splashscreen)
     implementation(libs.mlkit.translate)
     implementation(libs.recyclerview)
