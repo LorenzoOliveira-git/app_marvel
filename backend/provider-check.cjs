@@ -14,7 +14,7 @@ async function providerConfigurationCheck(request) {
       || (data.checkConnections !== undefined && typeof data.checkConnections !== 'boolean')) {
     throw new HttpsError('invalid-argument', 'Informe somente a opção de consultar conexões.');
   }
-  const openaiConfigured = present(process.env.OPENAI_API_KEY);
+  const cloudflareConfigured = require('./hero-image-providers.cjs').cloudflareConfigured();
   const cloudinaryConfigured = /^[a-z0-9-]+$/.test(process.env.CLOUDINARY_CLOUD_NAME || '')
       && present(process.env.CLOUDINARY_API_KEY) && present(process.env.CLOUDINARY_API_SECRET);
   const report = {
@@ -24,7 +24,7 @@ async function providerConfigurationCheck(request) {
     firestoreConfigured: localHost(process.env.FIRESTORE_EMULATOR_HOST),
     storageConfigured: localHost(process.env.FIREBASE_STORAGE_EMULATOR_HOST),
     model: POLICY.model,
-    openai: {configured: openaiConfigured, connection: openaiConfigured ? 'not_checked' : 'not_configured'},
+    cloudflare: {configured: cloudflareConfigured, connection: cloudflareConfigured ? 'not_checked' : 'not_configured'},
     cloudinary: {configured: cloudinaryConfigured, connection: cloudinaryConfigured ? 'not_checked' : 'not_configured'},
     connectionsRequested: data.checkConnections === true,
     firstRealAttemptPending: true, generatedImage: false
@@ -32,9 +32,9 @@ async function providerConfigurationCheck(request) {
   if (data.checkConnections === true) {
     await Promise.all([
       (async () => {
-        if (!openaiConfigured) return;
-        try { await require('./hero-image-providers.cjs').verifyModelAccess(); report.openai.connection = 'passed'; }
-        catch (_) { report.openai.connection = 'unavailable'; }
+        if (!cloudflareConfigured) return;
+        try { await require('./hero-image-providers.cjs').verifyModelAccess(); report.cloudflare.connection = 'passed'; }
+        catch (_) { report.cloudflare.connection = 'unavailable'; }
       })(),
       (async () => {
         if (!cloudinaryConfigured) return;
@@ -48,7 +48,7 @@ async function providerConfigurationCheck(request) {
   }
   // Presença/consultas não provam permissão de gerar, enviar ou baixar uma imagem.
   report.configurationComplete = report.generationEnabled && report.comicVineConfigured && report.firestoreConfigured
-    && report.storageConfigured && openaiConfigured && cloudinaryConfigured;
+    && report.storageConfigured && cloudflareConfigured && cloudinaryConfigured;
   return report;
 }
 module.exports = {providerConfigurationCheck};

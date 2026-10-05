@@ -1,6 +1,6 @@
 'use strict';
 // Integração real com Auth/Functions/Firestore emulados e catálogo ComicVine real.
-// Nenhuma chamada OpenAI/Cloudinary, mock ou teste unitário.
+// Nenhuma chamada Cloudflare/Cloudinary, mock ou teste unitário.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const {randomUUID} = require('node:crypto');
@@ -45,7 +45,7 @@ function document(uid, collection, id) {
   const job = results[0].result;
   assert.ok(results.every(result => result.result.operationId === job.operationId));
   assert.equal(job.state, 'prepared'); assert.equal(job.generatedImage, false);
-  assert.equal(job.policy.model, 'gpt-image-2'); assert.equal(job.policy.quality, 'low');
+  assert.equal(job.policy.model, '@cf/black-forest-labs/flux-2-klein-9b'); assert.equal(job.policy.quality, 'fixed_4_steps');
   assert.equal(job.policy.size, '1024x1536'); assert.equal(job.policy.n, 1);
   assert.equal(job.policy.monthlyBudgetUsdMicros, 5000000);
   assert.equal(job.policy.dailyAttemptsPerUser, 3); assert.equal(job.policy.monthlyAttemptsTotal, 100);
@@ -82,6 +82,17 @@ function document(uid, collection, id) {
   const {getFirestore} = backendRequire('firebase-admin/firestore');
   initializeApp({projectId: project});
   const db = getFirestore();
+  // Compatibilidade: preparação antiga persistida no Firestore real emulado, ainda sem despacho.
+  const latestRef = db.doc(`users/${owner.localId}/heroCreationJobs/${newJob.operationId}`);
+  const latestInput = db.doc(`users/${owner.localId}/heroCreationInputs/${newJob.operationId}`);
+  await latestRef.update({policy: {...newJob.policy, version: 1, model: 'gpt-image-2', quality: 'low'}});
+  await latestInput.update({policyVersion: 1, model: 'gpt-image-2', quality: 'low'});
+  const migrated = await prepare({...data, operationId: newJob.operationId, contentHash: updated.fields.contentHash.stringValue});
+  assert.equal(migrated.status, 200);
+  assert.equal((await migrated.json()).result.policy.version, 2);
+  const migratedInput = (await latestInput.get()).data();
+  assert.equal(migratedInput.model, '@cf/black-forest-labs/flux-2-klein-9b');
+  assert.equal(migratedInput.quality, 'fixed_4_steps');
   const privateInput = (await db.doc(`users/${owner.localId}/heroCreationInputs/${job.operationId}`).get()).data();
   assert.ok(privateInput.prompt.includes('composição vertical 2:3'));
   assert.ok(privateInput.prompt.includes(JSON.stringify(first.fields.snapshot.mapValue.fields.description.stringValue)));
@@ -91,7 +102,7 @@ function document(uid, collection, id) {
   fs.mkdirSync('firebase-local-check', {recursive: true});
   fs.writeFileSync('firebase-local-check/hero-preparation.json', JSON.stringify({success: true, source: 'ComicVine real',
     concurrentDeduplication: true, immutableSnapshot: true, staleDraftRejected: true, operationReuseRejected: true,
-    ownerIsolation: true, privatePrompt: true, approvedPolicy: true, supersededPreparedVersion: true,
+    ownerIsolation: true, privatePrompt: true, approvedPolicy: true, supersededPreparedVersion: true, oldPreparedPolicyMigration: true,
     generatedImage: false, providerCalls: 0}, null, 2));
   console.log('Preparação: versão imutável, concorrência, titularidade, prompt privado e política aprovada verificados.');
 })().catch(error => {console.error(error.message); process.exitCode = 1;});

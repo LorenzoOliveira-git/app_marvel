@@ -1,3 +1,5 @@
+> Atualização: a integração de geração foi migrada para Cloudflare FLUX.2 klein 9B. Veja [cloudflare-flux.md](cloudflare-flux.md) para configuração atual; referências à OpenAI abaixo descrevem a implementação anterior.
+
 # Bloco 21 — Diagnóstico dos provedores locais
 
 Parte do `main` após o merge do PR 29 (`2a5d763`). Acrescenta a callable autenticada `providerConfigurationCheck` e o comando `providers:status`. O backend recusa o diagnóstico fora do projeto demo e de Auth emulado em loopback.

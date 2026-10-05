@@ -15,10 +15,10 @@ async function post(url,data,token){return fetch(url,{method:'POST',headers:{'Co
    const response=await post(url,{data:{checkConnections}},user.idToken);assert.equal(response.status,200);
    const report=(await response.json()).result;
    assert.equal(report.uid,user.localId);assert.equal(report.generationEnabled,false);assert.equal(report.configurationComplete,false);
-   assert.deepEqual(report.openai,{configured:false,connection:'not_configured'});
+   assert.deepEqual(report.cloudflare,{configured:false,connection:'not_configured'});
    assert.deepEqual(report.cloudinary,{configured:false,connection:'not_configured'});
    assert.equal(report.generatedImage,false);assert.equal(report.firstRealAttemptPending,true);
-   assert.deepEqual(Object.keys(report).sort(),['uid','localEnvironment','generationEnabled','comicVineConfigured','firestoreConfigured','storageConfigured','model','openai','cloudinary','connectionsRequested','firstRealAttemptPending','generatedImage','configurationComplete'].sort());
+   assert.deepEqual(Object.keys(report).sort(),['uid','localEnvironment','generationEnabled','comicVineConfigured','firestoreConfigured','storageConfigured','model','cloudflare','cloudinary','connectionsRequested','firstRealAttemptPending','generatedImage','configurationComplete'].sort());
   }
   const cli=await require('./provider-status.cjs').localStatus(false);assert.equal(cli.generatedImage,false);assert.ok(!('uid' in cli));
 

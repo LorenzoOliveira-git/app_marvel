@@ -1,10 +1,12 @@
 'use strict';
 const {createHash} = require('node:crypto');
 const {HttpsError} = require('firebase-functions/v2/https');
+const sharp = require('sharp');
+const {POLICY} = require('./hero-creation.cjs');
 const cloudinary = require('cloudinary').v2;
 function configuration(generation = true) {
   const env = process.env;
-  if (generation && (env.HERO_GENERATION_ENABLED !== 'true' || !env.OPENAI_API_KEY)) {
+  if (generation && (env.HERO_GENERATION_ENABLED !== 'true' || !cloudflareConfigured())) {
     throw new HttpsError('failed-precondition', 'Configure e habilite a geração no ambiente privado do backend local.');
   }
   if (!/^[a-z0-9-]+$/.test(env.CLOUDINARY_CLOUD_NAME || '') || !env.CLOUDINARY_API_KEY || !env.CLOUDINARY_API_SECRET) {
@@ -12,12 +14,22 @@ function configuration(generation = true) {
   }
   return {cloud_name: env.CLOUDINARY_CLOUD_NAME, api_key: env.CLOUDINARY_API_KEY, api_secret: env.CLOUDINARY_API_SECRET, secure: true};
 }
+function cloudflareConfigured() {
+  return /^[a-f0-9]{32}$/i.test(process.env.CLOUDFLARE_ACCOUNT_ID || '')
+    && typeof process.env.CLOUDFLARE_API_KEY === 'string' && process.env.CLOUDFLARE_API_KEY.trim().length > 0;
+}
+function cloudflareEndpoint(path) {
+  if (!cloudflareConfigured()) throw new HttpsError('failed-precondition', 'Configure Cloudflare no ambiente privado do backend local.');
+  return `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/${path}`;
+}
 async function verifyModelAccess() {
   try {
-    const result = await fetch('https://api.openai.com/v1/models/gpt-image-2', {
-      headers: {Authorization: `Bearer ${process.env.OPENAI_API_KEY}`}, redirect: 'error', signal: AbortSignal.timeout(20000)});
-    if (!result.ok || (await result.json()).id !== 'gpt-image-2') throw new Error();
-  } catch (_) { throw new HttpsError('failed-precondition', 'Não foi possível verificar o acesso desta conta a gpt-image-2. Nenhuma geração iniciada.'); }
+    const result = await fetch(cloudflareEndpoint(`models/search?search=${encodeURIComponent(POLICY.model)}`), {
+      headers: {Authorization: `Bearer ${process.env.CLOUDFLARE_API_KEY}`}, redirect: 'error', signal: AbortSignal.timeout(20000)});
+    if (!result.ok) throw new Error();
+    const data = await result.json();
+    if (data.success !== true || !Array.isArray(data.result) || !data.result.some(model => model.name === POLICY.model)) throw new Error();
+  } catch (_) { throw new HttpsError('failed-precondition', 'Não foi possível consultar o modelo FLUX.2 klein 9B nesta conta Cloudflare. Nenhuma geração iniciada.'); }
 }
 function png(bytes) {
   if (!Buffer.isBuffer(bytes) || bytes.length < 33 || bytes.length > 16 * 1024 * 1024
@@ -28,27 +40,41 @@ function png(bytes) {
   }
   return bytes;
 }
+async function normalizeImage(source) {
+  if (!Buffer.isBuffer(source) || !source.length || source.length > 16 * 1024 * 1024) throw new Error('invalid-image');
+  const image = sharp(source, {limitInputPixels: 1024 * 1536, animated: false});
+  const metadata = await image.metadata();
+  if (!['jpeg', 'png', 'webp'].includes(metadata.format) || metadata.width !== 1024 || metadata.height !== 1536
+      || (metadata.pages || 1) !== 1) throw new Error('invalid-image');
+  return png(await image.png().toBuffer());
+}
 async function generate(input) {
+  // Não despachar parâmetros antigos ou escolhidos pelo cliente.
+  if (input.model !== POLICY.model || input.size !== POLICY.size || input.n !== 1
+      || input.quality !== POLICY.quality || input.output_format !== 'png'
+      || typeof input.prompt !== 'string' || !input.prompt.trim() || Buffer.byteLength(input.prompt, 'utf8') > 12000) {
+    throw new Error('generation-failed');
+  }
+  const endpoint = cloudflareEndpoint(`run/${POLICY.model}`);
+  const form = new FormData();
+  form.set('prompt', input.prompt); form.set('width', '1024'); form.set('height', '1536');
   let result;
   try {
-    result = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST', redirect: 'error', headers: {Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json'},
-      body: JSON.stringify({model: input.model, quality: input.quality, n: input.n, size: input.size,
-        output_format: input.output_format, prompt: input.prompt}), signal: AbortSignal.timeout(180000)});
+    result = await fetch(endpoint, {
+      method: 'POST', redirect: 'error', headers: {Authorization: `Bearer ${process.env.CLOUDFLARE_API_KEY}`},
+      body: form, signal: AbortSignal.timeout(180000)});
   } catch (_) { throw new Error('generation-unknown'); }
   if (!result.ok) throw new Error(result.status >= 400 && result.status < 500 ? 'generation-failed' : 'generation-unknown');
   try {
     const data = await result.json();
-    const encoded = data.data?.[0]?.b64_json;
-    if (data.data?.length !== 1 || typeof encoded !== 'string' || encoded.length > 24 * 1024 * 1024
-        || !/^[A-Za-z0-9+/]*={0,2}$/.test(encoded) || (data.quality && data.quality !== 'low')
-        || (data.size && data.size !== '1024x1536')) throw new Error();
-    const bytes = png(Buffer.from(encoded, 'base64'));
-    const usage = {};
-    for (const key of ['input_tokens','output_tokens','total_tokens']) {
-      if (Number.isSafeInteger(data.usage?.[key]) && data.usage[key] >= 0) usage[key] = data.usage[key];
-    }
-    return {bytes, usage, requestId: result.headers.get('x-request-id') || null};
+    const encoded = data.result?.image;
+    if (data.success !== true || typeof encoded !== 'string' || !encoded.length || encoded.length > 24 * 1024 * 1024
+        || !/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) throw new Error();
+    const source = Buffer.from(encoded, 'base64');
+    if (source.length > 16 * 1024 * 1024 || source.toString('base64') !== encoded) throw new Error();
+    // O provedor não promete PNG: validar dimensões antes de normalizar para o contrato existente.
+    const bytes = await normalizeImage(source);
+    return {bytes, usage: {}, requestId: result.headers.get('cf-ray') || null};
   } catch (_) { throw new Error('generation-unknown'); }
 }
 function publicId(uid, id) { return `marvel-local/${createHash('sha256').update(uid).digest('hex')}/${id}`; }
@@ -84,4 +110,4 @@ function downloadUrl(asset) {
   const config = configuration(false), expiresAt = Math.floor(Date.now()/1000) + 300;
   return {url: cloudinary.utils.private_download_url(asset.publicId, 'png', {...config, resource_type: 'image', type: 'authenticated', expires_at: expiresAt}), expiresAt};
 }
-module.exports = {configuration, verifyModelAccess, generate, png, publicId, upload, recoverUpload, downloadUrl};
+module.exports = {cloudflareConfigured, configuration, verifyModelAccess, generate, normalizeImage, png, publicId, upload, recoverUpload, downloadUrl};

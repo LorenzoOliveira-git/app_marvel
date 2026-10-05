@@ -67,7 +67,7 @@ async function finish(uid,id,lease,job,bytes) {
 async function executeHeroCreation(request) {
   const uid = identity(request), data = parse(request.data,['operationId','confirmPaidGeneration']);
   const r = state.refs(uid,data.operationId), job = state.owner(await r.job.get(),uid);
-  if (job.state !== 'prepared') return result(job); // Duplicação nunca repete chamada à OpenAI.
+  if (job.state !== 'prepared') return result(job); // Duplicação nunca repete chamada à Cloudflare.
   if (data.confirmPaidGeneration !== true) throw new HttpsError('failed-precondition', 'Confirme esta tentativa paga antes de gerar.');
   provider.configuration();
   await provider.verifyModelAccess(); // Consulta sem geração; não comprova faturamento/permissão de gerar.
