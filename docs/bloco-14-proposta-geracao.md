@@ -1,6 +1,6 @@
 # Bloco 14 — Proposta de geração e persistência
 
-Status: proposta concreta, aguardando confirmação das decisões de backend, custos e direção visual. O bloco 13 foi integrado no PR 22, commit de merge `2dcaffbbbd5f372c52f0708c3b68a88433189df9`. Nenhuma integração paga ou configuração de serviço foi ativada nesta proposta.
+Status: proposta futura de geração paga, ainda não implementada. O usuário escolheu testar somente nos emuladores Firebase. A implementação atual está em [firebase-local.md](firebase-local.md); as configurações de produção, contas externas, custos e direção visual abaixo continuam pendentes. O bloco 13 foi integrado no PR 22, commit de merge `2dcaffbbbd5f372c52f0708c3b68a88433189df9`. Nenhuma integração paga ou configuração de serviço foi ativada nesta proposta.
 
 ## Decisões propostas
 

@@ -108,3 +108,7 @@ Detalhes nativos, personagens Marvel e episódios em lotes, com numeração pres
 ## Bloco 13 — Criação guiada de herói
 
 Formulário em três etapas com Marv, origens e poderes reais traduzidos, validação, retenção do rascunho e revisão editável antes da geração. Evidências e limites em [docs/bloco-13-criar-heroi.md](docs/bloco-13-criar-heroi.md).
+
+## Bloco 14 — Firebase local
+
+Perfil debug para Authentication, Functions, Firestore e Storage no emulador, sem projeto real ou faturamento. Configuração em seis passos e diferenças para produção em [docs/firebase-local.md](docs/firebase-local.md). A geração de imagens e persistência de heróis ainda não estão implementadas.
