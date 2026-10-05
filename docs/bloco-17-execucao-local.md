@@ -1,3 +1,5 @@
+> Atualização: a integração de geração foi migrada para Cloudflare FLUX.2 klein 9B. Veja [cloudflare-flux.md](cloudflare-flux.md) para configuração atual; referências à OpenAI abaixo descrevem a implementação anterior.
+
 # Bloco 17 — Execução de geração no backend local
 
 O bloco 16 foi integrado pelo PR 25, merge `2036e0978d26c51fcfdfaf27c1c349794670d91a`. Estilo, proporção, modelo e limites já estão aprovados; não pedir essa aprovação novamente. Esta entrega acrescenta execução e recuperação no backend. A aplicação Android ainda salva rascunhos; sua conexão à preparação/execução e à apresentação do herói será o próximo bloco.

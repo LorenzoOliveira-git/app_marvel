@@ -26,7 +26,7 @@ async function localStatus(connections=false) {
     // Saída explicitamente restrita; não imprime token, conta temporária, cloud name ou resposta bruta.
     return {localEnvironment:true,generationEnabled:report.generationEnabled,comicVineConfigured:report.comicVineConfigured,
       firestoreConfigured:report.firestoreConfigured,storageConfigured:report.storageConfigured,model:report.model,
-      openai:{configured:report.openai.configured,connection:report.openai.connection},
+      cloudflare:{configured:report.cloudflare.configured,connection:report.cloudflare.connection},
       cloudinary:{configured:report.cloudinary.configured,connection:report.cloudinary.connection},
       connectionsRequested:report.connectionsRequested,configurationComplete:report.configurationComplete,
       firstRealAttemptPending:true,generatedImage:false};

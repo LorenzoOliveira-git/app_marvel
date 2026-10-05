@@ -140,3 +140,7 @@ Edição do nome da conta confirmada pela releitura do Firebase Auth e atalho da
 ## Bloco 21 — Configuração dos provedores
 
 Diagnóstico autenticado pelo backend e CLI local, com configuração presente separada de conexão consultada e primeira geração real. Guia, comandos e limites em [docs/bloco-21-provedores.md](docs/bloco-21-provedores.md). O teste com Auth emulado e callable do SDK passou; Functions Emulator nativo e Android seguem pendentes na CI.
+
+## Geração com Cloudflare
+
+A integração de imagens usa agora FLUX.2 klein 9B com `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_KEY` privados no backend. [Configuração e limites](docs/cloudflare-flux.md).

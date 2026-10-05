@@ -1,5 +1,5 @@
 'use strict';
-// Serviços Firebase realmente emulados; reservas sem despachar a OpenAI.
+// Serviços Firebase realmente emulados; reservas sem despachar a Cloudflare.
 // Quotas nas bordas são configuradas administrativamente; sem resposta/imagem de provedor simulada.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');

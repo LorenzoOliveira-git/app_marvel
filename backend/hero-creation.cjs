@@ -6,7 +6,7 @@ const {catalogs, normalizeDraft} = require('./hero-drafts.cjs');
 
 // Política aprovada em 05/10/2026. Preparação não reserva nem consome cotas/dinheiro.
 // A execução paga deverá aplicar estes limites transacionalmente antes de chamar a API.
-const POLICY = Object.freeze({version: 1, model: 'gpt-image-2', quality: 'low', n: 1,
+const POLICY = Object.freeze({version: 2, model: '@cf/black-forest-labs/flux-2-klein-9b', quality: 'fixed_4_steps', n: 1,
   size: '1024x1536', output_format: 'png', monthlyBudgetUsdMicros: 5000000,
   dailyAttemptsPerUser: 3, monthlyAttemptsTotal: 100, timezone: 'America/Sao_Paulo',
   generationRetries: 'explicit_confirmation', failedAttemptsCount: true});
@@ -34,6 +34,21 @@ function prompt(snapshot) {
     + 'Não reproduza personagens existentes. DADOS_DO_PERSONAGEM_JSON:\n'
     + JSON.stringify(snapshot);
 }
+async function currentPreparation(transaction, ref, job) {
+  if (job.state !== 'prepared' || job.policy?.version === POLICY.version) return response(job);
+  if (job.policy?.version !== 1 || job.policy?.model !== 'gpt-image-2') {
+    throw new HttpsError('failed-precondition', 'Política anterior indisponível para preparação.');
+  }
+  const inputRef = ref.parent.parent.collection('heroCreationInputs').doc(job.operationId);
+  const input = await transaction.get(inputRef);
+  if (!input.exists || input.get('uid') !== job.uid || input.get('contentHash') !== job.contentHash) {
+    throw new HttpsError('failed-precondition', 'Preparação anterior inconsistente.');
+  }
+  transaction.update(ref, {policy: POLICY, updatedAt: FieldValue.serverTimestamp()});
+  transaction.update(inputRef, {policyVersion: POLICY.version, model: POLICY.model, quality: POLICY.quality,
+    n: POLICY.n, size: POLICY.size, output_format: POLICY.output_format});
+  return response({...job, policy: POLICY});
+}
 async function prepareHeroCreation(request) {
   if (process.env.FUNCTIONS_EMULATOR !== 'true') throw new HttpsError('failed-precondition', 'Preparação disponível somente no ambiente local.');
   if (!request.auth) throw new HttpsError('unauthenticated', 'Entre na sua conta para preparar a criação.');
@@ -50,7 +65,7 @@ async function prepareHeroCreation(request) {
       if (job.uid !== uid || job.draftId !== data.draftId || job.contentHash !== data.contentHash) {
         throw new HttpsError('already-exists', 'Esta operação já pertence a outra versão do rascunho.');
       }
-      return response(job);
+      return currentPreparation(transaction, jobRef, job);
     }
     if (!draftDoc.exists) throw new HttpsError('not-found', 'Salve o rascunho na sua conta antes de preparar a criação.');
     const saved = draftDoc.data();
@@ -71,7 +86,7 @@ async function prepareHeroCreation(request) {
       if (!previousDoc.exists) throw new HttpsError('failed-precondition', 'Operação anterior inconsistente.');
       previous = previousDoc.data();
       if (previous.uid !== uid) throw new HttpsError('failed-precondition', 'Operação anterior inválida.');
-      if (previous.contentHash === hash) return response(previous);
+      if (previous.contentHash === hash) return currentPreparation(transaction, previousRef, previous);
       if (previous.state !== 'prepared') throw new HttpsError('failed-precondition', 'A operação anterior precisa ser resolvida antes de preparar outra versão.');
     }
     const snapshot = {heroName: fields.heroName, realName: fields.realName, description: fields.description,
