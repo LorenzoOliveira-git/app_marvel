@@ -32,3 +32,7 @@ Não cria herói ou imagem de exemplo. A abertura de um herói concluído pelo n
 ## Próximo bloco proposto
 
 Diagnóstico local da configuração dos provedores e preparação do primeiro teste real de criação. As credenciais permanecem no ambiente privado; a confirmação por tentativa e os limites já aprovados continuam sendo usados.
+
+## Atualização após o merge
+
+O PR 29 foi incorporado ao `main` em `2a5d763`. A execução 37364335395 foi cancelada sem executar etapas; não valida compilação/lint ou o perfil Android. O workflow do bloco 21 inclui novamente essa validação, ainda pendente enquanto aguarda executor.

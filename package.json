@@ -3,7 +3,12 @@
   "private": true,
   "scripts": {
     "emulators": "firebase emulators:start --project demo-marvel-local --only auth,firestore,functions,storage",
-    "check:local": "firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage \"node tools/check-firebase-local.cjs\""
+    "check:local": "firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage \"node tools/check-firebase-local.cjs\"",
+    "providers:status": "node tools/provider-status.cjs",
+    "check:providers": "firebase emulators:exec --project demo-marvel-local --only auth,functions \"node tools/check-provider-configuration-local.cjs\"",
+    "check:providers:sdk": "firebase emulators:exec --project demo-marvel-local --only auth \"node tools/check-provider-sdk-local.cjs\""
   },
-  "devDependencies": { "firebase-tools": "15.32.1" }
+  "devDependencies": {
+    "firebase-tools": "15.32.1"
+  }
 }

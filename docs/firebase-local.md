@@ -76,3 +76,7 @@ O [bloco 19](bloco-19-meus-herois.md) acrescenta Perfil → Meus heróis e a cal
 ## Nome do perfil e acesso ao herói concluído
 
 O [bloco 20](bloco-20-perfil-acesso.md) usa o Firebase Auth emulado para editar/reler o nome da conta. O nome dos heróis permanece independente. Após a criação real concluída, um atalho abre o documento proprietário na coleção, sem gerar novamente ou transportar URL assinada pela navegação.
+
+## Diagnóstico dos provedores
+
+Com os emuladores iniciados, `npm run providers:status` mostra a configuração carregada pelo backend. `npm run providers:status -- --connections` solicita consultas externas de acesso ao modelo e ping Cloudinary, sem gerar ou enviar imagem. Credenciais ficam somente em `backend/.env.local`; presença e consultas não comprovam a primeira criação real. Veja [bloco 21](bloco-21-provedores.md) para interpretar o relatório e os limites da validação.

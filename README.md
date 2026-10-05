@@ -136,3 +136,7 @@ Perfil → coleção privada paginada → edição de nome, identidade e descri�
 ## Bloco 20 — Perfil e acesso ao herói
 
 Edição do nome da conta confirmada pela releitura do Firebase Auth e atalho da criação concluída para o próprio herói na coleção. Guia e limites em [docs/bloco-20-perfil-acesso.md](docs/bloco-20-perfil-acesso.md). O novo atalho sobre um herói real ainda depende da primeira criação concluída.
+
+## Bloco 21 — Configuração dos provedores
+
+Diagnóstico autenticado pelo backend e CLI local, com configuração presente separada de conexão consultada e primeira geração real. Guia, comandos e limites em [docs/bloco-21-provedores.md](docs/bloco-21-provedores.md). O teste com Auth emulado e callable do SDK passou; Functions Emulator nativo e Android seguem pendentes na CI.
