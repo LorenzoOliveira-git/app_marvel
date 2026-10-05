@@ -41,7 +41,9 @@ O bloco 15 conecta a revisão à função local `saveHeroDraft`. Para validar or
 
 O [bloco 16](bloco-16-preparacao-criacao.md) acrescenta `prepareHeroCreation`: versão imutável, prompt privado e operação sem duplicação, com a política visual e os limites já aprovados. A preparação não gera imagem nem reserva dinheiro/cotas. A execução dos provedores e o bloqueio financeiro são descritos no bloco 17.
 
-O [bloco 17](bloco-17-execucao-local.md) implementa no backend a execução com reserva financeira/cotas, geração única e recuperação de envio/salvamento. A CI mantém a execução paga desativada e verifica controles nos emuladores. As integrações OpenAI/Cloudinary ainda precisam da configuração privada e da verificação externa; a execução ainda não está conectada ao formulário Android.
+O [bloco 17](bloco-17-execucao-local.md) implementa no backend a execução com reserva financeira/cotas, geração única e recuperação de envio/salvamento. A CI mantém a execução paga desativada e verifica controles nos emuladores. As integrações OpenAI/Cloudinary ainda precisam da configuração privada e da verificação externa; a execução está conectada ao formulário Android no [bloco 18](bloco-18-android-criacao.md).
+
+O [bloco 18](bloco-18-android-criacao.md) conecta o formulário à preparação, à confirmação paga, aos estados reais e à recuperação da criação. A configuração externa continua privada e ausente neste workspace; o cenário automatizado usa o bloqueio real de geração e não cria imagens falsas. Firestore do perfil local passa a usar cache em memória.
 
 ## Migrar futuramente para produção
 
