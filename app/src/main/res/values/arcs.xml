@@ -13,7 +13,6 @@
     <string name="arcs_loaded">Arcos carregados: %1$d</string>
     <string name="arcs_publisher">Editora: Marvel</string>
     <string name="arcs_external">Ver arco na ComicVine ↗</string>
-    <string name="arcs_source_named">Ver %1$s na ComicVine, abre no navegador</string>
     <string name="arcs_source">Fonte: ComicVine. Novos arcos são carregados por página.</string>
     <string name="arcs_empty_title">Nenhum arco encontrado</string>
     <string name="arcs_empty_body">Tente outro nome ou limpe a busca para explorar os arcos Marvel.</string>

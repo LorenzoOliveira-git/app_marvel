@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
-      - name: Identificar correção apenas dos roteiros visuais
+      - name: Identificar escopo da verificação
         id: scope
         env:
           CHECK_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -33,7 +33,8 @@ jobs:
           paths = set(Path('/tmp/marv-changed-paths.txt').read_text().splitlines())
           allowed = {'.github/scripts/check-issue.py', '.github/workflows/android-build.yml',
                      'app/src/debug/java/com/example/app_marvel/diagnostics/IssueCheckActivity.java',
-                     'README.md', 'docs/bloco-6-detalhes-quadrinho.md'}
+                     'README.md', 'docs/bloco-6-detalhes-quadrinho.md',
+                     'app/src/main/res/values/arc_details.xml', 'app/src/main/res/values/arcs.xml'}
           focused = '.github/scripts/check-issue.py' in paths and paths <= allowed
           arc_allowed = {'.github/scripts/check-arcs.py', '.github/workflows/android-build.yml',
                          'app/src/debug/java/com/example/app_marvel/diagnostics/ArcsCheckActivity.java',
@@ -109,6 +110,7 @@ jobs:
           print('Credencial local fora do APK conferida.')
           PY
       - name: Verificar ML Kit e cache persistente no emulador
+        if: steps.emulator.outcome == 'success'
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
