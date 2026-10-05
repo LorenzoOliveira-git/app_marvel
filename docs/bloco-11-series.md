@@ -14,7 +14,11 @@ Lotes de 100, no máximo três por ação, com cursor absoluto e deduplicação.
 
 Frame Séries 62:338 consultado uma vez com contexto completo e screenshot. Tokens existentes, fontes, fundos, card de destaque de filmes e retratos reutilizados. O card ganhou apenas um ID no rótulo, mantendo o texto padrão Filmes. Controles de 48dp, pôster fitCenter, carrossel fluido e destaque empilhado em tela estreita/fonte ampliada. Contrato visual em `src/theme/series.json`.
 
-Build, lint e integração no emulador pendentes. O roteiro inclui API real, exclusão de DC, paginação sem duplicatas, busca com capitalização mista, entradas inválidas, seleção, retorno/restauração, cache offline e layouts 320×640, 430×932, 640×1000 e fonte 200%. Filmes também é verificado por reutilizar o card. Sem testes unitários e sem publicar APK automaticamente.
+A primeira execução [37283118329](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37283118329), commit nativo `a7a47a2f603431782e5ee51e6abf41b2a459bb7f`, aprovou build/lint, Filmes e Séries. Lint: zero erros e 36 avisos, sendo 3 novos avisos `NotifyDataSetChanged` nos adaptadores de séries; os outros 33 já existiam. O card de filmes manteve seu comportamento após receber o ID do rótulo.
+
+Respostas reais de séries: 21 itens iniciais com cursor 300, mais 18 com cursor 500, 14 na ordem descendente com cursor 200 e 2 para busca com capitalização mista de Agents (Agents of S.H.I.E.L.D. e Hulk and the Agents of S.M.A.S.H.). IDs não se repetiram entre os lotes; registros com nomes iguais, como Biker Mice from Mars, têm IDs distintos. Os relatórios online e offline foram idênticos. Batman, busca inexistente e entradas inválidas também foram conferidos.
+
+O emulador aprovou seleção, paginação, busca, retorno/restauração e layouts 320×640, 430×932, 640×1000 e fonte 200%. A conferência final restrita a Séries [37287396195](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37287396195), commit `ff210899d63aee6829f928043c62b91f01a442e3`, também passou. Foram revisadas 21 capturas, incluindo título completo e metadados em pontos de rolagem separados nas telas estreita, ampla e com fonte 200%. As capturas confirmam leitura do título longo, ano, quantidade, ação externa e aviso de catálogo parcial/licenciado. O código da aplicação permanece igual ao da execução nativa aprovada. Evidências da execução final: `android-catalog-check` 11334784643, `android-preview` 11335596210 e `android-lint` 11335074671. Sem testes unitários e sem publicar APK automaticamente.
 
 ## Roteiro manual
 
