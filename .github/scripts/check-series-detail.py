@@ -49,6 +49,7 @@ def network_ready():
         time.sleep(1)
     raise RuntimeError('Rede do emulador não validada após modo offline.')
 network_ready()
+print('Detalhes de séries: conferir dados online e tradução.',flush=True)
 online=run('series-detail')
 try:
     adb('shell','cmd','connectivity','airplane-mode','enable');adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
@@ -58,6 +59,7 @@ try:
 finally:
     adb('shell','cmd','connectivity','airplane-mode','disable',check=False);adb('shell','svc','wifi','enable',check=False);adb('shell','svc','data','enable',check=False)
 network_ready()
+print('Cache offline conferido; iniciar navegação nativa.',flush=True)
 def nodes():
     adb('shell','uiautomator','dump','/sdcard/issue-window.xml')
     data=adb('exec-out','cat','/sdcard/issue-window.xml').stdout
