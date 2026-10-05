@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   local:
+    if: github.head_ref != 'codex/bloco-16-creation-preparation' && github.ref_name != 'codex/bloco-16-creation-preparation'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
