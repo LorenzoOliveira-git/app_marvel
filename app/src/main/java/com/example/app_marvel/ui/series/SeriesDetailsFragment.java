@@ -74,7 +74,7 @@ public final class SeriesDetailsFragment extends Fragment {
             if(state.getStatus()==UiState.Status.CONTENT) {
                 binding.seriesEpisodeList.removeAllViews();
                 var detail=model.detail().getValue().getData();
-                binding.seriesLoadedEpisodes.setText(getString(R.string.series_loaded_episodes,state.getData().size(),detail.episodes.size()));
+                binding.seriesLoadedEpisodes.setText(getResources().getQuantityString(R.plurals.series_loaded_episodes,detail.episodes.size(),state.getData().size(),detail.episodes.size()));
                 for(var episode:state.getData()) episode(episode);
             }
         });

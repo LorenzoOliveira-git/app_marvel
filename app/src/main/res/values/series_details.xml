@@ -14,5 +14,8 @@
     <string name="series_episode_air_date">Exibição informada: %1$s</string>
     <string name="series_episode_external">Abrir episódio %1$s na ComicVine</string>
     <string name="series_more_episodes">Carregar mais episódios</string>
-    <string name="series_loaded_episodes">%1$d de %2$d referências carregadas</string>
+    <plurals name="series_loaded_episodes">
+        <item quantity="one">%1$d de %2$d referência carregada</item>
+        <item quantity="other">%1$d de %2$d referências carregadas</item>
+    </plurals>
 </resources>
