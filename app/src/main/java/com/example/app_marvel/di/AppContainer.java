@@ -19,6 +19,7 @@ public final class AppContainer {
     private final FirebaseServices firebase;
     private final AuthRepository auth;
     private final com.example.app_marvel.data.herodraft.HeroDraftRepository heroDrafts;
+    private final com.example.app_marvel.data.herodraft.HeroCreationRepository heroCreations;
     private final TranslationRepository translations;
     private final ComicVineClient comicVine;
     private final MarvelRepository catalog;
@@ -27,12 +28,14 @@ public final class AppContainer {
         firebase = new FirebaseServices(context);
         auth = new FirebaseAuthRepository(firebase);
         heroDrafts = new com.example.app_marvel.data.herodraft.HeroDraftRepository(firebase);
+        heroCreations = new com.example.app_marvel.data.herodraft.HeroCreationRepository(firebase);
         translations = new MlKitTranslationRepository(context);
         comicVine = new ComicVineClient(context);
         catalog = new MarvelRepository(context, comicVine);
         images = new ComicVineImages(context.getApplicationContext());
     }
     public com.example.app_marvel.data.herodraft.HeroDraftRepository getHeroDrafts() { return heroDrafts; }
+    public com.example.app_marvel.data.herodraft.HeroCreationRepository getHeroCreations() { return heroCreations; }
     public FirebaseServices getFirebase() { return firebase; }
     public AuthRepository getAuth() { return auth; }
     public TranslationRepository getTranslations() { return translations; }

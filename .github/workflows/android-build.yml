@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.head_ref != 'codex/bloco-17-local-generation' && github.ref_name != 'codex/bloco-17-local-generation' && github.head_ref != 'codex/bloco-16-creation-preparation' && github.ref_name != 'codex/bloco-16-creation-preparation' && github.head_ref != 'codex/bloco-14-generation-proposal' && github.ref_name != 'codex/bloco-14-generation-proposal' && github.head_ref != 'codex/bloco-15-local-drafts' && github.ref_name != 'codex/bloco-15-local-drafts'
+    if: github.head_ref != 'codex/bloco-18-android-generation' && github.ref_name != 'codex/bloco-18-android-generation' && github.head_ref != 'codex/bloco-17-local-generation' && github.ref_name != 'codex/bloco-17-local-generation' && github.head_ref != 'codex/bloco-16-creation-preparation' && github.ref_name != 'codex/bloco-16-creation-preparation' && github.head_ref != 'codex/bloco-14-generation-proposal' && github.ref_name != 'codex/bloco-14-generation-proposal' && github.head_ref != 'codex/bloco-15-local-drafts' && github.ref_name != 'codex/bloco-15-local-drafts'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

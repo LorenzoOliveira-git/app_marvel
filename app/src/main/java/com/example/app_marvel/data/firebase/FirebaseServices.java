@@ -42,7 +42,11 @@ public final class FirebaseServices {
         if (app == null) return null;
         if (firestore == null) {
             firestore = FirebaseFirestore.getInstance(app);
-            if (isLocal()) firestore.useEmulator("10.0.2.2", 8080);
+            if (isLocal()) {
+                firestore.setFirestoreSettings(new com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
+                        .setLocalCacheSettings(com.google.firebase.firestore.MemoryCacheSettings.newBuilder().build()).build());
+                firestore.useEmulator("10.0.2.2", 8080);
+            }
         }
         return firestore;
     }
