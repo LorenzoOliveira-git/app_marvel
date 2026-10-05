@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
-      - name: Identificar correção apenas dos roteiros visuais
+      - name: Identificar escopo da verificação
         id: scope
         env:
           CHECK_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -33,14 +33,20 @@ jobs:
           paths = set(Path('/tmp/marv-changed-paths.txt').read_text().splitlines())
           allowed = {'.github/scripts/check-issue.py', '.github/workflows/android-build.yml',
                      'app/src/debug/java/com/example/app_marvel/diagnostics/IssueCheckActivity.java',
-                     'README.md', 'docs/bloco-6-detalhes-quadrinho.md'}
+                     'README.md', 'docs/bloco-6-detalhes-quadrinho.md',
+                     'app/src/main/res/values/arc_details.xml', 'app/src/main/res/values/arcs.xml'}
           focused = '.github/scripts/check-issue.py' in paths and paths <= allowed
           arc_allowed = {'.github/scripts/check-arcs.py', '.github/workflows/android-build.yml',
                          'app/src/debug/java/com/example/app_marvel/diagnostics/ArcsCheckActivity.java',
                          'README.md', 'docs/bloco-7-arcos.md'}
           arc_only = '.github/scripts/check-arcs.py' in paths and paths <= arc_allowed
+          detail_allowed = {'.github/scripts/check-arc-detail.py', '.github/workflows/android-build.yml',
+                            'app/src/debug/java/com/example/app_marvel/diagnostics/ArcDetailsCheckActivity.java',
+                            'README.md', 'docs/bloco-8-detalhes-arco.md'}
+          arc_detail_only = '.github/scripts/check-arc-detail.py' in paths and paths <= detail_allowed
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('issue_only=' + str(focused).lower() + '\n')
+              output.write('arc_detail_only=' + str(arc_detail_only).lower() + '\n')
               output.write('arc_only=' + str(arc_only).lower() + '\n')
           print('Roteiro de arcos isolado.' if arc_only else 'Roteiro de detalhes isolado.' if focused else 'Verificação integrada da aplicação.')
           PYTHON
@@ -104,14 +110,15 @@ jobs:
           print('Credencial local fora do APK conferida.')
           PY
       - name: Verificar ML Kit e cache persistente no emulador
+        if: steps.emulator.outcome == 'success'
         timeout-minutes: 6
         run: python3 .github/scripts/check-data.py
       - name: Verificar catálogo ComicVine real e cache no emulador
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 15
         run: python3 .github/scripts/check-catalog.py --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar quadrinhos reais, cache e navegação
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 7
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -119,7 +126,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-comics.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de quadrinhos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.arc_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 9
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -127,13 +134,21 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-issue.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar catálogo nativo de arcos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 9
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
           python3 .github/scripts/check-arcs.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+      - name: Verificar detalhes nativos de arcos
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
+        timeout-minutes: 10
+        env:
+          COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
+        run: |
+          python3 tools/comicvine.py device
+          python3 .github/scripts/check-arc-detail.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Disponibilizar evidências do catálogo
         if: always()
         uses: actions/upload-artifact@v7

@@ -53,6 +53,15 @@ public final class CatalogDescriptions {
         while (anchors.find()) { String name = MarvelRepository.plain(anchors.group(1)); if (!name.isEmpty()) known.add(name); }
         translateProtected(repository, "issue:" + item.issue.id, field + "-proper-names-v1", MarvelRepository.plain(html), known, callback);
     }
+    public static void translateArc(TranslationRepository repository,CatalogModels.ArcDetails item,String field,TranslationRepository.Callback callback) {
+        String html=field.equals("deck") ? item.originalDeck:item.originalDescription;
+        Set<String> known=new LinkedHashSet<>(); known.add(item.arc.name);
+        for (String alias:item.aliases.split("[\\r\\n]+")) if (!alias.trim().isEmpty()) known.add(alias.trim());
+        for (CatalogModels.Reference ref:item.issues) known.add(ref.name);
+        Matcher anchors=Pattern.compile("(?is)<a\\b[^>]*>(.*?)</a>").matcher(html);
+        while (anchors.find()) { String name=MarvelRepository.plain(anchors.group(1)); if (!name.isEmpty()) known.add(name); }
+        translateProtected(repository,"arc:"+item.arc.id,field+"-proper-names-v1",MarvelRepository.plain(html),known,callback);
+    }
     private static void translateProtected(TranslationRepository repository, String entity, String field, String source,
             Set<String> known, TranslationRepository.Callback callback) {
         known.removeIf(String::isEmpty);

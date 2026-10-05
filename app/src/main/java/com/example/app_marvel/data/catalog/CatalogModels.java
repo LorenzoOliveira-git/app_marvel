@@ -123,6 +123,15 @@ public final class CatalogModels {
             this.id=id; this.publisherId=publisherId; this.name=name; this.imageUrl=imageUrl; this.siteUrl=siteUrl;
         }
     }
+    public static final class ArcDetails {
+        public final StoryArc arc;
+        public final String aliases, originalDeck, originalDescription;
+        public final List<Reference> issues;
+        public ArcDetails(StoryArc arc,String aliases,String originalDeck,String originalDescription,List<Reference> issues) {
+            this.arc=arc; this.aliases=aliases; this.originalDeck=originalDeck; this.originalDescription=originalDescription;
+            this.issues=immutable(issues);
+        }
+    }
     public static final class ArcsPage {
         public final List<StoryArc> items;
         public final int nextOffset;

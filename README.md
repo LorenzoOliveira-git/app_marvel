@@ -30,9 +30,13 @@ Capas completas, datas de venda/capa identificadas, descrição traduzida com ca
 
 Catálogo nativo por Histórias, com busca, ordem por nome, imagens, páginas e associação Marvel verificada. [Entrega e roteiro](docs/bloco-7-arcos.md).
 
+## Bloco 8 — Detalhes de arcos
+
+Tela nativa com resumo traduzido, descrição sob demanda e edições Marvel vinculadas e paginadas, identificando a sequência fornecida pela ComicVine. [Entrega e roteiro](docs/bloco-8-detalhes-arco.md).
+
 ## Abrir e executar
 
-1. Clone o repositório e selecione a branch `codex/bloco-7-arcos` (ou `main` após incorporar o PR).
+1. Clone o repositório e selecione a branch `codex/bloco-8-detalhes-arco` (ou `main` após incorporar o PR).
 2. Abra a raiz no Android Studio.
 3. Mantenha os SDKs existentes: minSdk 24, compileSdk/targetSdk 37. Instale a plataforma Android 37.0 (pacote `platforms;android-37.0`) e Build Tools 36.0.0.
 4. Disponibilize um JDK 25, conforme gradle/gradle-daemon-jvm.properties, e sincronize o Gradle.
@@ -55,6 +59,8 @@ No Windows:
 O workflow Android build e lint executa essas tarefas e verifica o app no emulador. Publica relatórios; APK somente em execução manual. Não executa testes unitários.
 
 ## Documentação
+
+- [Detalhes de arcos: entrega e roteiro](docs/bloco-8-detalhes-arco.md)
 
 - [Arcos de história: entrega e roteiro](docs/bloco-7-arcos.md)
 - [Detalhes de quadrinhos: entrega e roteiro](docs/bloco-6-detalhes-quadrinho.md)

@@ -276,6 +276,95 @@ public final class MarvelRepository {
         });
     }
 
+    public void arcDetails(int arcId, Callback<ArcDetails> callback) {
+        if (arcId<=0) { deliver(callback,Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
+            index(pub.data,"story_arcs",indexed -> {
+                if (indexed.failure!=null) { deliver(callback,Result.failed(indexed.failure)); return; }
+                Reference known=null;
+                for (Reference ref:indexed.data) if (ref.id==arcId) { known=ref; break; }
+                if (known==null) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                Reference canonical=known;
+                request(canonical.path,params("field_list","id,name,api_detail_url,publisher,image,site_detail_url,aliases,deck,description,issues"),DAY,result -> {
+                    JSONObject row=result.data==null ? null:result.data.optJSONObject("results");
+                    JSONObject owner=row==null ? null:row.optJSONObject("publisher");
+                    if (row==null || row.optInt("id")!=arcId || !canonical.path.equals(resourcePath(text(row,"api_detail_url"),"story_arc"))
+                            || text(row,"name").isEmpty() || owner==null || owner.optInt("id")!=pub.data.id
+                            || !pub.data.path.equals(resourcePath(text(owner,"api_detail_url"),"publisher"))) {
+                        deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure)); return;
+                    }
+                    // Nomes de edições podem ser nulos; identidade exige ID + caminho, não título.
+                    Map<Integer,Reference> refs=new LinkedHashMap<>(); JSONArray issues=row.optJSONArray("issues");
+                    if (issues!=null) for (int i=0;i<issues.length();i++) {
+                        JSONObject issue=issues.optJSONObject(i); if (issue==null) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                        int id=issue.optInt("id"); String path=resourcePath(text(issue,"api_detail_url"),"issue");
+                        if (id<=0 || path==null || !path.endsWith("-"+id+"/")) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                        refs.putIfAbsent(id,new Reference(id,text(issue,"name"),path));
+                    }
+                    String url=website(text(row,"site_detail_url"));
+                    if (!url.endsWith("/4045-"+arcId+"/")) url="";
+                    StoryArc arc=new StoryArc(arcId,pub.data.id,text(row,"name"),image(row),url);
+                    deliver(callback,Result.success(new ArcDetails(arc,text(row,"aliases"),text(row,"deck"),text(row,"description"),new ArrayList<>(refs.values()))));
+                });
+            });
+        });
+    }
+    public void arcIssues(ArcDetails details,int offset,Callback<AppearancePage> callback) {
+        if (offset<0 || offset>details.issues.size()) { deliver(callback,Result.failed(Failure.DATA)); return; }
+        publisher(pub -> {
+            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
+            if (details.arc.publisherId!=pub.data.id) { deliver(callback,Result.failed(Failure.DATA)); return; }
+            index(pub.data,"volumes",indexed -> {
+                if (indexed.failure!=null) { deliver(callback,Result.failed(indexed.failure)); return; }
+                Map<Integer,Reference> volumes=new HashMap<>(); for (Reference ref:indexed.data) volumes.put(ref.id,ref);
+                arcIssuePage(pub.data,details.issues,volumes,offset,0,callback);
+            });
+        });
+    }
+    private void arcIssuePage(Publisher publisher,List<Reference> refs,Map<Integer,Reference> volumes,int offset,int attempt,Callback<AppearancePage> callback) {
+        if (offset>=refs.size() || attempt>=3) { deliver(callback,Result.success(new AppearancePage(Collections.emptyList(),offset,offset<refs.size()))); return; }
+        List<Reference> batch=refs.subList(offset,Math.min(offset+12,refs.size()));
+        Map<Integer,Reference> requested=new LinkedHashMap<>(); StringBuilder ids=new StringBuilder();
+        for (Reference ref:batch) { if (ids.length()>0) ids.append('|'); ids.append(ref.id); requested.put(ref.id,ref); }
+        request("issues/",params("filter","id:"+ids,"limit","100","field_list","id,api_detail_url,issue_number,volume,image,cover_date,site_detail_url"),DAY,result -> {
+            JSONArray rows=result.data==null ? null:result.data.optJSONArray("results");
+            if (rows==null) { deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure)); return; }
+            Map<Integer,JSONObject> found=new HashMap<>(); Map<Integer,Reference> owners=new LinkedHashMap<>();
+            for (int i=0;i<rows.length();i++) {
+                JSONObject row=rows.optJSONObject(i); int id=row==null ? 0:row.optInt("id"); Reference ref=requested.get(id);
+                if (ref==null || found.containsKey(id) || !ref.path.equals(resourcePath(text(row,"api_detail_url"),"issue"))) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                found.put(id,row); JSONObject volume=row.optJSONObject("volume"); Reference canonical=volume==null ? null:volumes.get(volume.optInt("id"));
+                if (canonical!=null && canonical.path.equals(resourcePath(text(volume,"api_detail_url"),"volume"))) owners.put(canonical.id,canonical);
+            }
+            if (!found.keySet().equals(requested.keySet())) { deliver(callback,Result.failed(Failure.DATA)); return; }
+            if (owners.isEmpty()) { arcIssuePage(publisher,refs,volumes,offset+batch.size(),attempt+1,callback); return; }
+            StringBuilder volumeIds=new StringBuilder(); for (int id:owners.keySet()) { if (volumeIds.length()>0) volumeIds.append('|'); volumeIds.append(id); }
+            request("volumes/",params("filter","id:"+volumeIds,"limit","100","field_list","id,name,api_detail_url,publisher"),DAY,owned -> {
+                JSONArray volumeRows=owned.data==null ? null:owned.data.optJSONArray("results");
+                if (volumeRows==null) { deliver(callback,Result.failed(owned.failure==null ? Failure.DATA:owned.failure)); return; }
+                Map<Integer,String> eligible=new HashMap<>(); Set<Integer> received=new HashSet<>();
+                for (int i=0;i<volumeRows.length();i++) {
+                    JSONObject volume=volumeRows.optJSONObject(i); int id=volume==null ? 0:volume.optInt("id"); Reference known=owners.get(id);
+                    if (known==null || !received.add(id) || !known.path.equals(resourcePath(text(volume,"api_detail_url"),"volume"))) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                    JSONObject owner=volume.optJSONObject("publisher");
+                    if (owner!=null && owner.optInt("id")==publisher.id && publisher.path.equals(resourcePath(text(owner,"api_detail_url"),"publisher")) && !text(volume,"name").isEmpty()) eligible.put(id,text(volume,"name"));
+                }
+                if (!received.equals(owners.keySet())) { deliver(callback,Result.failed(Failure.DATA)); return; }
+                List<Issue> items=new ArrayList<>();
+                for (Reference ref:batch) {
+                    JSONObject row=found.get(ref.id),volume=row.optJSONObject("volume"); int volumeId=volume==null ? 0:volume.optInt("id"); String name=eligible.get(volumeId);
+                    if (name==null) continue;
+                    String number=text(row,"issue_number"),url=website(text(row,"site_detail_url")); if (!url.endsWith("/4000-"+ref.id+"/")) url="";
+                    items.add(new Issue(ref.id,volumeId,name+(number.isEmpty() ? "":" #"+number),name,text(row,"cover_date"),image(row),url));
+                }
+                int next=offset+batch.size();
+                if (items.isEmpty()) arcIssuePage(publisher,refs,volumes,next,attempt+1,callback);
+                else deliver(callback,Result.success(new AppearancePage(items,next,next<refs.size())));
+            });
+        });
+    }
+
     public void issueRelations(IssueDetails details, String kind, int offset, Callback<RelationPage> callback) {
         if (offset < 0 || !(kind.equals("characters") || kind.equals("teams"))) {
             deliver(callback, Result.failed(Failure.DATA)); return;
