@@ -40,7 +40,7 @@ public final class ArcsFragment extends Fragment {
                 return type.cast(new ArcsViewModel(container.getCatalog(),SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(ArcsViewModel.class);
-        StoryArcAdapter adapter=new StoryArcAdapter(container.getImages());
+        StoryArcAdapter adapter=new StoryArcAdapter(container.getImages(),id -> ((MainActivity) requireActivity()).openArc(id));
         binding.arcsList.setLayoutManager(new LinearLayoutManager(requireContext()));binding.arcsList.setAdapter(adapter);
         binding.arcSearch.setText(model.draft());
         binding.arcSearch.addTextChangedListener(new TextWatcher() {

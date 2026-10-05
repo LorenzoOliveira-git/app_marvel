@@ -6,6 +6,7 @@
         <activity android:name=".diagnostics.CatalogCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.IssueCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.ArcsCheckActivity" android:exported="true" />
+        <activity android:name=".diagnostics.ArcDetailsCheckActivity" android:exported="true" />
         <activity android:name=".diagnostics.ComicsCheckActivity" android:exported="true" />
     </application>
 </manifest>
