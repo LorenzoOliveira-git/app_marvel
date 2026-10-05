@@ -132,10 +132,10 @@ def align(resource,width,height):
     headers=[n for n in snapshot if n.get('resource-id','').split('/')[-1] in ['header','main_header','screen_title','expanded_screen_title']]
     header_bottom=max((int(re.findall(r'\d+',n.get('bounds'))[3]) for n in headers),default=100)
     y1=int(re.findall(r'\d+',node.get('bounds'))[1])
-    delta=max(0,y1-max(110,header_bottom+24))
+    delta=max(0,y1-max(110,header_bottom+48))
     if delta:
         start=height*4//5
-        adb('shell','input','swipe',str(width//2),str(start),str(width//2),str(max(110,start-delta)),'1000')
+        adb('shell','input','swipe',str(width//2),str(start),str(width//2),str(max(110,start-delta)),'2500')
         time.sleep(.5)
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
