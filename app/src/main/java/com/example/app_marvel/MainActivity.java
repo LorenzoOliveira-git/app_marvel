@@ -191,7 +191,17 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         navController.navigate(R.id.characterHistoryFragment, arguments);
     }
 
-    public void enterHome() { hideKeyboard(); resetGraph(R.id.homeFragment); }
+    public void enterHome() {
+        hideKeyboard();
+        if (navController.getCurrentBackStackEntry() != null && navController.getCurrentBackStackEntry().getArguments() != null
+                && navController.getCurrentBackStackEntry().getArguments().getBoolean("returnToHero", false)
+                && navController.popBackStack(R.id.createHeroFragment, false)) return;
+        resetGraph(R.id.homeFragment);
+    }
+    public void openHeroLogin() {
+        hideKeyboard(); Bundle args = new Bundle(); args.putBoolean("returnToHero", true);
+        navController.navigate(R.id.loginFragment, args);
+    }
     public void openLogin() { hideKeyboard(); navController.navigate(R.id.loginFragment); }
     public void leaveAccount() {
         hideKeyboard(); resetGraph(R.id.loginFragment);

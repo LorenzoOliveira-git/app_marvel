@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
+import com.example.app_marvel.data.herodraft.HeroDraftRepository;
 
 /** Rascunho de sessão. IDs e nomes da fonte são separados dos rótulos traduzidos. */
 public final class CreateHeroViewModel extends ViewModel {
@@ -34,6 +38,10 @@ public final class CreateHeroViewModel extends ViewModel {
     private final MarvelRepository repository;
     private final TranslationRepository translations;
     private final SavedStateHandle saved;
+    private final HeroDraftRepository drafts;
+    public enum DraftStatus { IDLE, SAVING, SAVED, AUTH, INVALID, CONFIGURATION, NETWORK, ERROR }
+    private final MutableLiveData<DraftStatus> draftStatus = new MutableLiveData<>(DraftStatus.IDLE);
+    private String savedAccount = "";
     private final MutableLiveData<UiState<List<Choice>>> origins = new MutableLiveData<>(UiState.empty());
     private final MutableLiveData<UiState<List<Choice>>> powers = new MutableLiveData<>(UiState.empty());
     private final MutableLiveData<Integer> selectionVersion = new MutableLiveData<>(0);
@@ -42,8 +50,35 @@ public final class CreateHeroViewModel extends ViewModel {
     private boolean hasMore;
 
     public CreateHeroViewModel(MarvelRepository repository, TranslationRepository translations, SavedStateHandle saved) {
-        this.repository = repository; this.translations = translations; this.saved = saved;
+        this(repository, translations, saved, null);
     }
+    public CreateHeroViewModel(MarvelRepository repository, TranslationRepository translations, SavedStateHandle saved, HeroDraftRepository drafts) {
+        this.repository = repository; this.translations = translations; this.saved = saved; this.drafts = drafts;
+    }
+    public LiveData<DraftStatus> draftStatus() { return draftStatus; }
+    public boolean localDraftsAvailable() { return drafts != null && drafts.available(); }
+    public boolean saving() { return draftStatus.getValue() == DraftStatus.SAVING; }
+    public void accountChanged() {
+        if (draftStatus.getValue() == DraftStatus.SAVED && !savedAccount.equals(drafts.account())) draftStatus.setValue(DraftStatus.IDLE);
+    }
+    public void saveDraft() {
+        if (saving()) return;
+        if (!missing().isEmpty()) { draftStatus.setValue(DraftStatus.INVALID); return; }
+        if (!localDraftsAvailable()) { draftStatus.setValue(DraftStatus.CONFIGURATION); return; }
+        if (drafts.account().isEmpty()) { draftStatus.setValue(DraftStatus.AUTH); return; }
+        String id = saved.get("draftId");
+        if (id == null) { id = UUID.randomUUID().toString(); saved.set("draftId", id); }
+        Map<String, Object> data = new HashMap<>();
+        data.put("draftId", id); data.put("heroName", text("heroName")); data.put("realName", text("realName")); data.put("description", text("description"));
+        data.put("birthday", text("birthday")); data.put("originId", origin().id);
+        List<Integer> ids = new ArrayList<>(); for (Choice choice : selectedPowers()) ids.add(choice.id); data.put("powerIds", ids);
+        String account = drafts.account(); draftStatus.setValue(DraftStatus.SAVING);
+        drafts.save(data, failure -> {
+            savedAccount = account;
+            draftStatus.setValue(failure == null ? DraftStatus.SAVED : DraftStatus.valueOf(failure == HeroDraftRepository.Failure.UNKNOWN ? "ERROR" : failure.name()));
+        });
+    }
+    private void edited() { if (!saving() && draftStatus.getValue() != DraftStatus.IDLE) draftStatus.setValue(DraftStatus.IDLE); }
     public LiveData<Integer> stepState() { return saved.getLiveData("step", 0); }
     public LiveData<Integer> selectionState() { return selectionVersion; }
     public LiveData<UiState<List<Choice>>> origins() { return origins; }
@@ -51,9 +86,9 @@ public final class CreateHeroViewModel extends ViewModel {
     public int step() { Integer value = saved.get("step"); return value == null ? 0 : value; }
     public void step(int value) { saved.set("step", Math.max(0, Math.min(2, value))); }
     public String text(String key) { String value = saved.get(key); return value == null ? "" : value; }
-    public void text(String key, String value) { saved.set(key, value); }
+    public void text(String key, String value) { if (saving()) return; if (!value.equals(text(key))) edited(); saved.set(key, value); }
     public Choice origin() { return Choice.from(saved.get("origin")); }
-    public void origin(Choice value) { saved.set("origin", value.bundle()); changed(); }
+    public void origin(Choice value) { if (saving()) return; edited(); saved.set("origin", value.bundle()); changed(); }
     public List<Choice> selectedPowers() {
         ArrayList<Bundle> values = saved.get("selectedPowers"); List<Choice> result = new ArrayList<>();
         if (values != null) for (Bundle value : values) result.add(Choice.from(value));
@@ -61,6 +96,7 @@ public final class CreateHeroViewModel extends ViewModel {
     }
     public boolean selected(int id) { for (Choice value : selectedPowers()) if (value.id == id) return true; return false; }
     public void power(Choice value, boolean selected) {
+        if (saving()) return; edited();
         ArrayList<Bundle> values = new ArrayList<>();
         for (Choice old : selectedPowers()) if (old.id != value.id) values.add(old.bundle());
         if (selected) values.add(value.bundle()); saved.set("selectedPowers", values); changed();

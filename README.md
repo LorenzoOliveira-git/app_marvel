@@ -112,3 +112,7 @@ Formulário em três etapas com Marv, origens e poderes reais traduzidos, valida
 ## Bloco 14 — Firebase local
 
 Perfil debug para Authentication, Functions, Firestore e Storage no emulador, sem projeto real ou faturamento. Configuração em seis passos e diferenças para produção em [docs/firebase-local.md](docs/firebase-local.md). A geração de imagens e persistência de heróis ainda não estão implementadas.
+
+## Bloco 15 — Rascunho no Firebase local
+
+Revisão → Login/Cadastro → retorno ao formulário → validação no backend → rascunho privado confirmado no servidor. Falhas mantêm os campos e novas tentativas reutilizam o documento. Configuração e limites em [docs/bloco-15-rascunho-local.md](docs/bloco-15-rascunho-local.md). Sem geração de imagens ou herói concluído nesta etapa.

@@ -1,9 +1,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph" app:startDestination="@id/loginFragment">
     <fragment android:id="@+id/loginFragment" android:name="com.example.app_marvel.ui.auth.AuthFragment" android:label="@string/auth_login_title">
+        <argument android:name="returnToHero" app:argType="boolean" android:defaultValue="false" />
         <argument android:name="register" app:argType="boolean" android:defaultValue="false" />
     </fragment>
     <fragment android:id="@+id/registerFragment" android:name="com.example.app_marvel.ui.auth.AuthFragment" android:label="@string/auth_register_title">
+        <argument android:name="returnToHero" app:argType="boolean" android:defaultValue="false" />
         <argument android:name="register" app:argType="boolean" android:defaultValue="true" />
     </fragment>
     <fragment android:id="@id/homeFragment" android:name="com.example.app_marvel.ui.home.HomeFragment" android:label="@string/nav_home" />

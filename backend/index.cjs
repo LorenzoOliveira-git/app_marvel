@@ -16,3 +16,5 @@ exports.localSessionCheck = onCall({region: 'us-central1'}, async request => {
   });
   return {uid, environment: 'emulator', generatedImage: false};
 });
+
+exports.saveHeroDraft = onCall({region: 'us-central1'}, require('./hero-drafts.cjs').saveHeroDraft);

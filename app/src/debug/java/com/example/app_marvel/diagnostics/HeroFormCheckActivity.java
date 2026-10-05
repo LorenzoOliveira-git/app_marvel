@@ -30,6 +30,9 @@ public final class HeroFormCheckActivity extends Activity {
         var origins = model.origins().getValue(); var powers = model.powers().getValue();
         if (origins.getStatus() == UiState.Status.ERROR || powers.getStatus() == UiState.Status.ERROR) { write(false); return; }
         if (origins.getStatus() != UiState.Status.CONTENT || powers.getStatus() != UiState.Status.CONTENT) return;
+        if ("hero-form-draft".equals(getIntent().getStringExtra("check"))) {
+            write(!origins.getData().isEmpty() && model.loadedCount() == 20); return;
+        }
         if (!second) { second = true; model.loadPowers(); return; }
         write(origins.getData().size() > 0 && model.loadedCount() == 40 && model.total() >= model.loadedCount() && model.hasMore());
     }
@@ -44,7 +47,7 @@ public final class HeroFormCheckActivity extends Activity {
             }
             File folder = new File(getFilesDir(), "diagnostics"); if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException();
             String name = getIntent().getStringExtra("check");
-            if (!"hero-form-cache".equals(name)) name = "hero-form";
+            if (!"hero-form-cache".equals(name) && !"hero-form-draft".equals(name)) name = "hero-form";
             try (var output = new java.io.FileOutputStream(new File(folder, name + ".json"))) { output.write(report.toString(2).getBytes(StandardCharsets.UTF_8)); }
         } catch (Exception failure) { android.util.Log.e("HeroFormCheck", "Falha ao registrar integração."); }
         finish();
