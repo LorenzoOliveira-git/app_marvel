@@ -39,7 +39,9 @@ finally:
     adb('shell','cmd','connectivity','airplane-mode','disable',check=False);adb('shell','svc','wifi','enable',check=False);adb('shell','svc','data','enable',check=False)
 def nodes():
     adb('shell','uiautomator','dump','/sdcard/issue-window.xml')
-    return list(ET.fromstring(adb('exec-out','cat','/sdcard/issue-window.xml').stdout).iter('node'))
+    data=adb('exec-out','cat','/sdcard/issue-window.xml').stdout
+    (PREVIEW/'issue-window.xml').write_bytes(data)
+    return list(ET.fromstring(data).iter('node'))
 def top(width=430,height=932):
     for _ in range(10):adb('shell','input','swipe',str(width//2),str(height//3),str(width//2),str(height*4//5),'300')
     time.sleep(.5)
@@ -52,14 +54,14 @@ def tap(resource=None,text=None):
                 x1,y1,x2,y2=map(int,re.findall(r'\d+',n.get('bounds','')))
                 if x2>x1 and y2>y1 and (text in ['Histórias','Personagens','Início'] or (y1+y2)//2<nav_top):
                     adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2));time.sleep(.8);return
-        adb('shell','input','swipe','215','740','215','260','350')
+        adb('shell','input','swipe','215','740','215','260','1000')
     raise RuntimeError('Controle não encontrado: '+str(resource or text))
 def heading(text=None,resource=None):
     tap(resource=resource,text=text)
     for n in nodes():
         if (text and n.get('text')==text) or (resource and n.get('resource-id','').endswith('/'+resource)):
             y1=int(re.findall(r'\d+',n.get('bounds',''))[1]);delta=min(550,max(0,y1-130))
-            if delta>20:adb('shell','input','swipe','215','760','215',str(760-delta),'400');time.sleep(.5)
+            if delta>20:adb('shell','input','swipe','215','760','215',str(760-delta),'1000');time.sleep(.5)
             return
 def wait(resource,text=None):
     deadline=time.monotonic()+70
@@ -85,6 +87,16 @@ def capture(name):
         if valid_png(data):(PREVIEW/(name+'.png')).write_bytes(data);return
         time.sleep(1)
     raise RuntimeError('PNG incompleto: '+name)
+def show_first(expected):
+    top()
+    for _ in range(40):
+        for node in nodes():
+            if node.get('resource-id','').endswith('/first_title') and node.get('text')==expected:
+                y1=int(re.findall(r'\d+',node.get('bounds'))[1])
+                if 110<=y1<=650:return
+        adb('shell','input','swipe','215','740','215','620','1000')
+    capture('issue-first-missing')
+    raise RuntimeError('Primeira aparição não encontrada: '+expected)
 # Métadados ausentes: a edição recente não cria uma descrição nem um carregamento eterno.
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
@@ -93,7 +105,7 @@ if home_title==online['recent']['title'] and not online['recent']['original_desc
     assert not any(n.get('resource-id','').endswith('/issue_description_heading') or n.get('resource-id','').endswith('/issue_deck_heading') for n in nodes())
 tap(resource='header_back');tap(text='Histórias');tap(resource='open_comics');tap(resource='comic_title');wait('comic_title');tap(resource='comic_more');wait('issue_heading');capture('issue-from-catalog')
 tap(resource='header_back');tap(resource='comic_title');wait('comic_title');tap(resource='header_back');tap(text='Personagens');wait('character_name','Spider-Man')
-tap(resource='character_more');wait('details_name','Spider-Man');tap(resource='first_more');wait('issue_heading',online['historical']['title']);capture('issue-historical-top')
+tap(resource='character_more');wait('details_name','Spider-Man');show_first(online['historical']['title']);capture('issue-character-first');tap(resource='first_more');wait('issue_heading',online['historical']['title']);capture('issue-historical-top')
 heading(resource='issue_description_heading');wait('issue_description');capture('issue-description')
 # A lista de personagens fica após a descrição longa: rolar pelo próprio controle.
 heading(text='Personagens nesta edição');wait('related_name',online['characters'][0]['name']);capture('issue-characters')

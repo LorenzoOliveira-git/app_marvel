@@ -132,7 +132,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-issue.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar catálogo nativo de arcos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.arc_detail_only != 'true' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 9
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
@@ -140,7 +140,7 @@ jobs:
           python3 tools/comicvine.py device
           python3 .github/scripts/check-arcs.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de arcos
-        if: ${{ !cancelled() && steps.emulator.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' }}
         timeout-minutes: 10
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
