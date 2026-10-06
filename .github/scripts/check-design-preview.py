@@ -144,9 +144,11 @@ try:
     assert 'Não informado' in wait('details_real_name').get('text','')
     assert 'Não informado' in wait('details_origin').get('text','')
     assert wait('details_description').get('text','')=='Descrição ainda não disponível.'
-    capture('16-dados-ausentes'); tap('header_back'); top(); tap('search_name')
-    adb('shell','input','keycombination','113','29'); adb('shell','input','keyevent','67')
-    adb('shell','input','keyevent','4'); time.sleep(1); wait('cover_title')
+    capture('16-dados-ausentes'); tap('header_back'); top()
+    # Clear with the visible Material control; keyboard shortcuts may race the IME.
+    tap('text_input_end_icon'); wait('cover_title')
+    assert wait('search_name').get('text','') == ''
+    adb('shell','input','keyevent','4'); time.sleep(2)
     tap('homeFragment'); wait('user_name')
     adb('shell','settings','put','system','font_scale','1.6')
     wait('issue_title'); capture('17-fonte-ampliada')

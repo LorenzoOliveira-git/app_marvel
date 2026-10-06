@@ -33,7 +33,8 @@ public final class MovieCoverAdapter extends RecyclerView.Adapter<MovieCoverAdap
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         var item = items.get(position);
         holder.binding.coverTitle.setText(item.title);
-        String meta = "";
+        String meta = item.runtime > 0 ? holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.movies_runtime, item.runtime) : "";
         holder.binding.coverMeta.setText(meta);
         holder.binding.coverMeta.setVisibility(meta.isEmpty() ? View.GONE : View.VISIBLE);
         ConstraintLayout.LayoutParams picture = (ConstraintLayout.LayoutParams) holder.binding.coverImage.getLayoutParams();

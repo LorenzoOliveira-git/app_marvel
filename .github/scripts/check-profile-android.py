@@ -16,6 +16,15 @@ def wait(resource,text=None,timeout=75):
         print('Tela no erro:',[(n.get('resource-id','').split('/')[-1],n.get('text','')) for n in nodes() if n.get('text')],flush=True)
         raise
 
+original_tap=tap
+def tap(resource=None,text=None):
+    try:return original_tap(resource,text)
+    except RuntimeError:
+        (OUT/'profile-tap-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+        rows=nodes()
+        print('Controles no erro:',[(n.get('resource-id',''),n.get('text',''),n.get('bounds','')) for n in rows if n.get('text')],flush=True)
+        raise
+
 def replace_name(value):
     tap(resource='profile_name')
     # Selecionar o conteúdo inteiro evita autocorreção durante centenas de DELs.
@@ -52,6 +61,8 @@ tap(resource='profile_edit_name');replace_name('Nome Atualizado');tap(resource='
 assert server_name()=='Nome Atualizado'
 # Cancelar alterações não grava; campos inválidos também não alteram a conta.
 tap(resource='profile_edit_name');replace_name('Nao Salvar');tap(resource='profile_cancel_name')
+(OUT/'profile-discard-dialog.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+print('Diálogo do perfil:',[(n.get('resource-id',''),n.get('text',''),n.get('bounds','')) for n in nodes() if n.get('text')],flush=True)
 tap(text='Continuar editando');assert wait('profile_name').get('text')=='Nao Salvar'
 tap(resource='profile_cancel_name');tap(text='Descartar');wait('profile_edit_name')
 assert server_name()=='Nome Atualizado'
