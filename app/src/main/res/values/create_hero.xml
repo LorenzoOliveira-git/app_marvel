@@ -50,4 +50,9 @@
     <string name="hero_draft_failure">Não foi possível confirmar o salvamento. Seu rascunho foi mantido; tente novamente.</string>
     <string name="hero_local_review_note">Você pode salvar os dados como rascunho na sua conta. A geração da imagem será disponibilizada em outra etapa.</string>
     <string name="hero_local_draft_note">Nomes: até 100 caracteres. Descrição: até 2.000. O rascunho salvo ainda não é um herói da coleção.</string>
+    <string name="hero_draft_backend_network">Não foi possível confirmar o salvamento no backend local. Confira o emulador Functions e a conexão USB da porta 5001. Seus campos foram mantidos.</string>
+    <string name="hero_draft_catalog_failure">O backend não conseguiu validar a origem e os poderes na ComicVine. Tente novamente depois; seus campos foram mantidos.</string>
+    <string name="hero_draft_function_unavailable">A função de salvar rascunho não está disponível. Reinicie os emuladores com o backend atualizado. Seus campos foram mantidos.</string>
+    <string name="hero_draft_firestore_network">O backend respondeu, mas não foi possível confirmar o rascunho no Firestore. Confira o emulador Firestore e a conexão USB da porta 8080. Seus campos foram mantidos; tentar novamente reutiliza o mesmo rascunho.</string>
+    <string name="hero_draft_firestore_permission">O Firestore recusou a leitura do rascunho. Confira a conta local e as regras carregadas pelos emuladores. Seus campos foram mantidos.</string>
 </resources>

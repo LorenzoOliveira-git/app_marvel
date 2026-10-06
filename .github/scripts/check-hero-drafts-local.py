@@ -94,7 +94,7 @@ assert 'Pessoa de Teste' in review.get('text') and source['powers'][0]['label'] 
 firewall=['sudo','iptables','-I','INPUT','-p','tcp','--dport','5001','-j','REJECT']
 subprocess.run(firewall,check=True,capture_output=True)
 try:
-    tap(resource='hero_save_draft'); wait('hero_draft_status','Não foi possível confirmar',timeout=90)
+    tap(resource='hero_save_draft'); wait('hero_draft_status','Não foi possível confirmar o salvamento no backend local',timeout=90)
     top(); assert 'Guardiao Local' in wait('hero_review_data').get('text')
 finally:
     subprocess.run([*firewall[:2],'-D',*firewall[3:]],check=True,capture_output=True)
