@@ -1,21 +1,40 @@
 <resources>
-    <color name="marvel_background">#545573</color>
-    <color name="marvel_surface">#242434</color>
-    <color name="marvel_surface_raised">#343448</color>
-    <color name="marvel_character_identity">#302E46</color>
-    <color name="marvel_power">#323048</color>
-    <color name="marvel_stat_start">#49435E</color>
-    <color name="marvel_primary">#ED1D24</color>
-    <color name="marvel_primary_strong">#D71920</color>
-    <color name="marvel_on_primary">#FFFFFF</color>
-    <color name="marvel_text">#FAFAFA</color>
-    <color name="marvel_text_secondary">#C5C6D3</color>
-    <color name="marvel_border">#68697D</color>
-    <color name="marvel_nav">#181824</color>
-    <color name="marvel_nav_overlay">#B8181824</color>
-    <color name="marvel_ripple">#33FFFFFF</color>
-    <color name="marvel_primary_disabled">#705057</color>
-    <color name="marvel_focus">#FFB8BB</color>
+    <!-- Arquivo de Papel: tokens centrais, compartilhados pelas telas existentes. -->
+    <color name="arquivo_papel">#F5F3EE</color>
+    <color name="arquivo_folha">#FDFCFA</color>
+    <color name="arquivo_pergaminho">#E8E4DD</color>
+    <color name="arquivo_tinta">#2D2D2D</color>
+    <color name="arquivo_vermelho">#D92D20</color>
+    <color name="arquivo_sobre_vermelho">#FBFAF7</color>
+    <color name="arquivo_texto_corpo">#CC2D2D2D</color>
+    <color name="arquivo_texto_secundario">#992D2D2D</color>
+    <color name="arquivo_desabilitado">#592D2D2D</color>
+    <color name="arquivo_borda">#1A2D2D2D</color>
+    <color name="arquivo_press">#0F2D2D2D</color>
+    <color name="arquivo_sucesso">#257A4A</color>
+    <color name="arquivo_aviso">#A45B00</color>
+    <color name="arquivo_erro">#B42318</color>
+    <color name="arquivo_informacao">#28658C</color>
+    <color name="arquivo_nav_inativo">#8CF5F3EE</color>
+
+    <!-- Aliases mantêm os layouts atuais ligados à mesma fonte de cores. -->
+    <color name="marvel_background">@color/arquivo_papel</color>
+    <color name="marvel_surface">@color/arquivo_folha</color>
+    <color name="marvel_surface_raised">@color/arquivo_folha</color>
+    <color name="marvel_character_identity">@color/arquivo_pergaminho</color>
+    <color name="marvel_power">@color/arquivo_pergaminho</color>
+    <color name="marvel_stat_start">@color/arquivo_pergaminho</color>
+    <color name="marvel_primary">@color/arquivo_vermelho</color>
+    <color name="marvel_primary_strong">@color/arquivo_vermelho</color>
+    <color name="marvel_on_primary">@color/arquivo_sobre_vermelho</color>
+    <color name="marvel_text">@color/arquivo_tinta</color>
+    <color name="marvel_text_secondary">@color/arquivo_texto_secundario</color>
+    <color name="marvel_border">@color/arquivo_borda</color>
+    <color name="marvel_nav">@color/arquivo_tinta</color>
+    <color name="marvel_nav_overlay">@color/arquivo_tinta</color>
+    <color name="marvel_ripple">@color/arquivo_press</color>
+    <color name="marvel_primary_disabled">@color/arquivo_desabilitado</color>
+    <color name="marvel_focus">@color/arquivo_tinta</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,3 +1,3 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/marvel_primary" android:state_checked="true" /><item android:color="@color/marvel_text_secondary" />
+    <item android:color="@color/marvel_primary" android:state_checked="true" /><item android:color="@color/arquivo_nav_inativo" />
 </selector>

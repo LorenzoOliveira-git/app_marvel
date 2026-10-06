@@ -1,16 +1,19 @@
 <resources>
-    <style name="Base.Theme.App_Marvel" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Base.Theme.App_Marvel" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/marvel_primary</item>
         <item name="colorOnPrimary">@color/marvel_on_primary</item>
         <item name="colorSecondary">@color/marvel_primary</item>
+        <item name="colorError">@color/arquivo_erro</item>
+        <item name="colorOnError">@color/arquivo_sobre_vermelho</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <item name="colorSurface">@color/marvel_surface</item>
         <item name="colorOnSurface">@color/marvel_text</item>
         <item name="colorOnSurfaceVariant">@color/marvel_text_secondary</item>
         <item name="android:windowBackground">@color/marvel_background</item>
         <item name="android:fontFamily">@font/inter</item><item name="fontFamily">@font/inter</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/marvel_nav</item>
+        <item name="android:navigationBarColor">@color/arquivo_papel</item>
         <item name="materialButtonStyle">@style/Widget.Marvel.Button.Primary</item>
         <item name="textInputStyle">@style/Widget.Marvel.TextInput</item>
     </style>
@@ -19,6 +22,6 @@
         <item name="windowSplashScreenBackground">@color/marvel_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_brand</item>
         <item name="postSplashScreenTheme">@style/Theme.App_Marvel</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
