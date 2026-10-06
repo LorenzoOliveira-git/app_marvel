@@ -66,6 +66,7 @@ public final class ArcsFragment extends Fragment {
             binding.arcsCount.setVisibility(content ? View.VISIBLE:View.GONE);
             binding.arcsClear.setVisibility(model.query().isEmpty() ? View.GONE:View.VISIBLE);
             binding.arcsAscending.setEnabled(model.descending());binding.arcsDescending.setEnabled(!model.descending());
+            binding.arcsAscending.setSelected(!model.descending());binding.arcsDescending.setSelected(model.descending());
             binding.arcsOrderLabel.setText(model.descending() ? R.string.arcs_order_descending:R.string.arcs_order_ascending);
             if (!content) { adapter.submitList(java.util.Collections.emptyList());return; }
             binding.arcsCount.setText(getString(R.string.arcs_loaded,value.getData().size()));

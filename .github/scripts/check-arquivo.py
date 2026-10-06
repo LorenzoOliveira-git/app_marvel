@@ -166,7 +166,7 @@ try:
     tap('header_back'); top(); wait('identity_name'); tap('header_back'); show('open_arcs')
     tap_node(show('open_arcs')); wait('arc_search')
     tap('arc_search'); adb('shell','input','text','Civil%sWar'); tap_node(show('arcs_search_button'))
-    wait('arc_name',120); capture('arquivo-arcos-lista')
+    wait('arc_name',120); assert find('arcs_ascending').get('selected')=='true', 'Ordenação ativa sem estado selecionado'; capture('arquivo-arcos-lista')
     tap_node(show('arc_source')); wait('arc_details_heading',120); capture('arquivo-arco-detalhe')
     tap_node(show('appearance_open',120)); wait('issue_heading',120)
     tap('header_back'); top(); wait('arc_details_heading'); tap('header_back'); wait('arc_name')
