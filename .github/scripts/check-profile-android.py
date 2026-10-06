@@ -16,9 +16,16 @@ def wait(resource,text=None,timeout=75):
         raise
 
 def replace_name(value):
-    tap(resource='profile_name');adb('shell','input','keyevent','123');adb('shell','input','keyevent',*['67']*110)
+    tap(resource='profile_name')
+    # Selecionar o conteúdo inteiro evita autocorreção durante centenas de DELs.
+    adb('shell','input','keycombination','113','29')  # CTRL_LEFT + A
+    adb('shell','input','keyevent','67')  # DEL
+    if wait('profile_name').get('text','') != '':
+        raise RuntimeError('Não foi possível esvaziar o campo de nome.')
     if value:adb('shell','input','text',value.replace(' ','%s'))
     adb('shell','input','keyevent','4');time.sleep(.3)
+    if wait('profile_name').get('text','') != value:
+        raise RuntimeError('O campo de nome não corresponde ao texto solicitado pelo roteiro.')
 
 email=f'profile-{int(time.time())}@example.test';password='local-emulator-only-928374'
 def server_name():
