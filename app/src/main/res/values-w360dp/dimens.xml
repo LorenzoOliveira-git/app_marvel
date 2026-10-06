@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="gallery_padding">12dp</dimen>
+</resources>

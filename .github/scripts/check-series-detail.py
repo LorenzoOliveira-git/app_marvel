@@ -142,6 +142,10 @@ def align(resource=None,text=None):
     y1=int(re.findall(r'\d+',node.get('bounds'))[1]);delta=max(0,y1-target)
     if delta:
         start=H*4//5;adb('shell','input','swipe',str(W//2),str(start),str(W//2),str(max(110,start-delta)),'2500');time.sleep(.5)
+if '--data-only' in __import__('sys').argv:
+    print('Diagnósticos reais/cache aprovados; navegação editorial coberta por check-arquivo.py.', flush=True)
+    raise SystemExit(0)
+
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_series')

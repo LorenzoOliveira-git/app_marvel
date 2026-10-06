@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.MainActivity;
 import com.example.app_marvel.MarvelApplication;
@@ -43,8 +43,8 @@ public final class ComicsFragment extends Fragment {
     private FragmentComicsBinding binding;
     private ComicsViewModel model;
     private IssueCoverAdapter covers;
-    private final PagerSnapHelper snap = new PagerSnapHelper();
     private AlertDialog dialog;
+    private com.google.android.material.bottomsheet.BottomSheetDialog sheet;
     private boolean choosing;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle saved) {
         binding = FragmentComicsBinding.inflate(inflater, parent, false); return binding.getRoot();
@@ -52,7 +52,6 @@ public final class ComicsFragment extends Fragment {
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
         view.post(() -> { if (binding != null) ((MainActivity) requireActivity()).updateContentInsets(); });
         ViewCompat.setAccessibilityHeading(binding.comicsFeaturedHeading, true);
-        ViewCompat.setAccessibilityHeading(binding.comicTitle, true);
         var container = ((MarvelApplication) requireActivity().getApplication()).getContainer();
         model = new ViewModelProvider(requireActivity(), new ViewModelProvider.Factory() {
             @NonNull @Override public <T extends ViewModel> T create(@NonNull Class<T> type, @NonNull CreationExtras extras) {
@@ -69,23 +68,15 @@ public final class ComicsFragment extends Fragment {
             binding.comicsFeaturedList.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) highlight.submit(state.getData());
         });
-        LinearLayoutManager layout = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        binding.covers.setLayoutManager(layout); covers = new IssueCoverAdapter(container.getImages(), this::move);
-        binding.covers.setAdapter(covers); snap.attachToRecyclerView(binding.covers);
+        GridLayoutManager layout = new GridLayoutManager(requireContext(), 2);
+        binding.covers.setLayoutManager(layout); covers = new IssueCoverAdapter(container.getImages(), position -> { model.select(position); ((MainActivity) requireActivity()).openIssue(covers.item(position).id); });
+        binding.covers.setAdapter(covers);
         binding.covers.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> { if (r-l > 0 && r-l != or-ol) geometry(r-l); });
-        binding.covers.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override public void onScrolled(@NonNull RecyclerView recycler, int dx, int dy) { covers.updateFocus(recycler); }
-            @Override public void onScrollStateChanged(@NonNull RecyclerView recycler, int state) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) { View focused = snap.findSnapView(layout); if (focused != null) model.select(layout.getPosition(focused)); }
-            }
-        });
+
         binding.comicsRecent.setOnClickListener(v -> { model.order(false); filters(); });
         binding.comicsOldest.setOnClickListener(v -> { model.order(true); filters(); });
         binding.comicsVolume.setOnClickListener(v -> { choosing = true; model.loadVolumes(); options(model.volumes().getValue()); });
-        binding.previousComic.setOnClickListener(v -> move(model.position()-1));
-        binding.nextComic.setOnClickListener(v -> move(model.position()+1));
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.comicMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ((MainActivity) requireActivity()).openIssue(item.id); });
         model.state().observe(getViewLifecycleOwner(), state -> {
             binding.comicsState.render(state.getStatus(), model::reload);
             if (state.getStatus() == UiState.Status.EMPTY) binding.comicsState.emptyMessage(R.string.comics_empty_title, R.string.comics_empty_body);
@@ -93,7 +84,6 @@ public final class ComicsFragment extends Fragment {
             if (state.getStatus() == UiState.Status.CONTENT) {
                 covers.submit(state.getData());
                 selection();
-                binding.covers.post(() -> { if (binding != null) ((LinearLayoutManager) binding.covers.getLayoutManager()).scrollToPositionWithOffset(model.position(), 0); });
             }
         });
         model.selected().observe(getViewLifecycleOwner(), item -> selection());
@@ -104,27 +94,14 @@ public final class ComicsFragment extends Fragment {
         filters();
     }
     private void geometry(int width) {
-        int cardWidth = Math.min(dp(280), Math.round(width*.60f)), cardHeight = Math.round(cardWidth*1.47f);
-        covers.setGeometry(cardWidth, cardHeight);
-        int side = Math.max(0, (width-cardWidth-dp(16))/2); binding.covers.setPadding(side,0,side,0);
-        ViewGroup.LayoutParams params = binding.covers.getLayoutParams(); params.height = cardHeight+dp(16); binding.covers.setLayoutParams(params);
-        ((LinearLayoutManager) binding.covers.getLayoutManager()).scrollToPositionWithOffset(model.position(),0);
-        binding.covers.post(() -> { if (binding != null) covers.updateFocus(binding.covers); });
+        ((GridLayoutManager) binding.covers.getLayoutManager()).setSpanCount(
+                getResources().getConfiguration().screenWidthDp >= 360 && getResources().getConfiguration().fontScale < 1.3f ? 2 : 1);
     }
-    private void move(int position) { if (position >= 0 && position < covers.getItemCount()) binding.covers.smoothScrollToPosition(position); }
     private void selection() {
-        var item = model.selected().getValue(); if (item == null) return;
-        binding.comicTitle.setText(item.title);
-        try {
-            SimpleDateFormat source = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); source.setLenient(false);
-            String date = new SimpleDateFormat("dd MMM yyyy", new Locale("pt","BR")).format(source.parse(item.publicationDate));
-            binding.comicDate.setText(getString(R.string.comics_store_date,date));
-        } catch (Exception invalid) { binding.comicDate.setText(""); }
-        binding.comicMore.setText(R.string.issue_open); binding.comicMore.setEnabled(true); binding.comicMore.setContentDescription(getString(R.string.issue_open_named,item.title));
-        int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
-        binding.previousComic.setEnabled(position > 0); binding.nextComic.setEnabled(position+1 < covers.getItemCount());
+        binding.selectionCount.setText(getString(R.string.arquivo_loaded_count, covers.getItemCount()));
     }
     private void filters() {
+        binding.comicsVolume.setSelected(model.volumeId() != 0);
         binding.comicsRecent.setSelected(!model.oldest()); binding.comicsOldest.setSelected(model.oldest());
         ViewCompat.setStateDescription(binding.comicsRecent, !model.oldest() ? getString(R.string.comics_order_selected) : null);
         ViewCompat.setStateDescription(binding.comicsOldest, model.oldest() ? getString(R.string.comics_order_selected) : null);
@@ -151,6 +128,7 @@ public final class ComicsFragment extends Fragment {
         dialog = builder.create(); dialog.setOnCancelListener(d -> choosing = false); dialog.show();
     }
     private void choices(List<Reference> choices) {
+        Reference[] draft = { new Reference(model.volumeId(), model.volumeLabel(), "") };
         List<Reference> visible = new ArrayList<>();
         LinearLayout box = new LinearLayout(requireContext()); box.setOrientation(LinearLayout.VERTICAL); box.setPadding(dp(16),0,dp(16),0);
         EditText search = new EditText(requireContext()); search.setId(R.id.comics_volume_search); search.setSingleLine(); search.setMinHeight(dp(48)); search.setHint(R.string.comics_search);
@@ -163,7 +141,7 @@ public final class ComicsFragment extends Fragment {
             for (Reference ref : choices) if (normalized(ref.name).contains(query)) visible.add(ref);
             List<String> labels = new ArrayList<>(); for (Reference ref : visible) labels.add(ref.name);
             adapter.clear(); adapter.addAll(labels); adapter.notifyDataSetChanged(); list.clearChoices();
-            for (int i = 0; i < visible.size(); i++) if (visible.get(i).id == model.volumeId()) list.setItemChecked(i,true);
+            for (int i = 0; i < visible.size(); i++) if (visible.get(i).id == draft[0].id) list.setItemChecked(i,true);
         };
         search.setText(model.volumeQuery()); filter.accept(model.volumeQuery());
         search.addTextChangedListener(new TextWatcher() {
@@ -171,16 +149,19 @@ public final class ComicsFragment extends Fragment {
             @Override public void onTextChanged(CharSequence s,int start,int before,int count) { filter.accept(s.toString()); }
             @Override public void afterTextChanged(Editable s) { }
         });
-        dialog = new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.comics_volume).setView(box)
-                .setNegativeButton(R.string.catalog_cancel,(d,which) -> choosing = false).create();
-        list.setOnItemClickListener((parent,view,position,id) -> { model.volume(visible.get(position)); filters(); choosing = false; closeDialog(); });
-        dialog.setOnCancelListener(d -> choosing = false); dialog.show();
+        list.setOnItemClickListener((parent,view,position,id) -> draft[0] = visible.get(position));
+        sheet = com.example.app_marvel.ui.components.FilterSheet.show(requireContext(),
+                "Filtros · " + getString(R.string.comics_volume), box,
+                () -> { model.volume(draft[0]); filters(); choosing = false; },
+                () -> { draft[0] = new Reference(0, getString(R.string.catalog_all), ""); search.setText(""); filter.accept(""); });
+        sheet.setOnDismissListener(d -> choosing = false);
+
     }
     private String normalized(String value) { return Normalizer.normalize(value,Normalizer.Form.NFD).replaceAll("\\p{M}","").toLowerCase(Locale.ROOT); }
-    private void closeDialog() { if (dialog != null) { dialog.dismiss(); dialog = null; } }
+    private void closeDialog() { if (dialog != null) { dialog.dismiss(); dialog = null; } if (sheet != null) { sheet.dismiss(); sheet = null; } }
     private int dp(int value) { return Math.round(value*getResources().getDisplayMetrics().density); }
     @Override public void onDestroyView() {
-        choosing = false; closeDialog(); snap.attachToRecyclerView(null); binding.covers.setAdapter(null); binding.comicsFeaturedList.setAdapter(null);
+        choosing = false; closeDialog(); binding.covers.setAdapter(null); binding.comicsFeaturedList.setAdapter(null);
         super.onDestroyView(); binding = null; covers = null;
     }
 }

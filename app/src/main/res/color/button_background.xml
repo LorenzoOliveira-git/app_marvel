@@ -1,3 +1,3 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/marvel_primary_disabled" android:state_enabled="false" /><item android:color="@color/marvel_primary_strong" />
+    <item android:color="@color/marvel_primary_disabled" android:state_enabled="false" /><item android:color="@color/arquivo_tinta" />
 </selector>

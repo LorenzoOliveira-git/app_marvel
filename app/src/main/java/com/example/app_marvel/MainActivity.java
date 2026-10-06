@@ -1,12 +1,7 @@
 package com.example.app_marvel;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
@@ -76,13 +71,19 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             else openFeature(AppFeature.HOME);
         });
         ((MarvelApplication) getApplication()).getContainer().getAuth().getSession().observe(this, this::renderUserHeader);
-        binding.bottomNavigation.setItemActiveIndicatorEnabled(false);
+        binding.bottomNavigation.setItemActiveIndicatorEnabled(true);
+        binding.bottomNavigation.setItemActiveIndicatorWidth(dp(44));
+        binding.bottomNavigation.setItemActiveIndicatorHeight(dp(44));
+        binding.bottomNavigation.setItemActiveIndicatorColor(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(this, R.color.arquivo_vermelho)));
+        binding.bottomNavigation.setItemActiveIndicatorShapeAppearance(
+                com.google.android.material.shape.ShapeAppearanceModel.builder()
+                        .setAllCornerSizes(dp(22)).build());
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
         binding.bottomNavigation.setLabelVisibilityMode(showLabels
                 ? NavigationBarView.LABEL_VISIBILITY_LABELED
                 : NavigationBarView.LABEL_VISIBILITY_UNLABELED);
-        preserveIconGeometry();
         // NavigationUI salva/restaura as pilhas dos destinos superiores.
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -106,7 +107,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.screenTitle.setTextAppearance(catalog ? R.style.TextAppearance_Marvel_CatalogHeader : R.style.TextAppearance_Marvel_Title);
             binding.screenTitle.setGravity(catalog ? Gravity.CENTER : Gravity.START);
             boolean form = isAuthDestination(destination.getId());
-            binding.bottomNavigation.setVisibility(form ? View.GONE : View.VISIBLE);
+            updateNavigationVisibility();
             binding.mainHeader.setVisibility(form ? View.GONE : View.VISIBLE);
             binding.authHeader.setVisibility(form ? View.VISIBLE : View.GONE);
             binding.navHost.post(contentInsetsUpdater);
@@ -133,16 +134,17 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             view.setPadding(safe.left, safe.top, safe.right, 0);
             bottomSafe = safe.bottom; keyboardBottom = keyboard.bottom;
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.bottomNavigation.getLayoutParams();
-            int margin = getResources().getDimensionPixelSize(R.dimen.space_sm) + bottomSafe;
+            int margin = getResources().getDimensionPixelSize(R.dimen.space_lg) + bottomSafe;
             if (params.bottomMargin != margin) { params.bottomMargin = margin; binding.bottomNavigation.setLayoutParams(params); }
+            updateNavigationVisibility();
             updateContentInsets();
             // Evita aplicar novamente os insets na barra Material e nos Fragments.
             return WindowInsetsCompat.CONSUMED;
         });
         WindowInsetsControllerCompat controller = ViewCompat.getWindowInsetsController(binding.getRoot());
         if (controller != null) {
-            controller.setAppearanceLightStatusBars(false);
-            controller.setAppearanceLightNavigationBars(false);
+            controller.setAppearanceLightStatusBars(true);
+            controller.setAppearanceLightNavigationBars(android.os.Build.VERSION.SDK_INT >= 27);
         }
         ViewCompat.requestApplyInsets(binding.getRoot());
     }
@@ -156,8 +158,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         if (!(content instanceof NestedScrollView)) return;
         int bottom = Math.max(bottomSafe, keyboardBottom);
         if (binding.bottomNavigation.getVisibility() == View.VISIBLE) {
-            bottom = Math.max(bottom, binding.bottomNavigation.getHeight() + bottomSafe
-                    + 2 * getResources().getDimensionPixelSize(R.dimen.space_sm));
+            bottom = Math.max(bottom, getResources().getDimensionPixelSize(R.dimen.navigation_scroll_clearance) + bottomSafe);
         }
         content.setPadding(content.getPaddingLeft(), content.getPaddingTop(), content.getPaddingRight(), bottom);
         ((NestedScrollView) content).setClipToPadding(false);
@@ -217,23 +218,13 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         if (controller != null) controller.hide(WindowInsetsCompat.Type.ime());
     }
 
-    private void preserveIconGeometry() {
-        int[] widths = {25, 35, 35, 21, 25};
-        int slot = getResources().getDimensionPixelSize(R.dimen.navigation_icon_slot);
-        for (int index = 0; index < binding.bottomNavigation.getMenu().size(); index++) {
-            MenuItem item = binding.bottomNavigation.getMenu().getItem(index);
-            Drawable icon = item.getIcon();
-            if (icon == null) {
-                continue;
-            }
-            LayerDrawable layers = new LayerDrawable(new Drawable[]{
-                    new ColorDrawable(Color.TRANSPARENT), icon});
-            layers.setLayerSize(0, slot, slot);
-            layers.setLayerSize(1, dp(widths[index]), dp(25));
-            layers.setLayerGravity(0, Gravity.CENTER);
-            layers.setLayerGravity(1, Gravity.CENTER);
-            item.setIcon(layers);
-        }
+    private void updateNavigationVisibility() {
+        if (navController == null || navController.getCurrentDestination() == null) return;
+        int id = navController.getCurrentDestination().getId();
+        boolean firstLevel = id == R.id.homeFragment || id == R.id.charactersFragment
+                || id == R.id.storiesFragment || id == R.id.createHeroFragment || id == R.id.profileFragment;
+        // Camadas internas usam voltar; o teclado mantém a ação do formulário visível.
+        binding.bottomNavigation.setVisibility(firstLevel && keyboardBottom == 0 ? View.VISIBLE : View.GONE);
     }
 
     private int dp(int value) {

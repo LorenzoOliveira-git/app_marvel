@@ -63,6 +63,9 @@ public final class AccountFragment extends Fragment {
             binding.email.setVisibility(signed ? View.VISIBLE : View.GONE);
             binding.message.setVisibility(signed ? View.GONE : View.VISIBLE);
             binding.action.setText(signed ? R.string.account_sign_out : R.string.auth_sign_in);
+            binding.action.setTextColor(getResources().getColor(signed ? R.color.arquivo_erro : R.color.arquivo_papel, null));
+            binding.action.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getResources().getColor(
+                    signed ? R.color.arquivo_papel : R.color.arquivo_tinta, null)));
             renderEdit(model.edit().getValue());
             binding.action.setOnClickListener(v -> {
                 if (signed) { model.signOut(); ((MainActivity) requireActivity()).leaveAccount(); }

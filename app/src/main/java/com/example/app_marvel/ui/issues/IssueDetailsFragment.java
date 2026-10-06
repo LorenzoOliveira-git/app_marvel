@@ -117,20 +117,20 @@ public final class IssueDetailsFragment extends Fragment {
         if (items.isEmpty()) return;
         TextView title = new TextView(requireContext()); title.setTextAppearance(R.style.TextAppearance_Marvel_CatalogHeading); title.setText(heading);
         ViewCompat.setAccessibilityHeading(title,true);
-        LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(-1,-2); margin.topMargin = dp(40); margin.bottomMargin = dp(16);
+        LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(-1,-2); margin.topMargin = dp(32); margin.bottomMargin = dp(16);
         binding.issueCredits.addView(title,margin);
         for (Credit credit : items) {
             String label = credit.reference.name;
             String roles = creators ? roles(credit.role) : "";
             if (!roles.isEmpty()) label = getString(R.string.issue_creator_role,label,roles);
             if (credit.siteUrl.isEmpty()) {
-                TextView name = new TextView(requireContext()); name.setTextAppearance(R.style.TextAppearance_Marvel_Body); name.setText(label);
+                TextView name = new TextView(requireContext()); name.setTextAppearance(R.style.TextAppearance_Marvel_Body); name.setText(label); name.setMinHeight(dp(52)); name.setGravity(android.view.Gravity.CENTER_VERTICAL);
                 name.setTextColor(getResources().getColor(R.color.marvel_text,null)); binding.issueCredits.addView(name,new LinearLayout.LayoutParams(-1,-2));
             } else {
                 MaterialButton button = (MaterialButton) getLayoutInflater().inflate(R.layout.component_issue_credit,binding.issueCredits,false);
                 button.setTextAppearance(R.style.TextAppearance_Marvel_CatalogFilter); button.setText(getString(R.string.issue_credit_external,label));
                 button.setTextColor(getResources().getColor(R.color.marvel_text,null)); button.setAllCaps(false); button.setSingleLine(false);
-                button.setMinHeight(dp(48)); button.setGravity(android.view.Gravity.START|android.view.Gravity.CENTER_VERTICAL);
+                button.setMinHeight(dp(52)); button.setGravity(android.view.Gravity.START|android.view.Gravity.CENTER_VERTICAL);
                 button.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),credit.siteUrl));
                 binding.issueCredits.addView(button,new LinearLayout.LayoutParams(-1,-2));
             }

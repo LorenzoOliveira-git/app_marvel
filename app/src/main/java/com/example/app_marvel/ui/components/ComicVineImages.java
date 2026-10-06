@@ -3,7 +3,6 @@ package com.example.app_marvel.ui.components;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,7 +39,7 @@ public final class ComicVineImages {
     }
     public void show(ImageView view, String url) {
         view.setTag(url);
-        view.setImageDrawable(new ColorDrawable(view.getContext().getColor(R.color.marvel_surface_raised)));
+        view.setImageResource(R.drawable.ic_image_placeholder);
         Uri uri = Uri.parse(url);
         if (!"https".equals(uri.getScheme()) || !"comicvine.gamespot.com".equals(uri.getHost())
                 || uri.getPath() == null || !uri.getPath().startsWith("/a/uploads/")

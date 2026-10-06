@@ -1,10 +1,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginEnd="8dp" app:cardCornerRadius="10dp" app:strokeWidth="0dp" app:cardBackgroundColor="@color/marvel_surface_raised">
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginEnd="8dp" app:cardCornerRadius="12dp" app:strokeWidth="0dp" app:cardBackgroundColor="@color/marvel_surface_raised">
     <LinearLayout android:id="@+id/movie_row" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/background_recent_issue">
-        <ImageView android:id="@+id/movie_image" android:layout_width="134dp" android:layout_height="203dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+        <ImageView android:id="@+id/movie_image" android:layout_width="80dp" android:layout_height="120dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
         <LinearLayout android:id="@+id/movie_details" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
             <TextView android:id="@+id/media_category" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/movies_title" />
-            <TextView android:id="@+id/movie_title" style="@style/TextAppearance.Marvel.CatalogTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
+            <TextView android:id="@+id/movie_title" android:maxLines="2" android:ellipsize="end" style="@style/TextAppearance.Marvel.CardTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
             <TextView android:id="@+id/movie_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
             <TextView android:id="@+id/movie_volume" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:visibility="gone" />
             <com.google.android.material.button.MaterialButton android:id="@+id/movie_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/catalog_more" />

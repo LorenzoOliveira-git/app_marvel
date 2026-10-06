@@ -1,3 +1,1 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/marvel_character_identity" /><corners android:radius="20dp" />
-</shape>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"><solid android:color="@color/arquivo_papel" /></shape>

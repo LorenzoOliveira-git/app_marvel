@@ -1,10 +1,20 @@
 <resources>
     <dimen name="space_xs">4dp</dimen><dimen name="space_sm">8dp</dimen>
     <dimen name="space_md">16dp</dimen><dimen name="space_lg">24dp</dimen>
-    <dimen name="space_xl">32dp</dimen><dimen name="screen_padding">20dp</dimen>
-    <dimen name="content_max_width">640dp</dimen><dimen name="card_radius">20dp</dimen>
-    <dimen name="field_radius">12dp</dimen><dimen name="touch_min">48dp</dimen>
-    <dimen name="navigation_min_height">64dp</dimen><dimen name="navigation_icon_slot">35dp</dimen>
-    <dimen name="text_display">36sp</dimen><dimen name="text_title">28sp</dimen>
-    <dimen name="text_body">16sp</dimen><dimen name="text_caption">14sp</dimen>
+    <dimen name="space_xl">32dp</dimen><dimen name="screen_padding">16dp</dimen>
+    <dimen name="content_max_width">430dp</dimen><dimen name="card_radius">12dp</dimen>
+    <dimen name="field_radius">8dp</dimen><dimen name="touch_min">48dp</dimen>
+    <dimen name="navigation_min_height">64dp</dimen><dimen name="navigation_icon_slot">24dp</dimen>
+    <dimen name="text_display">40sp</dimen><dimen name="text_title">30sp</dimen>
+    <dimen name="text_body">14sp</dimen><dimen name="text_caption">11sp</dimen>
+    <dimen name="space_compact">12dp</dimen>
+    <dimen name="space_card">20dp</dimen>
+    <dimen name="space_2xl">40dp</dimen>
+    <dimen name="space_3xl">48dp</dimen>
+    <dimen name="radius_small">4dp</dimen>
+    <dimen name="radius_round">999dp</dimen>
+    <dimen name="text_highlight">24sp</dimen><dimen name="text_card">20sp</dimen>
+    <dimen name="text_section">18sp</dimen><dimen name="text_action">12sp</dimen>
+    <dimen name="text_label">10sp</dimen><dimen name="navigation_scroll_clearance">120dp</dimen>
+    <dimen name="gallery_padding">8dp</dimen>
 </resources>

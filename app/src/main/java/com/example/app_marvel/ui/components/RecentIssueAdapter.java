@@ -34,12 +34,6 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
     @Override public int getItemCount() { return items.size(); }
     @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int type) {
         ItemRecentIssueBinding binding = ItemRecentIssueBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        if (parent.getResources().getConfiguration().screenWidthDp < 360 || parent.getResources().getConfiguration().fontScale > 1.3f) {
-            binding.issueRow.setOrientation(android.widget.LinearLayout.VERTICAL);
-            android.widget.LinearLayout.LayoutParams image = (android.widget.LinearLayout.LayoutParams) binding.issueImage.getLayoutParams();
-            image.gravity = android.view.Gravity.CENTER_HORIZONTAL; binding.issueImage.setLayoutParams(image);
-            binding.issueDetails.setLayoutParams(new android.widget.LinearLayout.LayoutParams(-1, -2));
-        }
         return new Holder(binding);
     }
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
@@ -64,6 +58,8 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
         }
         view.issueMore.setEnabled(open != null || !item.siteUrl.isEmpty());
         view.issueMore.setOnClickListener(clicked -> { if (open != null) open.accept(item.id); else ComicVineNavigation.open(clicked.getContext(),item.siteUrl); });
+        view.issueImage.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+        view.issueImage.setContentDescription(view.getRoot().getContext().getString(R.string.arquivo_cover_named, item.title));
         images.show(view.issueImage, item.imageUrl);
     }
     static final class Holder extends RecyclerView.ViewHolder {

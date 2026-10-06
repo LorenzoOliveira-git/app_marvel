@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.MainActivity;
 import com.example.app_marvel.MarvelApplication;
@@ -44,15 +44,14 @@ public final class CharactersFragment extends Fragment {
     private FragmentCharactersBinding binding;
     private CharactersViewModel model;
     private CharacterPortraitAdapter portraits;
-    private final PagerSnapHelper snap = new PagerSnapHelper();
     private AlertDialog dialog;
+    private com.google.android.material.bottomsheet.BottomSheetDialog sheet;
     private String requestedFilter;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle saved) {
         binding = FragmentCharactersBinding.inflate(inflater, parent, false); return binding.getRoot();
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
         view.post(() -> { if (binding != null) ((MainActivity) requireActivity()).updateContentInsets(); });
-        ViewCompat.setAccessibilityHeading(binding.characterName, true);
         AppContainer container = ((MarvelApplication) requireActivity().getApplication()).getContainer();
         model = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull @Override public <T extends ViewModel> T create(@NonNull Class<T> type, @NonNull CreationExtras extras) {
@@ -60,23 +59,14 @@ public final class CharactersFragment extends Fragment {
                 return type.cast(new CharactersViewModel(container.getCatalog(), container.getTranslations(), SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(CharactersViewModel.class);
-        LinearLayoutManager layout = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layout = new GridLayoutManager(requireContext(), 2);
         binding.portraits.setLayoutManager(layout);
-        portraits = new CharacterPortraitAdapter(container.getImages(), position -> move(position));
-        binding.portraits.setAdapter(portraits); snap.attachToRecyclerView(binding.portraits);
+        portraits = new CharacterPortraitAdapter(container.getImages(), position -> { model.select(position); ((MainActivity) requireActivity()).openCharacter(portraits.item(position).id); });
+        binding.portraits.setAdapter(portraits);
         binding.portraits.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
             if (r - l > 0 && r - l != or - ol) geometry(r - l);
         });
-        binding.portraits.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override public void onScrolled(@NonNull RecyclerView recycler, int dx, int dy) { portraits.updateFocus(recycler); }
-            @Override public void onScrollStateChanged(@NonNull RecyclerView recycler, int state) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    View focused = snap.findSnapView(layout);
-                    if (focused != null) model.select(layout.getPosition(focused));
-                    renderSelection();
-                }
-            }
-        });
+
         binding.searchName.setText(model.query());
         binding.searchName.addTextChangedListener(watcher(text -> model.query(text)));
         binding.searchName.setOnEditorActionListener((v, action, event) -> {
@@ -88,28 +78,21 @@ public final class CharactersFragment extends Fragment {
         binding.genderFilter.setOnClickListener(v -> choiceDialog("gender", Arrays.asList(new Choice(1, getString(R.string.catalog_male)), new Choice(2, getString(R.string.catalog_female)))));
         binding.clearFilters.setOnClickListener(v -> { model.clearFilters(); renderFilters(); });
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.previousCharacter.setOnClickListener(v -> move(model.selectedPosition() - 1));
-        binding.nextCharacter.setOnClickListener(v -> move(model.selectedPosition() + 1));
-        binding.characterMore.setOnClickListener(v -> {
-            var item = model.getSelected().getValue(); if (item != null) ((MainActivity) requireActivity()).openCharacter(item.id);
-        });
-        binding.retryOrigin.setOnClickListener(v -> model.retryOrigin());
         model.getState().observe(getViewLifecycleOwner(), state -> {
             binding.catalogState.render(state.getStatus(), model::reload);
-            if (state.getStatus() == UiState.Status.EMPTY) binding.catalogState.emptyMessage(R.string.catalog_selection_empty_title, R.string.catalog_selection_empty_body);
+            if (state.getStatus() == UiState.Status.EMPTY) {
+                binding.catalogState.emptyMessage(R.string.catalog_selection_empty_title, R.string.catalog_selection_empty_body);
+                binding.catalogState.searchEmpty(model.query(), () -> { binding.searchName.setText(""); model.clearFilters(); renderFilters(); });
+            }
             binding.catalogContent.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) {
                 portraits.submit(state.getData());
-                binding.portraits.post(() -> { if (binding != null) { portraits.updateFocus(binding.portraits); renderSelection(); } });
+                binding.portraits.post(() -> { if (binding != null) { renderSelection(); } });
             } else portraits.submit(java.util.Collections.emptyList());
         });
         model.getSelected().observe(getViewLifecycleOwner(), item -> {
             renderSelection();
-            if (item != null && binding.portraits.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-                View focused = snap.findSnapView(layout);
-                if (focused == null || layout.getPosition(focused) != model.selectedPosition()) layout.scrollToPositionWithOffset(model.selectedPosition(), 0);
-                binding.portraits.post(() -> { if (binding != null) portraits.updateFocus(binding.portraits); });
-            }
+
         });
         model.getSelectedOrigin().observe(getViewLifecycleOwner(), state -> renderSelection());
         model.getHasMore().observe(getViewLifecycleOwner(), value -> renderPaging());
@@ -120,31 +103,11 @@ public final class CharactersFragment extends Fragment {
         renderFilters();
     }
     private void geometry(int width) {
-        int cardWidth = Math.min(dp(280), Math.round(width * .56f));
-        int cardHeight = Math.round(cardWidth * 1.52f);
-        portraits.setGeometry(cardWidth, cardHeight);
-        int itemWidth = cardWidth + dp(16), side = Math.max(0, (width - itemWidth) / 2);
-        binding.portraits.setPadding(side, 0, side, 0);
-        ViewGroup.LayoutParams params = binding.portraits.getLayoutParams(); params.height = cardHeight + dp(16); binding.portraits.setLayoutParams(params);
-        ((LinearLayoutManager) binding.portraits.getLayoutManager()).scrollToPositionWithOffset(model.selectedPosition(), 0);
-        binding.portraits.post(() -> { if (binding != null) portraits.updateFocus(binding.portraits); });
-    }
-    private void move(int position) {
-        if (position < 0 || position >= portraits.getItemCount()) return;
-        binding.portraits.smoothScrollToPosition(position);
+        ((GridLayoutManager) binding.portraits.getLayoutManager()).setSpanCount(
+                getResources().getConfiguration().screenWidthDp >= 360 && getResources().getConfiguration().fontScale < 1.3f ? 2 : 1);
     }
     private void renderSelection() {
-        var item = model.getSelected().getValue(); if (item == null) return;
-        binding.characterName.setText(item.name);
-        UiState<String> origin = model.getSelectedOrigin().getValue();
-        String label = origin.getStatus() == UiState.Status.CONTENT ? origin.getData() : "";
-        binding.characterMeta.setText(item.realName + (item.realName.isEmpty() || label.isEmpty() ? "" : " — ") + label);
-        binding.characterMeta.setVisibility(item.realName.isEmpty() && label.isEmpty() ? View.GONE : View.VISIBLE);
-        binding.retryOrigin.setVisibility(origin.getStatus() == UiState.Status.ERROR ? View.VISIBLE : View.GONE);
-        binding.characterMore.setEnabled(item.id > 0);
-        int position = model.selectedPosition();
-        binding.selectionCount.setText(getString(R.string.catalog_count, position + 1, portraits.getItemCount()));
-        binding.previousCharacter.setEnabled(position > 0); binding.nextCharacter.setEnabled(position + 1 < portraits.getItemCount());
+        binding.selectionCount.setText(getString(R.string.arquivo_loaded_count, portraits.getItemCount()));
     }
     private void renderPaging() {
         boolean loading = Boolean.TRUE.equals(model.getLoadingMore().getValue());
@@ -154,6 +117,9 @@ public final class CharactersFragment extends Fragment {
         binding.loadMore.setText(Boolean.TRUE.equals(model.getMoreError().getValue()) ? R.string.catalog_retry : R.string.catalog_load_more);
     }
     private void renderFilters() {
+        binding.genderFilter.setSelected(model.filter("gender") != 0);
+        binding.teamFilter.setSelected(model.filter("team") != 0);
+        binding.originFilter.setSelected(model.filter("origin") != 0);
         binding.originFilter.setText(model.filterLabel("origin", getString(R.string.catalog_origin)));
         binding.teamFilter.setText(model.filterLabel("team", getString(R.string.catalog_teams)));
         binding.genderFilter.setText(model.filterLabel("gender", getString(R.string.catalog_profile)));
@@ -186,26 +152,31 @@ public final class CharactersFragment extends Fragment {
         if (name.equals("team")) box.addView(search, new LinearLayout.LayoutParams(-1, -2));
         ListView list = new ListView(requireContext()); list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_single_choice, labels(visible)); list.setAdapter(adapter);
-        box.addView(list, new LinearLayout.LayoutParams(-1, dp(300)));
-        dialog = new MaterialAlertDialogBuilder(requireContext()).setTitle(title(name)).setView(box).setNegativeButton(R.string.catalog_cancel, null).create();
+        box.addView(list, new LinearLayout.LayoutParams(-1, dp(Math.min(300, choices.size() * 52))));
+        Choice[] draft = { choices.stream().filter(c -> c.id == model.filter(name)).findFirst().orElse(choices.get(0)) };
         list.setOnItemClickListener((parent, view, position, id) -> {
-            Choice chosen = visible.get(position); model.filter(name, chosen.id, chosen.label); renderFilters(); closeDialog(true);
+            draft[0] = visible.get(position);
         });
         search.addTextChangedListener(watcher(value -> {
             visible.clear(); String query = normalized(value);
             for (Choice choice : choices) if (choice.id == 0 || normalized(choice.label).contains(query)) visible.add(choice);
-            adapter.clear(); adapter.addAll(labels(visible)); adapter.notifyDataSetChanged(); markChecked(list, visible, name);
+            adapter.clear(); adapter.addAll(labels(visible)); adapter.notifyDataSetChanged(); markDraft(list, visible, draft[0].id);
         }));
-        dialog.show(); markChecked(list, visible, name);
+        sheet = com.example.app_marvel.ui.components.FilterSheet.show(requireContext(),
+                "Filtros · " + getString(title(name)), box,
+                () -> { model.filter(name, draft[0].id, draft[0].label); renderFilters(); },
+                () -> { draft[0] = choices.get(0); markDraft(list, visible, 0); });
+        markDraft(list, visible, draft[0].id);
     }
-    private void markChecked(ListView list, List<Choice> choices, String name) {
-        list.clearChoices(); for (int i = 0; i < choices.size(); i++) if (choices.get(i).id == model.filter(name)) list.setItemChecked(i, true);
+    private void markDraft(ListView list, List<Choice> choices, int selected) {
+        list.clearChoices(); for (int i = 0; i < choices.size(); i++) if (choices.get(i).id == selected) list.setItemChecked(i, true);
     }
     private List<String> labels(List<Choice> choices) { List<String> labels = new ArrayList<>(); for (Choice choice : choices) labels.add(choice.label); return labels; }
     private String normalized(String value) { return Normalizer.normalize(value, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT); }
     private void closeDialog(boolean clear) {
         if (clear) requestedFilter = null;
         if (dialog != null) { dialog.dismiss(); dialog = null; }
+        if (sheet != null) { sheet.dismiss(); sheet = null; }
     }
     private TextWatcher watcher(java.util.function.Consumer<String> changed) {
         return new TextWatcher() {
@@ -216,7 +187,7 @@ public final class CharactersFragment extends Fragment {
     }
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
     @Override public void onDestroyView() {
-        closeDialog(true); snap.attachToRecyclerView(null); binding.portraits.setAdapter(null);
+        closeDialog(true); binding.portraits.setAdapter(null);
         super.onDestroyView(); binding = null; portraits = null;
     }
 }

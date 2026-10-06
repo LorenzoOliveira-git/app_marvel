@@ -1,1 +1,4 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android"><solid android:color="@color/marvel_nav_overlay" /><corners android:radius="@dimen/card_radius" /></shape>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/arquivo_tinta" />
+    <corners android:radius="@dimen/radius_round" />
+</shape>

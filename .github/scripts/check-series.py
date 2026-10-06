@@ -137,6 +137,10 @@ def align(resource,width,height):
         start=height*4//5
         adb('shell','input','swipe',str(width//2),str(start),str(width//2),str(max(110,start-delta)),'2500')
         time.sleep(.5)
+if '--data-only' in __import__('sys').argv:
+    print('Diagnósticos reais/cache aprovados; navegação em grade coberta por check-arquivo.py.', flush=True)
+    raise SystemExit(0)
+
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_series')

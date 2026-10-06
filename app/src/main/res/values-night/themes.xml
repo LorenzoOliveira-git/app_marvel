@@ -1,4 +1,4 @@
 <resources>
-    <!-- Identidade escura consistente nos dois modos do sistema. -->
+    <!-- Identidade de papel consistente nos dois modos do sistema. -->
     <style name="Theme.App_Marvel" parent="Base.Theme.App_Marvel" />
 </resources>

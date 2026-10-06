@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-    <TextView android:id="@+id/relation_heading" style="@style/TextAppearance.Marvel.CatalogHeading" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <TextView android:id="@+id/relation_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" />
     <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/relation_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/relation_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
     <ProgressBar android:id="@+id/relation_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:visibility="gone" />

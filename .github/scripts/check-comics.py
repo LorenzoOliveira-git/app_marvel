@@ -93,6 +93,10 @@ def valid_png(data):
         if chunk[:4]==b'IEND':return end==len(data)
         offset=end
     return False
+if '--data-only' in __import__('sys').argv:
+    print('Diagnósticos reais/cache aprovados; navegação em grade coberta por check-arquivo.py.', flush=True)
+    raise SystemExit(0)
+
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(3)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_comics');wait('comics_featured_heading');capture('comics-top')

@@ -118,6 +118,10 @@ def show_first(expected):
     capture('issue-first-missing')
     raise RuntimeError('Primeira aparição não encontrada: '+expected)
 # Métadados ausentes: a edição recente não cria uma descrição nem um carregamento eterno.
+if '--data-only' in __import__('sys').argv:
+    print('Diagnósticos reais/cache aprovados; navegação em grade coberta por check-arquivo.py.', flush=True)
+    raise SystemExit(0)
+
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');home_title=wait('issue_title').get('text');tap(resource='issue_more');wait('issue_heading',home_title);capture('issue-recent')
