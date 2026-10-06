@@ -22,8 +22,20 @@ def adb(*args):
     result.check_returncode()
 
 def nodes():
-    adb('shell', 'uiautomator', 'dump', '/sdcard/arquivo-ui.xml')
-    return list(ET.fromstring(adb('exec-out', 'cat', '/sdcard/arquivo-ui.xml')).iter('node'))
+    for attempt in range(3):
+        adb('shell', 'uiautomator', 'dump', '/sdcard/arquivo-ui.xml')
+        raw = adb('exec-out', 'cat', '/sdcard/arquivo-ui.xml')
+        # ADB pode emitir mensagens de inicialização antes do documento.
+        start = raw.find(b'<?xml')
+        if start < 0:
+            start = raw.find(b'<hierarchy')
+        try:
+            return list(ET.fromstring(raw[start:] if start >= 0 else raw).iter('node'))
+        except ET.ParseError:
+            (OUT/'ui-read-failure.txt').write_bytes(raw[:4096])
+            if attempt == 2:
+                raise
+            time.sleep(2)
 
 def find(resource, snapshot=None):
     return next((n for n in (nodes() if snapshot is None else snapshot)
