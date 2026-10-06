@@ -26,6 +26,7 @@ Os dados locais ficam exclusivamente em `src/designPreview`; debug/release norma
 - Texto branco sobre o fundo claro de botões desabilitados foi substituído por tinta legível.
 - O vermelho de foco **#D92D20** permanece intacto. Sobre papel, seu contraste de texto pequeno é **4,36:1**, abaixo dos **4,5:1** exigidos na seção 18 do design. Links usam a variante de texto **#BD281C**; fundos, seleção e destaques continuam com o token original. Este ajuste resolve o conflito entre o token de ação da seção 4 e a exigência de leitura da seção 18 sem mudar a identidade visual.
 - O teste de retorno procurava um título acima da região visível. Agora rola explicitamente antes de verificar.
+- A abertura do diálogo de descarte fechava o app: um estilo de tipografia substituía o estilo de view do título, removendo dimensões obrigatórias do Material. O título e o corpo agora herdam os estilos de diálogo e recebem a tipografia do design separadamente.
 - O teste de cancelamento dependia da posição dos botões do diálogo. Agora verifica “Continuar editando” e “Descartar”, inclusive os dados mantidos no servidor.
 - A falha conhecida do Pixel Launcher no emulador é fechada de forma restrita; erros e travamentos do app continuam provocando falha na validação.
 
