@@ -48,12 +48,18 @@ async function normalizeImage(source) {
       || (metadata.pages || 1) !== 1) throw new Error('invalid-image');
   return png(await image.png().toBuffer());
 }
+function generationError(state, stage, httpStatus = null, apiCodes = [], apiSignals = []) {
+  const diagnostic = {stage, httpStatus, apiCodes, apiSignals};
+  // Não registrar resposta bruta, mensagens externas, prompt, conta ou token.
+  if (process.env.FUNCTIONS_EMULATOR === 'true') console.warn('CloudflareGeneration', JSON.stringify(diagnostic));
+  return Object.assign(new Error(state), {diagnostic});
+}
 async function generate(input) {
   // Não despachar parâmetros antigos ou escolhidos pelo cliente.
   if (input.model !== POLICY.model || input.size !== POLICY.size || input.n !== 1
       || input.quality !== POLICY.quality || input.output_format !== 'png'
       || typeof input.prompt !== 'string' || !input.prompt.trim() || Buffer.byteLength(input.prompt, 'utf8') > 12000) {
-    throw new Error('generation-failed');
+    throw generationError('generation-failed', 'input-validation');
   }
   const endpoint = cloudflareEndpoint(`run/${POLICY.model}`);
   const form = new FormData();
@@ -63,8 +69,33 @@ async function generate(input) {
     result = await fetch(endpoint, {
       method: 'POST', redirect: 'error', headers: {Authorization: `Bearer ${process.env.CLOUDFLARE_API_KEY}`},
       body: form, signal: AbortSignal.timeout(180000)});
-  } catch (_) { throw new Error('generation-unknown'); }
-  if (!result.ok) throw new Error(result.status >= 400 && result.status < 500 ? 'generation-failed' : 'generation-unknown');
+  } catch (_) { throw generationError('generation-unknown', 'transport'); }
+  if (!result.ok) {
+    let apiCodes = [], apiSignals = [];
+    try {
+      const body = await result.json();
+      if (Array.isArray(body.errors)) {
+        const errors = body.errors.slice(0, 8);
+        apiCodes = errors.map(error => error?.code).filter(Number.isSafeInteger);
+        // Sinais de categorias fixas; nunca retornar/registrar a mensagem externa.
+        const signals = new Set();
+        for (const error of errors) {
+          if (typeof error?.message !== 'string') continue;
+          const message = error.message.slice(0, 10000).toLowerCase();
+          if (/nsfw|content.?filter|output has been flagged|unsafe content/.test(message)) signals.add('content_filter');
+          if (/validat|invalid input|missing required|multipart|boundary/.test(message)) {
+            signals.add('input_validation');
+            for (const field of ['prompt','width','height','multipart','boundary']) if (message.includes(field)) signals.add('field_' + field);
+          }
+          if (/paid plan|billing|payment|quota|allocation|rate limit/.test(message)) signals.add('plan_or_quota');
+          if (/unauthori|permission|forbidden|access denied/.test(message)) signals.add('access');
+        }
+        apiSignals = [...signals];
+      }
+    } catch (_) { /* HTTP permanece útil mesmo se a resposta não for JSON. */ }
+    throw generationError(result.status >= 400 && result.status < 500 ? 'generation-failed' : 'generation-unknown',
+      'http-response', result.status, apiCodes, apiSignals);
+  }
   try {
     const data = await result.json();
     const encoded = data.result?.image;
@@ -75,7 +106,7 @@ async function generate(input) {
     // O provedor não promete PNG: validar dimensões antes de normalizar para o contrato existente.
     const bytes = await normalizeImage(source);
     return {bytes, usage: {}, requestId: result.headers.get('cf-ray') || null};
-  } catch (_) { throw new Error('generation-unknown'); }
+  } catch (_) { throw generationError('generation-unknown', 'image-response', result.status); }
 }
 function publicId(uid, id) { return `marvel-local/${createHash('sha256').update(uid).digest('hex')}/${id}`; }
 function assetReference(asset,expected) {

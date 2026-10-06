@@ -32,3 +32,11 @@ A [execução Android 37387716573](https://github.com/LorenzoOliveira-git/app_ma
 O exemplo mantém `HERO_GENERATION_ENABLED=false`. Para executar a criação após configurar Cloudflare e Cloudinary no arquivo privado, altere essa variável para `true` em `backend/.env.local` e reinicie os emuladores. Confira `npm run providers:status -- --connections`: `generationEnabled`, configuração Cloudflare/Cloudinary e resultados das consultas. O aviso genérico de indisponibilidade também pode indicar credenciais ausentes ou consulta ao modelo recusada; a flag sozinha não comprova acesso.
 
 A confirmação Android agora pede somente autorização para criar ou tentar novamente, sem mostrar valores monetários. Controles de orçamento/cotas do backend continuam ativos. A interface não apresenta a reserva interna como preço da imagem.
+
+## Rejeição durante a inferência
+
+Uma falha `generation_failed` pode ocorrer por parâmetros internos incompatíveis ou resposta HTTP 4xx da inferência. A consulta de catálogo anterior não comprova permissão/cota para executar o modelo. O backend local agora registra uma linha `CloudflareGeneration` com etapa, status HTTP e até oito códigos numéricos retornados pela API. Nenhum prompt, conta, chave ou mensagem bruta é registrado.
+
+Compartilhe somente essa linha para diagnosticar uma tentativa rejeitada. A alteração não recupera a resposta de tentativas anteriores, não faz nova inferência e não altera cotas ou repete uma chamada automaticamente. O motivo específico da falha anterior ainda não foi determinado.
+
+O código 3030 não aparece na tabela geral oficial de erros, portanto não é interpretado sozinho como cobrança, credencial ou conteúdo. A linha segura também inclui `apiSignals`, derivados de palavras da mensagem da API e restritos a categorias fixas (`content_filter`, `input_validation`, campos conhecidos, `plan_or_quota`, `access`). Esses sinais ajudam o diagnóstico; uma lista vazia continua exigindo análise do provedor. A resposta bruta não é exibida.
