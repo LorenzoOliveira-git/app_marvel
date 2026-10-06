@@ -4,4 +4,5 @@
     <string name="arquivo_not_informed">Não informado</string>
     <string name="arquivo_character_search">Buscar personagens</string>
     <string name="arquivo_no_results">Sem resultados para “%1$s”</string>
+    <string name="arquivo_description_unavailable">Descrição ainda não disponível.</string>
 </resources>
