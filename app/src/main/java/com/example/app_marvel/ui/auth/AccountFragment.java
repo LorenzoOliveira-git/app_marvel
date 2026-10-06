@@ -77,9 +77,9 @@ public final class AccountFragment extends Fragment {
     private void cancelEdit() {
         if (model.edit().getValue().busy) return;
         if (model.name().equals(model.getSession().getValue().getName())) { model.cancel(); return; }
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog)
             .setTitle(R.string.my_heroes_discard_title).setMessage(R.string.my_heroes_discard_body)
-            .setPositiveButton(R.string.my_heroes_discard, (dialog,which) -> model.cancel()).setNegativeButton(R.string.catalog_cancel, null).show();
+            .setPositiveButton(R.string.my_heroes_keep_editing, null).setNegativeButton(R.string.my_heroes_discard, (dialog,which) -> model.cancel()).show();
     }
     private void renderEdit(AccountViewModel.EditState state) {
         boolean signed = model.getSession().getValue().isAuthenticated();

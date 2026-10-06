@@ -193,6 +193,7 @@ public final class CreateHeroFragment extends Fragment {
         List<CreateHeroViewModel.Choice> choices = state.getData(); String[] labels = new String[choices.size()]; int selected = -1;
         for (int i = 0; i < choices.size(); i++) { labels[i] = choices.get(i).label; if (model.origin() != null && choices.get(i).id == model.origin().id) selected = i; }
         android.widget.ListView list=new android.widget.ListView(requireContext());
+        list.setLayoutParams(new android.widget.FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,dp(52*Math.min(6,labels.length))));
         list.setChoiceMode(android.widget.ListView.CHOICE_MODE_SINGLE);
         list.setAdapter(new android.widget.ArrayAdapter<>(requireContext(),android.R.layout.simple_list_item_single_choice,labels));
         if(selected>=0)list.setItemChecked(selected,true);

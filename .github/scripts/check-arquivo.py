@@ -163,6 +163,23 @@ try:
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')
     tap('hero_name'); adb('shell','input','text','Arquivo'); capture('arquivo-formulario-teclado')
     adb('shell','input','keyevent','4')
+    tap('hero_real_name'); adb('shell','input','text','Explorador')
+    adb('shell','input','keyevent','4'); tap_node(show('hero_next')); wait('hero_origin')
+    deadline=time.monotonic()+120
+    while time.monotonic()<deadline:
+        origin=find('hero_origin')
+        if origin is not None and origin.get('enabled')=='true': break
+        time.sleep(2)
+    else: raise AssertionError('Origens não ficaram disponíveis')
+    tap('hero_origin'); wait('filter_heading'); capture('arquivo-origem-painel')
+    options=[n for n in nodes() if n.get('checkable')=='true']
+    assert options, 'Painel de origem sem escolhas'
+    tap_node(options[0]); wait('hero_origin')
+    chosen=find('hero_origin').get('text')
+    tap('hero_origin'); wait('filter_heading'); tap('filter_apply'); wait('hero_origin')
+    assert find('hero_origin').get('text')==chosen, 'Cancelar alterou a origem'
+    # Nenhuma ação de geração/salvamento é chamada neste smoke.
+
     tap('homeFragment'); wait('user_name')
     # Aumento real de fonte; verifica área útil e destino acessível sem depender de gesto.
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.6')
@@ -178,7 +195,7 @@ try:
     (OUT/'resultado.json').write_text(json.dumps({'success': True, 'checks': [
         'login', 'offline_recoverable', 'home_real_issue', 'detail_without_navigation',
         'return_preserves_issue', 'grid_characters_comics_movies_series', 'search_return_preserved',
-        'filter_draft_cancel_apply_clear', 'profile_create_keyboard', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
+        'filter_draft_cancel_apply_clear', 'profile_create_keyboard', 'origin_sheet_choose_cancel', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
     print('Tela inicial, erro offline, detalhe/retorno e navegação com fonte 160% conferidos.')
 except Exception:
     (OUT/'failure.txt').write_text(traceback.format_exc())

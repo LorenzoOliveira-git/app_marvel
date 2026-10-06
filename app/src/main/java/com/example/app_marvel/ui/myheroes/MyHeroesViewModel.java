@@ -43,7 +43,7 @@ public final class MyHeroesViewModel extends ViewModel {
             if(failure!=null)return;
             previews.load(url,bitmap->{
                 if(stamp!=previewEpoch||!uid.equals(repository.account()))return;
-                if(bitmap!=null){thumbnails.put(id,Bitmap.createScaledBitmap(bitmap,144,216,true));previewChanged.setValue(previewChanged.getValue()+1);}
+                if(bitmap!=null){requestedPreviews.remove(id);thumbnails.put(id,Bitmap.createScaledBitmap(bitmap,144,216,true));previewChanged.setValue(previewChanged.getValue()+1);}
             });
         });
     }
@@ -66,7 +66,7 @@ public final class MyHeroesViewModel extends ViewModel {
     public LiveData<Bitmap> image(){return image;}
     public LiveData<Boolean> imageFailed(){return imageFailed;}
     public String field(String key){String value=fields.get(key);return value==null?"":value;}
-    public void field(String key,String value){if(selected!=null&&!busy)fields.set(key,value);}
+    public void field(String key,String value){if(selected!=null&&!busy){fields.set(key,value);if(saved){saved=false;emit();}}}
     private void emit(){state.setValue(new State(rows,selected,busy,more,saved,error));}
     private void accountChanged() {
         String uid=repository.account();if(initialized&&uid.equals(account))return;

@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +21,6 @@ import com.example.app_marvel.R;
 import com.example.app_marvel.data.model.AppFeature;
 import com.example.app_marvel.databinding.FragmentMyHeroesBinding;
 import com.example.app_marvel.databinding.ItemSavedHeroBinding;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -50,7 +48,7 @@ public final class MyHeroesFragment extends Fragment {
         binding.collectionImageRetry.setOnClickListener(v->model.loadImage());
         model.state().observe(getViewLifecycleOwner(),this::render);
         model.previewChanged().observe(getViewLifecycleOwner(),ignored->updatePreviews());
-        binding.collectionScroll.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener)(scroll,x,y,oldX,oldY)->loadVisiblePreviews());
+        binding.collectionScroll.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener)(scroll,x,y,oldX,oldY)->{updatePreviews();loadVisiblePreviews();});
         model.image().observe(getViewLifecycleOwner(),bitmap->{binding.collectionImage.setImageBitmap(bitmap);binding.collectionImage.setVisibility(bitmap==null?View.GONE:View.VISIBLE);});
         model.imageFailed().observe(getViewLifecycleOwner(),failed->binding.collectionImageRetry.setVisibility(Boolean.TRUE.equals(failed)?View.VISIBLE:View.GONE));
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),new OnBackPressedCallback(true){
@@ -103,7 +101,9 @@ public final class MyHeroesFragment extends Fragment {
         if(binding==null)return;
         for(var entry:heroViews.entrySet()){
             var bitmap=model.thumbnail(entry.getKey());
-            if(bitmap!=null)entry.getValue().savedHeroImage.setImageBitmap(bitmap);
+            android.graphics.Rect visible=new android.graphics.Rect();
+            if(bitmap!=null&&entry.getValue().getRoot().getGlobalVisibleRect(visible))entry.getValue().savedHeroImage.setImageBitmap(bitmap);
+            else entry.getValue().savedHeroImage.setImageResource(R.drawable.ic_image_placeholder);
         }
     }
     private void loadVisiblePreviews(){
