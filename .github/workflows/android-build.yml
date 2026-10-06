@@ -153,8 +153,8 @@ jobs:
           PY
       - name: Verificar Arquivo de Papel, detalhe e acessibilidade
         id: arquivo
-        if: steps.emulator.outcome == 'success' && (github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base')
-        timeout-minutes: 8
+        if: steps.emulator.outcome == 'success'
+        timeout-minutes: 12
         run: python3 .github/scripts/check-arquivo.py
       - name: Disponibilizar prévia do Arquivo de Papel
         if: always() && (github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base')
@@ -171,7 +171,7 @@ jobs:
       - name: Verificar catálogo ComicVine real e cache no emulador
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only != 'true' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 15
-        run: python3 .github/scripts/check-catalog.py --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+        run: python3 .github/scripts/check-catalog.py --data-only --compact || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar quadrinhos reais, cache e navegação
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only != 'true' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 7
@@ -179,7 +179,7 @@ jobs:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
-          python3 .github/scripts/check-comics.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+          python3 .github/scripts/check-comics.py --data-only || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de quadrinhos
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only != 'true' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' }}
         timeout-minutes: 9
@@ -187,7 +187,7 @@ jobs:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
-          python3 .github/scripts/check-issue.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+          python3 .github/scripts/check-issue.py --data-only || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar catálogo nativo de arcos
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only != 'true' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.movie_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.issue_only != 'true' }}
         timeout-minutes: 9
@@ -211,7 +211,7 @@ jobs:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
-          python3 .github/scripts/check-movies.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+          python3 .github/scripts/check-movies.py --data-only || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de filmes
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only != 'true' && steps.scope.outputs.series_only != 'true' && steps.scope.outputs.issue_only != 'true' && steps.scope.outputs.arc_only != 'true' && steps.scope.outputs.arc_detail_only != 'true' && steps.scope.outputs.movie_only != 'true' }}
         timeout-minutes: 15
@@ -227,7 +227,7 @@ jobs:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: |
           python3 tools/comicvine.py device
-          python3 .github/scripts/check-series.py || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
+          python3 .github/scripts/check-series.py --data-only || { adb logcat -d -s AndroidRuntime:E ComicVine:W; exit 1; }
       - name: Verificar detalhes nativos de séries e episódios
         if: ${{ !cancelled() && steps.emulator.outcome == 'success' && steps.arquivo.outcome != 'failure' && steps.scope.outputs.hero_form_only != 'true' && steps.scope.outputs.series_detail_only == 'true' }}
         timeout-minutes: 15

@@ -61,6 +61,14 @@ public final class MarvStateView extends LinearLayout {
 
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
 
+    public void searchEmpty(String query, Runnable reset) {
+        if (!query.trim().isEmpty()) binding.statusTitle.setText(getContext().getString(
+                R.string.arquivo_no_results, query.length() > 40 ? query.substring(0, 40) + "…" : query));
+        binding.retryButton.setText(R.string.catalog_clear_filters);
+        binding.retryButton.setVisibility(VISIBLE);
+        binding.retryButton.setOnClickListener(view -> reset.run());
+    }
+
     public void emptyMessage(int title, int body) {
         binding.statusTitle.setText(title); binding.statusBody.setText(body);
     }
@@ -69,6 +77,7 @@ public final class MarvStateView extends LinearLayout {
         // Sempre limpar o callback anterior antes de alterar o estado.
         binding.retryButton.setOnClickListener(null);
         binding.retryButton.setVisibility(GONE);
+        binding.retryButton.setText(R.string.catalog_retry);
         // Esqueletos estáticos evitam cintilação e respeitam movimento reduzido.
         binding.progress.setVisibility(GONE);
         binding.skeleton.setVisibility(status == UiState.Status.LOADING ? VISIBLE : GONE);

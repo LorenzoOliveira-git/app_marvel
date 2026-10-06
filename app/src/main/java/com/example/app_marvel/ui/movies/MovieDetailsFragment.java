@@ -117,7 +117,7 @@ public final class MovieDetailsFragment extends Fragment {
             } else {
                 MaterialButton button=(MaterialButton)getLayoutInflater().inflate(R.layout.component_issue_credit,binding.movieCredits,false);
                 button.setTextAppearance(R.style.TextAppearance_Marvel_CatalogFilter);button.setText(getString(R.string.issue_credit_external,credit.reference.name));
-                button.setContentDescription(getString(R.string.movie_credit_external,credit.reference.name));button.setSingleLine(false);button.setMinHeight(dp(48));
+                button.setContentDescription(getString(R.string.movie_credit_external,credit.reference.name));button.setSingleLine(false);button.setMinHeight(dp(52));
                 button.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),credit.siteUrl));binding.movieCredits.addView(button,new LinearLayout.LayoutParams(-1,-2));
             }
         }

@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.MainActivity;
 import com.example.app_marvel.MarvelApplication;
@@ -31,7 +31,6 @@ public final class SeriesFragment extends Fragment {
     private FragmentSeriesBinding binding;
     private SeriesViewModel model;
     private SeriesCoverAdapter covers;
-    private final PagerSnapHelper snap = new PagerSnapHelper();
     private AlertDialog dialog;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle saved) {
         binding = FragmentSeriesBinding.inflate(inflater, parent, false); return binding.getRoot();
@@ -39,7 +38,6 @@ public final class SeriesFragment extends Fragment {
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
         view.post(() -> { if (binding != null) ((MainActivity) requireActivity()).updateContentInsets(); });
         ViewCompat.setAccessibilityHeading(binding.seriesFeaturedHeading, true);
-        ViewCompat.setAccessibilityHeading(binding.seriesTitle, true);
         var container = ((MarvelApplication) requireActivity().getApplication()).getContainer();
         model = new ViewModelProvider(requireActivity(), new ViewModelProvider.Factory() {
             @NonNull @Override public <T extends ViewModel> T create(@NonNull Class<T> type, @NonNull CreationExtras extras) {
@@ -55,23 +53,15 @@ public final class SeriesFragment extends Fragment {
             binding.seriesFeaturedList.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
             if (state.getStatus() == UiState.Status.CONTENT) highlight.submit(state.getData());
         });
-        LinearLayoutManager layout = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        binding.covers.setLayoutManager(layout); covers = new SeriesCoverAdapter(container.getImages(), this::move);
-        binding.covers.setAdapter(covers); snap.attachToRecyclerView(binding.covers);
+        GridLayoutManager layout = new GridLayoutManager(requireContext(), 2);
+        binding.covers.setLayoutManager(layout); covers = new SeriesCoverAdapter(container.getImages(), position -> { model.select(position); ((MainActivity) requireActivity()).openSeriesDetails(covers.item(position).id); });
+        binding.covers.setAdapter(covers);
         binding.covers.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob) -> { if (r-l > 0 && r-l != or-ol) geometry(r-l); });
-        binding.covers.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override public void onScrolled(@NonNull RecyclerView recycler, int dx, int dy) { covers.updateFocus(recycler); }
-            @Override public void onScrollStateChanged(@NonNull RecyclerView recycler, int state) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) { View focused = snap.findSnapView(layout); if (focused != null) model.select(layout.getPosition(focused)); }
-            }
-        });
+
         binding.seriesAz.setOnClickListener(v -> { model.order(false); filters(); });
         binding.seriesZa.setOnClickListener(v -> { model.order(true); filters(); });
         binding.seriesSearch.setOnClickListener(v -> search());
-        binding.previousSeries.setOnClickListener(v -> move(model.position()-1));
-        binding.nextSeries.setOnClickListener(v -> move(model.position()+1));
         binding.loadMore.setOnClickListener(v -> model.more());
-        binding.seriesMore.setOnClickListener(v -> { var item = model.selected().getValue(); if (item != null) ((MainActivity) requireActivity()).openSeriesDetails(item.id); });
         model.state().observe(getViewLifecycleOwner(), state -> {
             binding.seriesState.render(state.getStatus(), model::reload);
             if (state.getStatus() == UiState.Status.EMPTY) binding.seriesState.emptyMessage(R.string.series_empty_title, R.string.series_empty_body);
@@ -79,7 +69,6 @@ public final class SeriesFragment extends Fragment {
             if (state.getStatus() == UiState.Status.CONTENT) {
                 covers.submit(state.getData());
                 selection();
-                binding.covers.post(() -> { if (binding != null) ((LinearLayoutManager) binding.covers.getLayoutManager()).scrollToPositionWithOffset(model.position(), 0); });
             }
         });
         model.selected().observe(getViewLifecycleOwner(), item -> selection());
@@ -89,25 +78,11 @@ public final class SeriesFragment extends Fragment {
         filters();
     }
     private void geometry(int width) {
-        int cardWidth = Math.min(dp(280), Math.round(width*.60f)), cardHeight = Math.round(cardWidth*1.47f);
-        covers.setGeometry(cardWidth, cardHeight);
-        int side = Math.max(0, (width-cardWidth-dp(16))/2); binding.covers.setPadding(side,0,side,0);
-        ViewGroup.LayoutParams params = binding.covers.getLayoutParams(); params.height = cardHeight+dp(16); binding.covers.setLayoutParams(params);
-        ((LinearLayoutManager) binding.covers.getLayoutManager()).scrollToPositionWithOffset(model.position(),0);
-        binding.covers.post(() -> { if (binding != null) covers.updateFocus(binding.covers); });
+        ((GridLayoutManager) binding.covers.getLayoutManager()).setSpanCount(
+                getResources().getConfiguration().screenWidthDp >= 360 && getResources().getConfiguration().fontScale < 1.3f ? 2 : 1);
     }
-    private void move(int position) { if (position >= 0 && position < covers.getItemCount()) binding.covers.smoothScrollToPosition(position); }
     private void selection() {
-        var item = model.selected().getValue(); if (item == null) return;
-        binding.seriesTitle.setText(item.title);
-        binding.seriesYear.setText(item.startYear.isEmpty() ? "":getString(R.string.series_year,item.startYear));
-        binding.seriesYear.setVisibility(item.startYear.isEmpty() ? View.GONE:View.VISIBLE);
-        binding.seriesEpisodes.setText(item.episodeCount>=0 ? getResources().getQuantityString(R.plurals.series_episodes,item.episodeCount,item.episodeCount):"");
-        binding.seriesEpisodes.setVisibility(item.episodeCount>=0 ? View.VISIBLE:View.GONE);
-        binding.seriesMore.setText(R.string.series_details_open);binding.seriesMore.setEnabled(true);
-        binding.seriesMore.setContentDescription(getString(R.string.series_open_named,item.title));
-        int position = model.position(); binding.selectionCount.setText(getString(R.string.catalog_count,position+1,covers.getItemCount()));
-        binding.previousSeries.setEnabled(position > 0); binding.nextSeries.setEnabled(position+1 < covers.getItemCount());
+        binding.selectionCount.setText(getString(R.string.arquivo_loaded_count, covers.getItemCount()));
     }
     private void filters() {
         binding.seriesAz.setSelected(!model.descending()); binding.seriesZa.setSelected(model.descending());
@@ -140,7 +115,7 @@ public final class SeriesFragment extends Fragment {
     private void closeDialog() { if (dialog != null) { dialog.dismiss(); dialog = null; } }
     private int dp(int value) { return Math.round(value*getResources().getDisplayMetrics().density); }
     @Override public void onDestroyView() {
-        closeDialog(); snap.attachToRecyclerView(null); binding.covers.setAdapter(null); binding.seriesFeaturedList.setAdapter(null);
+        closeDialog(); binding.covers.setAdapter(null); binding.seriesFeaturedList.setAdapter(null);
         super.onDestroyView(); binding = null; covers = null;
     }
 }

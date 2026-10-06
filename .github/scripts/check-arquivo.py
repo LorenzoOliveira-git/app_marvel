@@ -60,6 +60,40 @@ def tap(resource):
 def capture(name):
     (OUT/(name+'.png')).write_bytes(adb('exec-out', 'screencap', '-p'))
 
+def point(node):
+    x1, y1, x2, y2 = map(int, re.findall(r'\d+', node.get('bounds', '')))
+    return (x1+x2)//2, (y1+y2)//2
+
+def show(resource, timeout=90):
+    deadline = time.monotonic()+timeout
+    while time.monotonic()<deadline:
+        snapshot = nodes(); node = find(resource, snapshot)
+        if node is not None:
+            x, y = point(node)
+            if 110 < y < 720:
+                return node
+        adb('shell', 'input', 'swipe', '195', '710', '195', '450', '400')
+        time.sleep(1)
+    raise AssertionError('Controle não ficou visível: '+resource)
+
+def tap_node(node):
+    x,y=point(node); adb('shell', 'input', 'tap', str(x), str(y)); time.sleep(1)
+
+def top():
+    for _ in range(5):
+        adb('shell', 'input', 'swipe', '195', '320', '195', '710', '250')
+    time.sleep(1)
+
+def gallery():
+    wait('cover_title', 120)
+    # Two actual tiles in the same row, rather than the old resizing carousel.
+    tiles=[n for n in nodes() if n.get('resource-id','').endswith('/cover_image')]
+    if not tiles: # Non-accessible images are intentionally omitted from UIAutomator.
+        tiles=[n for n in nodes() if n.get('resource-id','').endswith('/cover_title')]
+    assert len(tiles)>=2, 'Grade sem dois itens visíveis'
+    a,b=tiles[:2]; ax,ay=point(a); bx,by=point(b)
+    assert abs(ay-by)<55 and abs(ax-bx)>90, 'Galeria não está em duas colunas'
+
 try:
     adb('shell', 'wm', 'size', '390x844')
     adb('shell', 'wm', 'density', '160')
@@ -91,16 +125,48 @@ try:
     capture('arquivo-detalhe')
     tap('header_back'); assert wait('issue_title').get('text', '') == title
     assert find('bottom_navigation') is not None, 'Barra não voltou ao início'
+    tap('charactersFragment'); wait('search_name')
+    tap('search_name'); adb('shell', 'input', 'text', 'Spider-Man'); adb('shell', 'input', 'keyevent', '66')
+    wait('cover_title',120); gallery(); capture('arquivo-personagens-grade')
+    searched = find('search_name').get('text','')
+    tap_node(show('cover_title')); wait('details_name',120)
+    assert find('bottom_navigation') is None
+    capture('arquivo-personagem-detalhe')
+    tap('header_back'); assert wait('search_name').get('text','') == searched
+    # A draft filter can be cancelled without modifying the real query.
+    tap('gender_filter'); wait('filter_apply'); capture('arquivo-filtros')
+    adb('shell','input','keyevent','4'); assert wait('search_name').get('text','') == searched
+    tap('gender_filter'); wait('filter_apply')
+    choices=[n for n in nodes() if n.get('checkable')=='true']
+    assert len(choices)>=2
+    tap_node(choices[1]); tap('filter_apply'); wait('cover_title',120)
+    assert find('clear_filters') is not None
+    tap('clear_filters'); wait('cover_title',120)
+    tap('homeFragment'); wait('user_name'); tap('storiesFragment'); wait('open_comics')
+    for route,heading,label in [('open_comics','issue_heading','quadrinhos'),
+                                 ('open_movies','movie_details_heading','filmes'),
+                                 ('open_series','series_details_heading','series')]:
+        top(); tap_node(show(route)); show('cover_title',120); gallery(); capture('arquivo-'+label+'-grade')
+        tap_node(show('cover_title')); wait(heading,120)
+        assert find('bottom_navigation') is None, label
+        capture('arquivo-'+label+'-detalhe'); tap('header_back'); wait('cover_title')
+        tap('header_back'); wait('open_comics')
+    tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
+    tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')
+    tap('hero_name'); adb('shell','input','text','Arquivo'); capture('arquivo-formulario-teclado')
+    adb('shell','input','keyevent','4')
+    tap('homeFragment'); wait('user_name')
     # Aumento real de fonte; verifica área útil e destino acessível sem depender de gesto.
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.6')
     wait('bottom_navigation'); capture('arquivo-fonte-160')
-    tap('charactersFragment'); wait('expanded_screen_title')
+    tap('charactersFragment'); wait('expanded_screen_title'); wait('search_name'); capture('arquivo-personagens-fonte-160')
     tap('homeFragment'); wait('user_name')
     fatal = adb('logcat', '-d', '-s', 'AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in fatal, 'Exceção Android durante o smoke visual'
     (OUT/'resultado.json').write_text(json.dumps({'success': True, 'checks': [
         'login', 'offline_recoverable', 'home_real_issue', 'detail_without_navigation',
-        'return_preserves_issue', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
+        'return_preserves_issue', 'grid_characters_comics_movies_series', 'search_return_preserved',
+        'filter_draft_cancel_apply_clear', 'profile_create_keyboard', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
     print('Tela inicial, erro offline, detalhe/retorno e navegação com fonte 160% conferidos.')
 except Exception:
     (OUT/'failure.txt').write_text(traceback.format_exc())

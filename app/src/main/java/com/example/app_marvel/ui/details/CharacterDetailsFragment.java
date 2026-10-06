@@ -59,8 +59,8 @@ public final class CharacterDetailsFragment extends Fragment {
             var details = state.getData(); var item = details.character;
             binding.detailsName.setText(item.name); container.getImages().show(binding.detailsImage, item.imageUrl);
             binding.detailsHistory.setOnClickListener(v -> ((MainActivity) requireActivity()).openCharacterHistory(item.id));
-            binding.detailsRealName.setText(item.realName.isEmpty() ? "" : getString(R.string.catalog_real_name, item.realName));
-            binding.detailsRealName.setVisibility(item.realName.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.detailsRealName.setText(getString(R.string.catalog_real_name, item.realName.isEmpty() ? getString(R.string.arquivo_not_informed) : item.realName));
+            binding.detailsRealName.setVisibility(View.VISIBLE);
             binding.countSection.setVisibility(details.appearanceCount < 0 ? View.GONE : View.VISIBLE);
             if (details.appearanceCount >= 0) binding.appearanceCount.setText(getResources().getQuantityString(R.plurals.details_appearances,
                     details.appearanceCount == 1 ? 1 : 2, NumberFormat.getIntegerInstance(new Locale("pt", "BR")).format(details.appearanceCount)));
@@ -74,8 +74,8 @@ public final class CharacterDetailsFragment extends Fragment {
             binding.detailsDescription.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
         });
         model.getOrigin().observe(getViewLifecycleOwner(), state -> {
-            binding.detailsOrigin.setText(state.getStatus() == UiState.Status.CONTENT ? getString(R.string.catalog_origin_value, state.getData()) : "");
-            binding.detailsOrigin.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
+            binding.detailsOrigin.setText(getString(R.string.catalog_origin_value, state.getStatus() == UiState.Status.CONTENT ? state.getData() : getString(R.string.arquivo_not_informed)));
+            binding.detailsOrigin.setVisibility(View.VISIBLE);
             binding.originProgress.setVisibility(state.getStatus() == UiState.Status.LOADING ? View.VISIBLE : View.GONE);
             binding.originRetry.setVisibility(state.getStatus() == UiState.Status.ERROR ? View.VISIBLE : View.GONE);
         });
@@ -85,9 +85,9 @@ public final class CharacterDetailsFragment extends Fragment {
             binding.powersState.render(state.getStatus(), model::translate); binding.powerLabels.removeAllViews();
             if (state.getStatus() == UiState.Status.CONTENT) for (Reference ref : state.getData()) {
                 TextView label = new TextView(requireContext()); label.setText(ref.name);
-                label.setTextColor(getResources().getColor(R.color.marvel_text, null)); label.setTextSize(20);
-                label.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.bebas_neue_regular));
-                label.setPadding(dp(16), dp(10), dp(16), dp(10)); label.setBackgroundResource(R.drawable.background_power);
+                label.setTextColor(getResources().getColor(R.color.marvel_text, null)); label.setTextSize(12);
+                label.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.barlow_semibold));
+                label.setPadding(dp(16), dp(12), dp(16), dp(12)); label.setBackgroundResource(R.drawable.background_power);
                 label.setMaxWidth(getResources().getDisplayMetrics().widthPixels - 2 * getResources().getDimensionPixelSize(R.dimen.screen_padding));
                 binding.powerLabels.addView(label, new ViewGroup.LayoutParams(-2, -2));
             }

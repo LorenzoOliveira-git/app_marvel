@@ -16,8 +16,8 @@
     <string name="history_source">Fonte: ComicVine. Resumo e origem com tradução automática.</string>
     <string name="history_profile">Ver perfil →</string>
     <string name="history_appearances">Ver aparições →</string>
-    <style name="TextAppearance.Marvel.HistoryHeading" parent="TextAppearance.Marvel.CatalogTitle"><item name="android:textSize">32sp</item></style>
-    <style name="Widget.Marvel.HistoryButton" parent="Widget.Marvel.Button.Primary">
+    <style name="TextAppearance.Marvel.HistoryHeading" parent="TextAppearance.Marvel.Section" />
+    <style name="Widget.Marvel.HistoryButton" parent="Widget.Marvel.MenuRow">
         <item name="android:background">@drawable/background_recent_issue</item>
         <item name="backgroundTint">@null</item>
         <item name="android:paddingStart">12dp</item><item name="android:paddingEnd">12dp</item>

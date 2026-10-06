@@ -84,4 +84,10 @@
         <item name="android:fontFamily">@font/barlow_semibold</item><item name="fontFamily">@font/barlow_semibold</item>
         <item name="lineHeight">20sp</item><item name="android:textColor">@color/arquivo_tinta</item>
     </style>
+
+    <style name="ShapeAppearance.Marvel.Cover" parent=""><item name="cornerFamily">rounded</item><item name="cornerSize">4dp</item></style>
+    <style name="Widget.Marvel.SectionHeading" parent="TextAppearance.Marvel.Section"><item name="android:paddingBottom">8dp</item><item name="android:background">@drawable/background_section_line</item></style>
+    <style name="Widget.Marvel.SearchInput" parent="Widget.Marvel.AuthInput"><item name="startIconDrawable">@drawable/ic_arquivo_search</item><item name="startIconTint">@color/arquivo_tinta</item><item name="endIconMode">clear_text</item></style>
+    <style name="Widget.Marvel.MenuRow" parent="Widget.Marvel.AuthLink"><item name="android:minHeight">52dp</item><item name="android:textColor">@color/arquivo_tinta</item><item name="android:textSize">14sp</item><item name="android:background">@drawable/background_section_line</item></style>
+    <style name="Widget.Marvel.Button.Destructive" parent="Widget.Marvel.AuthLink"><item name="android:textColor">@color/arquivo_erro</item></style>
 </resources>
