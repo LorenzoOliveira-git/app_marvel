@@ -27,10 +27,17 @@ def tap(resource=None,text=None):
         raise
 
 def replace_name(value):
+    top()  # Reopening the editor can preserve a scroll offset below the input.
     tap(resource='profile_name')
+    assert wait('profile_name').get('focused') == 'true', 'Campo de nome sem foco'
+    current=wait('profile_name').get('text','')
     # Selecionar o conteúdo inteiro evita autocorreção durante centenas de DELs.
     adb('shell','input','keycombination','113','29')  # CTRL_LEFT + A
     adb('shell','input','keyevent','67')  # DEL
+    if wait('profile_name').get('text','') != '':
+        # Some IME frames miss CTRL+A; bounded key events clear the actual focused field.
+        adb('shell','input','keyevent','123')  # MOVE_END
+        adb('shell','input','keyevent',*(['67']*(len(current)+1)))
     if wait('profile_name').get('text','') != '':
         raise RuntimeError('Não foi possível esvaziar o campo de nome.')
     if value:adb('shell','input','text',value.replace(' ','%s'))
