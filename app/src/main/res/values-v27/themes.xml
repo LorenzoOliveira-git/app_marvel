@@ -1,0 +1,6 @@
+<resources>
+    <style name="Base.Theme.App_Marvel" parent="Base.Theme.App_Marvel.Core">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/arquivo_papel</item>
+    </style>
+</resources>

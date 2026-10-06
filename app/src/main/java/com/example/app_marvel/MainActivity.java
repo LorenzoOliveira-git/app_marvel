@@ -142,7 +142,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         WindowInsetsControllerCompat controller = ViewCompat.getWindowInsetsController(binding.getRoot());
         if (controller != null) {
             controller.setAppearanceLightStatusBars(true);
-            controller.setAppearanceLightNavigationBars(true);
+            controller.setAppearanceLightNavigationBars(android.os.Build.VERSION.SDK_INT >= 27);
         }
         ViewCompat.requestApplyInsets(binding.getRoot());
     }
