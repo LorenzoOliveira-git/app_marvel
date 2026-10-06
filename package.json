@@ -2,7 +2,8 @@
   "name": "marvel-local-emulators",
   "private": true,
   "scripts": {
-    "emulators": "firebase emulators:start --project demo-marvel-local --only auth,firestore,functions,storage",
+    "emulators": "firebase emulators:start --project demo-marvel-local --only auth,firestore,functions,storage --import=./firebase-local-data --export-on-exit=./firebase-local-data",
+    "emulators:export": "firebase emulators:export ./firebase-local-data --project demo-marvel-local",
     "check:local": "firebase emulators:exec --project demo-marvel-local --only auth,firestore,functions,storage \"node tools/check-firebase-local.cjs\"",
     "providers:status": "node tools/provider-status.cjs",
     "check:providers": "firebase emulators:exec --project demo-marvel-local --only auth,functions \"node tools/check-provider-configuration-local.cjs\"",
