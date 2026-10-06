@@ -4,6 +4,7 @@ import json
 import re
 import subprocess
 import time
+import traceback
 import xml.etree.ElementTree as ET
 
 PACKAGE = 'com.example.app_marvel'
@@ -11,7 +12,14 @@ OUT = Path('app/build/arquivo-preview')
 OUT.mkdir(parents=True, exist_ok=True)
 
 def adb(*args):
-    return subprocess.run(['adb', *args], capture_output=True, check=True, timeout=30).stdout
+    for attempt in range(3):
+        result = subprocess.run(['adb', *args], capture_output=True, timeout=30)
+        if result.returncode == 0:
+            return result.stdout
+        if attempt < 2:
+            subprocess.run(['adb', 'wait-for-device'], capture_output=True, check=True, timeout=20)
+            time.sleep(2)
+    result.check_returncode()
 
 def nodes():
     adb('shell', 'uiautomator', 'dump', '/sdcard/arquivo-ui.xml')
@@ -46,6 +54,7 @@ try:
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.0')
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('shell', 'am', 'start', '-n', PACKAGE+'/.MainActivity')
+    time.sleep(3)
     wait('email'); capture('arquivo-login')
     # Primeira abertura sem cache: erro recuperável mantém cabeçalho e navegação.
     adb('shell', 'cmd', 'connectivity', 'airplane-mode', 'enable')
@@ -81,6 +90,14 @@ try:
         'login', 'offline_recoverable', 'home_real_issue', 'detail_without_navigation',
         'return_preserves_issue', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
     print('Tela inicial, erro offline, detalhe/retorno e navegação com fonte 160% conferidos.')
+except Exception:
+    (OUT/'failure.txt').write_text(traceback.format_exc())
+    try:
+        capture('arquivo-falha')
+        (OUT/'android-runtime.txt').write_bytes(adb('logcat', '-d', '-s', 'AndroidRuntime:E'))
+    except Exception:
+        pass
+    raise
 finally:
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.0')
     adb('shell', 'wm', 'size', 'reset'); adb('shell', 'wm', 'density', 'reset')
