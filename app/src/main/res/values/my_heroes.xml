@@ -1,7 +1,7 @@
 <resources>
     <string name="my_heroes_title">Meus heróis</string>
     <string name="my_heroes_intro">Os personagens concluídos da sua conta ficam aqui.</string>
-    <string name="my_heroes_empty">Você ainda não tem heróis concluídos. Crie seu primeiro personagem para começar a coleção.</string>
+    <string name="my_heroes_empty">Crie seu primeiro personagem e guarde sua história aqui.</string>
     <string name="my_heroes_loading">Buscando seus heróis…</string>
     <string name="my_heroes_auth">Entre na sua conta para ver seus heróis.</string>
     <string name="my_heroes_unavailable">A coleção não está disponível neste ambiente agora.</string>
@@ -12,11 +12,14 @@
     <string name="my_heroes_refresh">Atualizar coleção</string>
     <string name="my_heroes_more">Carregar mais heróis</string>
     <string name="my_heroes_create">Criar um herói</string>
-    <string name="my_heroes_fixed_image">Você pode editar nome, identidade e descrição. A imagem, origem e poderes permanecem os mesmos. Esta edição não gera imagem nem inicia cobrança.</string>
+    <string name="my_heroes_fixed_image">Edite nome, identidade e história do seu herói.</string>
     <string name="my_heroes_save">Salvar alterações</string>
     <string name="my_heroes_close">Voltar à coleção</string>
     <string name="my_heroes_reload">Recarregar dados do herói</string>
     <string name="my_heroes_discard_title">Descartar campos editados?</string>
     <string name="my_heroes_discard_body">Ao voltar ou recarregar, os campos ainda não salvos serão descartados.</string>
     <string name="my_heroes_discard">Descartar</string>
+    <string name="my_heroes_empty_title">Comece sua coleção</string>
+    <string name="my_heroes_keep_editing">Continuar editando</string>
+    <plurals name="my_heroes_count"><item quantity="one">%d herói carregado</item><item quantity="other">%d heróis carregados</item></plurals>
 </resources>

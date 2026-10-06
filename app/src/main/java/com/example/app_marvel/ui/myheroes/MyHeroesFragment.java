@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +20,7 @@ import com.example.app_marvel.MarvelApplication;
 import com.example.app_marvel.R;
 import com.example.app_marvel.data.model.AppFeature;
 import com.example.app_marvel.databinding.FragmentMyHeroesBinding;
-import com.google.android.material.button.MaterialButton;
+import com.example.app_marvel.databinding.ItemSavedHeroBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -29,6 +28,7 @@ public final class MyHeroesFragment extends Fragment {
     private FragmentMyHeroesBinding binding;
     private MyHeroesViewModel model;
     private boolean syncing;
+    private final java.util.Map<String,ItemSavedHeroBinding> heroViews=new java.util.HashMap<>();
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup parent,@Nullable Bundle saved){binding=FragmentMyHeroesBinding.inflate(inflater,parent,false);return binding.getRoot();}
     @Override public void onViewCreated(@NonNull View view,@Nullable Bundle saved){
         var container=((MarvelApplication)requireActivity().getApplication()).getContainer();
@@ -47,6 +47,8 @@ public final class MyHeroesFragment extends Fragment {
         binding.collectionLeavePending.setOnClickListener(v->model.closeEditor());
         binding.collectionImageRetry.setOnClickListener(v->model.loadImage());
         model.state().observe(getViewLifecycleOwner(),this::render);
+        model.previewChanged().observe(getViewLifecycleOwner(),ignored->updatePreviews());
+        binding.collectionScroll.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener)(scroll,x,y,oldX,oldY)->{updatePreviews();loadVisiblePreviews();});
         model.image().observe(getViewLifecycleOwner(),bitmap->{binding.collectionImage.setImageBitmap(bitmap);binding.collectionImage.setVisibility(bitmap==null?View.GONE:View.VISIBLE);});
         model.imageFailed().observe(getViewLifecycleOwner(),failed->binding.collectionImageRetry.setVisibility(Boolean.TRUE.equals(failed)?View.VISIBLE:View.GONE));
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),new OnBackPressedCallback(true){
@@ -59,18 +61,26 @@ public final class MyHeroesFragment extends Fragment {
         var current=model.state().getValue();if(current.busy)return;
         boolean edited=current.selected!=null&&(!model.field("heroName").equals(current.selected.name)||!model.field("realName").equals(current.selected.realName)||!model.field("description").equals(current.selected.description));
         if(!edited){action.run();return;}
-        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.my_heroes_discard_title).setMessage(R.string.my_heroes_discard_body)
-            .setPositiveButton(R.string.my_heroes_discard,(dialog,which)->action.run()).setNegativeButton(R.string.catalog_cancel,null).show();
+        new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog).setTitle(R.string.my_heroes_discard_title).setMessage(R.string.my_heroes_discard_body)
+            .setPositiveButton(R.string.my_heroes_keep_editing,null).setNegativeButton(R.string.my_heroes_discard,(dialog,which)->action.run()).show();
     }
     private void render(MyHeroesViewModel.State state){
         boolean editor=state.selected!=null;boolean pending=model.pendingHero();
         binding.collectionEditor.setVisibility(editor?View.VISIBLE:View.GONE);binding.collectionList.setVisibility(editor?View.GONE:View.VISIBLE);
-        binding.collectionIntro.setVisibility(editor?View.GONE:View.VISIBLE);
+        boolean empty=!editor&&!pending&&!state.busy&&state.error==null&&state.rows.isEmpty();
+        binding.collectionMascot.setVisibility(empty?View.VISIBLE:View.GONE);
+        binding.collectionEmptyTitle.setVisibility(empty?View.VISIBLE:View.GONE);
+        binding.collectionIntro.setVisibility(editor||empty?View.GONE:View.VISIBLE);
+        binding.collectionSummary.setVisibility(!editor&&!state.rows.isEmpty()?View.VISIBLE:View.GONE);
+        binding.collectionSummary.setText(getResources().getQuantityString(R.plurals.my_heroes_count,state.rows.size(),state.rows.size()));
+        binding.collectionSkeleton.setVisibility(!editor&&state.busy&&state.rows.isEmpty()?View.VISIBLE:View.GONE);
+        binding.collectionSaved.setVisibility(editor&&state.saved&&state.error==null?View.VISIBLE:View.GONE);
         binding.collectionProgress.setVisibility(state.busy?View.VISIBLE:View.GONE);
-        int message=state.busy?R.string.my_heroes_loading:state.saved?R.string.my_heroes_saved:!editor&&state.rows.isEmpty()?R.string.my_heroes_empty:0;
+        int message=state.busy?R.string.my_heroes_loading:empty?R.string.my_heroes_empty:0;
         if(state.error!=null)switch(state.error){case AUTH:message=R.string.my_heroes_auth;break;case INVALID:message=R.string.my_heroes_invalid;break;case CONFLICT:message=R.string.my_heroes_conflict;break;case UNAVAILABLE:message=pending?R.string.hero_access_unavailable:R.string.my_heroes_unavailable;break;default:message=R.string.my_heroes_error;}
         binding.collectionStatus.setVisibility(message==0?View.GONE:View.VISIBLE);if(message!=0)binding.collectionStatus.setText(message);
-        binding.collectionRefresh.setVisibility(editor?View.GONE:View.VISIBLE);binding.collectionRefresh.setEnabled(!state.busy);
+        binding.collectionRefresh.setVisibility(editor||empty||state.busy&&state.rows.isEmpty()?View.GONE:View.VISIBLE);
+        binding.collectionRefresh.setText(state.error==null?R.string.my_heroes_refresh:R.string.catalog_retry);binding.collectionRefresh.setEnabled(!state.busy);
         binding.collectionMore.setVisibility(!editor&&state.more?View.VISIBLE:View.GONE);binding.collectionMore.setEnabled(!state.busy);
         binding.collectionCreate.setVisibility(!editor?View.VISIBLE:View.GONE);binding.collectionCreate.setEnabled(!state.busy);
         binding.collectionSave.setEnabled(!state.busy&&state.error!=com.example.app_marvel.data.herodraft.MyHeroesRepository.Failure.CONFLICT);binding.collectionClose.setEnabled(!state.busy);binding.collectionReload.setEnabled(!state.busy);
@@ -78,14 +88,33 @@ public final class MyHeroesFragment extends Fragment {
         binding.collectionLeavePending.setVisibility(pending&&!state.busy?View.VISIBLE:View.GONE);
         for(var input:new TextInputEditText[]{binding.editHeroName,binding.editRealName,binding.editDescription})input.setEnabled(!state.busy);
         if(editor){syncing=true;set(binding.editHeroName,model.field("heroName"));set(binding.editRealName,model.field("realName"));set(binding.editDescription,model.field("description"));syncing=false;}
-        binding.collectionList.removeAllViews();
+        binding.collectionList.removeAllViews();heroViews.clear();
         if(!editor)for(var hero:state.rows){
-            MaterialButton row=new MaterialButton(new android.view.ContextThemeWrapper(requireContext(),R.style.Widget_Marvel_Button_Secondary));
-            row.setText(hero.name+"\n"+hero.realName);row.setSingleLine(false);row.setAllCaps(false);row.setEnabled(!state.busy);
-            var params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);params.topMargin=getResources().getDimensionPixelSize(R.dimen.space_md);row.setLayoutParams(params);
-            row.setOnClickListener(v->model.select(hero));binding.collectionList.addView(row);
+            var row=ItemSavedHeroBinding.inflate(getLayoutInflater(),binding.collectionList,false);
+            row.savedHeroTitle.setText(hero.name);row.savedHeroIdentity.setText(hero.realName);row.savedHeroDescription.setText(hero.description);
+            row.getRoot().setEnabled(!state.busy);row.getRoot().setOnClickListener(v->model.select(hero));
+            heroViews.put(hero.id,row);binding.collectionList.addView(row.getRoot());
+        }
+        updatePreviews();binding.collectionList.post(this::loadVisiblePreviews);
+    }
+    private void updatePreviews(){
+        if(binding==null)return;
+        for(var entry:heroViews.entrySet()){
+            var bitmap=model.thumbnail(entry.getKey());
+            android.graphics.Rect visible=new android.graphics.Rect();
+            if(bitmap!=null&&entry.getValue().getRoot().getGlobalVisibleRect(visible))entry.getValue().savedHeroImage.setImageBitmap(bitmap);
+            else entry.getValue().savedHeroImage.setImageResource(R.drawable.ic_image_placeholder);
         }
     }
+    private void loadVisiblePreviews(){
+        if(binding==null||binding.collectionList.getVisibility()!=View.VISIBLE)return;
+        android.graphics.Rect viewport=new android.graphics.Rect();binding.collectionScroll.getGlobalVisibleRect(viewport);
+        for(var entry:heroViews.entrySet()){
+            android.graphics.Rect row=new android.graphics.Rect();
+            if(entry.getValue().getRoot().getGlobalVisibleRect(row)&&android.graphics.Rect.intersects(viewport,row))model.preview(entry.getKey());
+        }
+    }
+
     private void set(TextInputEditText input,String value){if(input.getText()==null||!input.getText().toString().equals(value))input.setText(value);}
-    @Override public void onDestroyView(){super.onDestroyView();binding=null;}
+    @Override public void onDestroyView(){super.onDestroyView();heroViews.clear();binding=null;}
 }

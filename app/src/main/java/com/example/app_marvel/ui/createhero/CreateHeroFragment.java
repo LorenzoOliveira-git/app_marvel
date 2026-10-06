@@ -89,11 +89,11 @@ public final class CreateHeroFragment extends Fragment {
         model.confirmation().observe(getViewLifecycleOwner(), requested -> {
             if (!Boolean.TRUE.equals(requested)) { if (confirmationDialog != null) confirmationDialog.dismiss(); confirmationDialog = null; return; }
             if (confirmationDialog != null && confirmationDialog.isShowing()) return;
-            confirmationDialog = new MaterialAlertDialogBuilder(requireContext())
+            confirmationDialog = new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog)
                 .setTitle(model.retryConfirmation() ? R.string.hero_retry_confirm_title : R.string.hero_creation_confirm_title)
                 .setMessage(model.retryConfirmation() ? R.string.hero_retry_confirm : R.string.hero_creation_confirm)
-                .setPositiveButton(R.string.hero_confirm_generate, (dialog,which) -> { confirmationDialog = null; model.confirmPaidAttempt(); })
-                .setNegativeButton(android.R.string.cancel, (dialog,which) -> { confirmationDialog = null; model.cancelConfirmation(); })
+                .setNegativeButton(R.string.hero_confirm_generate, (dialog,which) -> { confirmationDialog = null; model.confirmPaidAttempt(); })
+                .setPositiveButton(android.R.string.cancel, (dialog,which) -> { confirmationDialog = null; model.cancelConfirmation(); })
                 .setOnCancelListener(dialog -> { confirmationDialog = null; model.cancelConfirmation(); }).show();
         });
         model.draftStatus().observe(getViewLifecycleOwner(), value -> renderDraft());
@@ -192,9 +192,17 @@ public final class CreateHeroFragment extends Fragment {
         if (state.getStatus() != UiState.Status.CONTENT) return;
         List<CreateHeroViewModel.Choice> choices = state.getData(); String[] labels = new String[choices.size()]; int selected = -1;
         for (int i = 0; i < choices.size(); i++) { labels[i] = choices.get(i).label; if (model.origin() != null && choices.get(i).id == model.origin().id) selected = i; }
-        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.hero_origin).setSingleChoiceItems(labels, selected, (dialog, index) -> {
-            model.origin(choices.get(index)); binding.heroOriginError.setVisibility(View.GONE); dialog.dismiss();
-        }).setNegativeButton(android.R.string.cancel, null).show();
+        android.widget.ListView list=new android.widget.ListView(requireContext());
+        list.setLayoutParams(new android.widget.FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,dp(52*Math.min(6,labels.length))));
+        list.setChoiceMode(android.widget.ListView.CHOICE_MODE_SINGLE);
+        list.setAdapter(new android.widget.ArrayAdapter<>(requireContext(),android.R.layout.simple_list_item_single_choice,labels));
+        if(selected>=0)list.setItemChecked(selected,true);
+        var sheet=com.example.app_marvel.ui.components.FilterSheet.show(requireContext(),getString(R.string.hero_origin),list,()->{},()->{});
+        sheet.findViewById(R.id.filter_reset).setVisibility(View.GONE);
+        ((android.widget.TextView)sheet.findViewById(R.id.filter_apply)).setText(android.R.string.cancel);
+        list.setOnItemClickListener((parent,row,index,id)->{
+            model.origin(choices.get(index));binding.heroOriginError.setVisibility(View.GONE);sheet.dismiss();
+        });
     }
     private void selections() {
         var origin = model.origin(); binding.heroOrigin.setText(origin == null ? getString(R.string.hero_choose_origin) : origin.label);
