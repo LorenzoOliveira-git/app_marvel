@@ -15,12 +15,12 @@
             </com.google.android.material.card.MaterialCardView>
             <LinearLayout android:id="@+id/issue_deck_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
                 <TextView android:id="@+id/issue_deck_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_summary" />
-                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/issue_deck_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/issue_deck_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                 <TextView android:id="@+id/issue_deck" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
             </LinearLayout>
             <LinearLayout android:id="@+id/issue_description_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
                 <TextView android:id="@+id/issue_description_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_description" />
-                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/issue_description_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/issue_description_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                 <TextView android:id="@+id/issue_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
             </LinearLayout>
             <include android:id="@+id/issue_characters_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />

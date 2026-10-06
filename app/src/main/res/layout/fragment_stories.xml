@@ -1,4 +1,4 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/stories_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/stories_scroll" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
         <TextView android:id="@+id/history_follow_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/history_follow" />
         <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/stories_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
@@ -10,7 +10,7 @@
         <com.google.android.material.button.MaterialButton android:id="@+id/open_movies" style="@style/Widget.Marvel.HistoryButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/movies_open" />
         <com.google.android.material.button.MaterialButton android:id="@+id/open_series" style="@style/Widget.Marvel.HistoryButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/series_open" />
         <TextView android:id="@+id/history_recent_heading" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/history_recent" />
-        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/stories_recent_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/stories_recent_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" />
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/stories_recent_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

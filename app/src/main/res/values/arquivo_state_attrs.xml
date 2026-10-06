@@ -1,0 +1,1 @@
+<resources><declare-styleable name="MarvStateView"><attr name="inlineState" format="boolean" /><attr name="textOnlySkeleton" format="boolean" /></declare-styleable></resources>

@@ -15,7 +15,7 @@
             </com.google.android.material.card.MaterialCardView>
             <LinearLayout android:id="@+id/series_deck_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
                 <TextView android:id="@+id/series_deck_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_summary" />
-                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_deck_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_deck_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                 <TextView android:id="@+id/series_deck" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
             </LinearLayout>
             <include android:id="@+id/series_characters_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
@@ -24,7 +24,7 @@
                 <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/series_episode_order" />
                 <TextView android:id="@+id/series_first_episode" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
                 <TextView android:id="@+id/series_last_episode" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
-                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_episodes_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_episodes_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                 <TextView android:id="@+id/series_loaded_episodes" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
                 <LinearLayout android:id="@+id/series_episode_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
                 <ProgressBar android:id="@+id/series_episodes_progress" android:layout_width="48dp" android:layout_height="48dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
@@ -32,7 +32,7 @@
             </LinearLayout>
             <LinearLayout android:id="@+id/series_description_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="32dp">
                 <TextView android:id="@+id/series_description_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_description" />
-                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_description_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/series_description_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                 <com.google.android.material.button.MaterialButton android:id="@+id/series_read_description" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/series_read_description" />
                 <TextView android:id="@+id/series_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
             </LinearLayout>

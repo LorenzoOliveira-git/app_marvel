@@ -17,13 +17,13 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
                 <LinearLayout android:id="@+id/description_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical">
                     <TextView android:id="@+id/description_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_description" />
-                    <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/description_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                    <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/description_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                     <TextView android:id="@+id/details_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
                 </LinearLayout>
                 <LinearLayout android:id="@+id/appearance_row" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:orientation="vertical" android:baselineAligned="false">
                     <LinearLayout android:id="@+id/first_section" android:layout_width="match_parent" android:layout_height="wrap_content"  android:background="@drawable/background_section_line" android:paddingVertical="16dp" android:orientation="vertical">
                         <TextView android:id="@+id/first_heading" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_first_appearance" />
-                        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/first_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/first_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" />
                         <TextView android:id="@+id/first_title" style="@style/TextAppearance.Marvel.CatalogFilter" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
                         <TextView android:id="@+id/first_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
                         <com.google.android.material.button.MaterialButton android:id="@+id/first_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_team_external"  />
@@ -36,7 +36,7 @@
                 <com.google.android.material.button.MaterialButton android:id="@+id/details_history" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="@string/history_appearances" />
                 <LinearLayout android:id="@+id/powers_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:orientation="vertical">
                     <TextView android:id="@+id/powers_heading" style="@style/Widget.Marvel.SectionHeading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_powers" />
-                    <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/powers_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                    <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/powers_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
                     <com.google.android.material.chip.ChipGroup android:id="@+id/power_labels" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:chipSpacingHorizontal="12dp" app:chipSpacingVertical="8dp" />
                 </LinearLayout>
                 <include android:id="@+id/teams_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />

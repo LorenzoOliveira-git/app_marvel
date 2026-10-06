@@ -13,7 +13,7 @@ import com.example.app_marvel.ui.common.UiState;
 /** Feedback de estado. Retentativa aparece somente se uma operação real a fornecer. */
 public final class MarvStateView extends LinearLayout {
     private final ComponentMarvStateBinding binding;
-    private boolean mascotEnabled = true, loadingSquare;
+    private boolean mascotEnabled = true, loadingSquare, textOnlySkeleton;
 
     public MarvStateView(Context context) {
         this(context, null);
@@ -28,6 +28,24 @@ public final class MarvStateView extends LinearLayout {
         setOrientation(VERTICAL);
         binding = ComponentMarvStateBinding.inflate(LayoutInflater.from(context), this, true);
         ViewCompat.setAccessibilityHeading(binding.statusTitle, true);
+        var appearance=context.obtainStyledAttributes(attrs,R.styleable.MarvStateView,defStyleAttr,0);
+        boolean inline=appearance.getBoolean(R.styleable.MarvStateView_inlineState,false);
+        textOnlySkeleton=appearance.getBoolean(R.styleable.MarvStateView_textOnlySkeleton,false);
+        appearance.recycle();
+        if(inline){
+            mascotEnabled=false;binding.mascot.setVisibility(GONE);
+            binding.getRoot().setPadding(0,dp(16),0,dp(16));
+            binding.statusTitle.setGravity(android.view.Gravity.START);
+            var title=(LinearLayout.LayoutParams)binding.statusTitle.getLayoutParams();title.topMargin=0;binding.statusTitle.setLayoutParams(title);
+            binding.statusBody.setGravity(android.view.Gravity.START);
+            androidx.core.widget.TextViewCompat.setTextAppearance(binding.statusTitle,R.style.TextAppearance_Marvel_BodyStrong);
+            var action=(LinearLayout.LayoutParams)binding.retryButton.getLayoutParams();
+            action.width=LayoutParams.WRAP_CONTENT;action.gravity=android.view.Gravity.START;action.topMargin=dp(8);
+            binding.retryButton.setLayoutParams(action);
+            binding.retryButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
+            binding.retryButton.setTextColor(androidx.core.content.ContextCompat.getColor(context,R.color.arquivo_vermelho));
+        }
+        updateSkeletonSize(0);
     }
 
     public void setMascotEnabled(boolean enabled) {
@@ -46,16 +64,17 @@ public final class MarvStateView extends LinearLayout {
     }
 
     private void updateSkeletonSize(int width) {
+        binding.skeletonThumb.setVisibility(textOnlySkeleton ? GONE : VISIBLE);
         binding.skeleton.setOrientation(loadingSquare ? VERTICAL : HORIZONTAL);
         LinearLayout.LayoutParams thumb = new LinearLayout.LayoutParams(
                 loadingSquare ? LayoutParams.MATCH_PARENT : dp(80),
-                loadingSquare ? Math.max(dp(120), width - dp(32)) : dp(120));
+                loadingSquare ? Math.max(dp(120), width - binding.getRoot().getPaddingLeft() - binding.getRoot().getPaddingRight()) : dp(120));
         binding.skeletonThumb.setLayoutParams(thumb);
         LinearLayout.LayoutParams lines = new LinearLayout.LayoutParams(
-                loadingSquare ? LayoutParams.MATCH_PARENT : 0, LayoutParams.WRAP_CONTENT,
-                loadingSquare ? 0 : 1);
+                (loadingSquare || textOnlySkeleton) ? LayoutParams.MATCH_PARENT : 0, LayoutParams.WRAP_CONTENT,
+                (loadingSquare || textOnlySkeleton) ? 0 : 1);
         lines.topMargin = loadingSquare ? dp(16) : 0;
-        lines.setMarginStart(loadingSquare ? 0 : dp(16));
+        lines.setMarginStart(loadingSquare || textOnlySkeleton ? 0 : dp(16));
         binding.skeletonLines.setLayoutParams(lines);
     }
 

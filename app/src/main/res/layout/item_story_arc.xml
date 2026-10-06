@@ -1,9 +1,8 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="24dp" app:cardCornerRadius="10dp" app:strokeWidth="0dp" app:cardBackgroundColor="@color/marvel_surface_raised">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-        <ImageView android:id="@+id/arc_image" android:layout_width="match_parent" android:layout_height="240dp" android:scaleType="fitCenter" android:importantForAccessibility="no" />
-        <TextView android:id="@+id/arc_name" style="@style/TextAppearance.Marvel.CatalogTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
-        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/arcs_publisher" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/arc_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/arcs_external" />
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="16dp" android:paddingBottom="16dp" android:background="@drawable/background_section_line" android:baselineAligned="false">
+<com.google.android.material.imageview.ShapeableImageView android:id="@+id/arc_image" android:layout_width="80dp" android:layout_height="120dp" android:scaleType="fitCenter" android:background="@color/arquivo_folha" android:importantForAccessibility="no" app:shapeAppearanceOverlay="@style/ShapeAppearance.Marvel.Cover" />
+<LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:orientation="vertical">
+<TextView android:id="@+id/arc_name" style="@style/TextAppearance.Marvel.CardTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="2" android:ellipsize="end" />
+<TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/arcs_publisher" />
+<com.google.android.material.button.MaterialButton android:id="@+id/arc_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/arc_open" />
+</LinearLayout>
+</LinearLayout>

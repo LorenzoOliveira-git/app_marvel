@@ -157,7 +157,7 @@ jobs:
         timeout-minutes: 12
         run: python3 .github/scripts/check-arquivo.py
       - name: Disponibilizar prévia do Arquivo de Papel
-        if: always() && (github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base')
+        if: always() && steps.emulator.outcome == 'success'
         uses: actions/upload-artifact@v7
         with:
           name: android-arquivo-preview

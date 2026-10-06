@@ -159,6 +159,23 @@ try:
         assert find('bottom_navigation') is None, label
         capture('arquivo-'+label+'-detalhe'); tap('header_back'); wait('cover_title')
         tap('header_back'); show('open_comics')
+    # Telas longas: história, arcos e ligação para detalhes nativos.
+    top(); tap_node(show('identity_open')); wait('identity_name'); capture('arquivo-historia-identidade')
+    show('appearance_title',120); capture('arquivo-historia-aparicoes')
+    tap_node(show('appearance_open')); wait('issue_heading',120)
+    tap('header_back'); top(); wait('identity_name'); tap('header_back'); show('open_arcs')
+    tap_node(show('open_arcs')); wait('arc_search')
+    tap('arc_search'); adb('shell','input','text','Civil%sWar'); tap_node(show('arcs_search_button'))
+    wait('arc_name',120); capture('arquivo-arcos-lista')
+    tap_node(show('arc_source')); wait('arc_details_heading',120); capture('arquivo-arco-detalhe')
+    tap_node(show('appearance_open',120)); wait('issue_heading',120)
+    tap('header_back'); top(); wait('arc_details_heading'); tap('header_back'); wait('arc_name')
+    adb('shell','settings','put','system','font_scale','1.6')
+    wait('arc_name'); capture('arquivo-arcos-fonte-160')
+    tap_node(show('arc_source')); wait('arc_details_heading',120)
+    show('appearance_title',120); capture('arquivo-aparicoes-fonte-160')
+    adb('shell','settings','put','system','font_scale','1.0')
+    top(); wait('arc_details_heading'); tap('header_back'); wait('arc_name'); tap('header_back'); show('open_comics')
     tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')
     tap('hero_name'); adb('shell','input','text','Arquivo'); capture('arquivo-formulario-teclado')
@@ -195,7 +212,7 @@ try:
     (OUT/'resultado.json').write_text(json.dumps({'success': True, 'checks': [
         'login', 'offline_recoverable', 'home_real_issue', 'detail_without_navigation',
         'return_preserves_issue', 'grid_characters_comics_movies_series', 'search_return_preserved',
-        'filter_draft_cancel_apply_clear', 'profile_create_keyboard', 'origin_sheet_choose_cancel', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
+        'filter_draft_cancel_apply_clear', 'history_arcs_issue_links', 'appearances_font_1.6', 'profile_create_keyboard', 'origin_sheet_choose_cancel', 'font_scale_1.6_navigation', 'no_android_crash']}, indent=2))
     print('Tela inicial, erro offline, detalhe/retorno e navegação com fonte 160% conferidos.')
 except Exception:
     (OUT/'failure.txt').write_text(traceback.format_exc())

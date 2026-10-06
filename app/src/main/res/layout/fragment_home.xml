@@ -3,11 +3,11 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding">
         <TextView android:id="@+id/recent_heading" style="@style/TextAppearance.Marvel.Section" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/catalog_recent" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp" android:background="@color/arquivo_borda" android:importantForAccessibility="no" />
-        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/recent_state" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/recent_state" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:inlineState="true" />
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/recent_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
         <TextView android:id="@+id/featured_heading" style="@style/TextAppearance.Marvel.Section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/catalog_featured" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp" android:background="@color/arquivo_borda" android:importantForAccessibility="no" />
-        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/featured_state" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
+        <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/featured_state" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:inlineState="true" />
         <LinearLayout android:id="@+id/featured_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" android:visibility="gone">
             <com.google.android.material.card.MaterialCardView android:id="@+id/featured_image_card" style="@style/Widget.Marvel.Card" android:layout_width="match_parent" android:layout_height="wrap_content" app:strokeWidth="0dp">
                 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -33,7 +33,7 @@
                 </LinearLayout>
                 <ImageView android:layout_width="80dp" android:layout_height="104dp" android:layout_marginStart="12dp" android:src="@drawable/marv_thinking" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
             </LinearLayout>
-            <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/fact_state" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/fact_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
             <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/catalog_source" />
         </LinearLayout>
         <TextView android:id="@+id/explore_heading" style="@style/TextAppearance.Marvel.Section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/home_explore_title" />
