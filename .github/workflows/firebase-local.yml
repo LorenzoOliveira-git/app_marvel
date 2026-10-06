@@ -39,7 +39,7 @@ jobs:
           npm ci --prefix backend --ignore-scripts --no-audit --no-fund
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - name: Compilar e verificar lint do fluxo local
-        run: bash gradlew :app:assembleDebug :app:lintDebug -PfirebaseEmulators=true --no-daemon --console=plain
+        run: bash gradlew :app:assembleDebug :app:lintDebug -PfirebaseEmulators=true -PfirebaseEmulatorHost=127.0.0.1 --no-daemon --console=plain
       - name: Iniciar emulador Android
         timeout-minutes: 5
         run: |
@@ -54,6 +54,10 @@ jobs:
           done
           adb shell input keyevent 82
           adb install app/build/outputs/apk/debug/app-debug.apk
+          adb reverse tcp:9099 tcp:9099
+          adb reverse tcp:5001 tcp:5001
+          adb reverse tcp:8080 tcp:8080
+          adb reverse tcp:9199 tcp:9199
       - name: Configurar ComicVine privada no aparelho
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}

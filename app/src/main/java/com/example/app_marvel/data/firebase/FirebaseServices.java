@@ -30,7 +30,7 @@ public final class FirebaseServices {
                         .setStorageBucket("demo-marvel-local.appspot.com").build(), "marvel-local");
             }
             app = local; auth = FirebaseAuth.getInstance(app);
-            auth.useEmulator("10.0.2.2", 9099);
+            auth.useEmulator(BuildConfig.FIREBASE_EMULATOR_HOST, 9099);
         } else {
             app = FirebaseApp.initializeApp(context.getApplicationContext());
             auth = app == null ? null : FirebaseAuth.getInstance(app);
@@ -45,7 +45,7 @@ public final class FirebaseServices {
             if (isLocal()) {
                 firestore.setFirestoreSettings(new com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
                         .setLocalCacheSettings(com.google.firebase.firestore.MemoryCacheSettings.newBuilder().build()).build());
-                firestore.useEmulator("10.0.2.2", 8080);
+                firestore.useEmulator(BuildConfig.FIREBASE_EMULATOR_HOST, 8080);
             }
         }
         return firestore;
@@ -54,7 +54,7 @@ public final class FirebaseServices {
         if (app == null) return null;
         if (functions == null) {
             functions = FirebaseFunctions.getInstance(app, "us-central1");
-            if (isLocal()) functions.useEmulator("10.0.2.2", 5001);
+            if (isLocal()) functions.useEmulator(BuildConfig.FIREBASE_EMULATOR_HOST, 5001);
         }
         return functions;
     }
@@ -62,7 +62,7 @@ public final class FirebaseServices {
         if (app == null) return null;
         if (storage == null) {
             storage = FirebaseStorage.getInstance(app);
-            if (isLocal()) storage.useEmulator("10.0.2.2", 9199);
+            if (isLocal()) storage.useEmulator(BuildConfig.FIREBASE_EMULATOR_HOST, 9199);
         }
         return storage;
     }

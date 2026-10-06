@@ -21,7 +21,7 @@ O perfil é habilitado explicitamente por `-PfirebaseEmulators=true` apenas no d
 | Storage | 127.0.0.1:9199 | 10.0.2.2:9199 |
 | Painel | 127.0.0.1:4000 | Abra no navegador do computador |
 
-`10.0.2.2` é o acesso ao computador a partir do emulador Android. Esta configuração não atende um celular físico diretamente. HTTP é permitido somente para esse host na variante debug. A instância Firebase local é nomeada `marvel-local`, separando a sessão da instância normal.
+`10.0.2.2` é o acesso ao computador a partir do emulador Android. Para celular físico, use o encaminhamento USB descrito abaixo. HTTP é permitido somente para os hosts locais especificados na variante debug. A instância Firebase local é nomeada `marvel-local`, separando a sessão da instância normal.
 
 Os dados não são exportados automaticamente; ao encerrar os emuladores, o estado local é perdido. Usuários reais, recursos de produção e credenciais administrativas não são usados. As contas e arquivos de diagnóstico são dados de teste nos serviços reais emulados, sem imagem ou herói fictício apresentado como criação concluída.
 
@@ -80,3 +80,21 @@ O [bloco 20](bloco-20-perfil-acesso.md) usa o Firebase Auth emulado para editar/
 ## Diagnóstico dos provedores
 
 Com os emuladores iniciados, `npm run providers:status` mostra a configuração carregada pelo backend. `npm run providers:status -- --connections` solicita consultas externas de acesso ao modelo e ping Cloudinary, sem gerar ou enviar imagem. Credenciais ficam somente em `backend/.env.local`; presença e consultas não comprovam a primeira criação real. Veja [bloco 21](bloco-21-provedores.md) para interpretar o relatório e os limites da validação.
+
+## Celular físico por USB
+
+Ative a depuração USB no celular, conecte-o ao computador e autorize esse computador na tela do aparelho. Mantenha `npm run emulators` rodando. No PowerShell, com um único aparelho conectado:
+
+```powershell
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $adb devices
+& $adb reverse tcp:9099 tcp:9099
+& $adb reverse tcp:5001 tcp:5001
+& $adb reverse tcp:8080 tcp:8080
+& $adb reverse tcp:9199 tcp:9199
+.\gradlew.bat :app:installDebug -PfirebaseEmulators=true -PfirebaseEmulatorHost=127.0.0.1
+```
+
+Se o Android SDK estiver em outro caminho, ajuste `$adb`. Abra o app instalado diretamente no celular. As quatro portas no aparelho encaminham para os serviços no computador, sem expor os emuladores na rede Wi-Fi. Repita `adb reverse` após desconectar/reiniciar o aparelho ou o ADB. Com vários dispositivos, acrescente `-s SERIAL` ao ADB e selecione o celular para instalação.
+
+Para usar Run/Debug do Android Studio, configure `firebaseEmulators=true` e `firebaseEmulatorHost=127.0.0.1` no seu arquivo Gradle local, sincronize e mantenha os encaminhamentos ativos. Para voltar ao emulador Android, use `firebaseEmulatorHost=10.0.2.2` (padrão). Release conserva os emuladores desativados. Contas do Auth emulado são separadas das contas de produção; cadastre uma conta local.
