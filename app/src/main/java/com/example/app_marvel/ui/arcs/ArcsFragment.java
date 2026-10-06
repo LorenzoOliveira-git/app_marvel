@@ -51,17 +51,22 @@ public final class ArcsFragment extends Fragment {
         Runnable search=() -> { model.search(binding.arcSearch.getText().toString());hideKeyboard();binding.arcsScroll.scrollTo(0,0); };
         binding.arcsSearchButton.setOnClickListener(v -> search.run());
         binding.arcSearch.setOnEditorActionListener((v,action,event) -> { if (action==EditorInfo.IME_ACTION_SEARCH) { search.run();return true; }return false; });
-        binding.arcsClear.setOnClickListener(v -> { model.clear();binding.arcSearch.setText("");hideKeyboard();binding.arcsScroll.scrollTo(0,0); });
+        Runnable clear=() -> { model.clear();binding.arcSearch.setText("");hideKeyboard();binding.arcsScroll.scrollTo(0,0); };
+        binding.arcsClear.setOnClickListener(v -> clear.run());
         binding.arcsAscending.setOnClickListener(v -> { model.order(false);binding.arcsScroll.scrollTo(0,0); });
         binding.arcsDescending.setOnClickListener(v -> { model.order(true);binding.arcsScroll.scrollTo(0,0); });
         model.state().observe(getViewLifecycleOwner(),value -> {
             binding.arcsState.render(value.getStatus(),model::reload);
-            if (value.getStatus()==UiState.Status.EMPTY) binding.arcsState.emptyMessage(R.string.arcs_empty_title,R.string.arcs_empty_body);
+            if (value.getStatus()==UiState.Status.EMPTY) {
+                binding.arcsState.emptyMessage(R.string.arcs_empty_title,R.string.arcs_empty_body);
+                if(!model.query().isEmpty())binding.arcsState.searchEmpty(model.query(),clear);
+            }
             boolean content=value.getStatus()==UiState.Status.CONTENT;
             binding.arcsList.setVisibility(content ? View.VISIBLE:View.GONE);
             binding.arcsCount.setVisibility(content ? View.VISIBLE:View.GONE);
             binding.arcsClear.setVisibility(model.query().isEmpty() ? View.GONE:View.VISIBLE);
             binding.arcsAscending.setEnabled(model.descending());binding.arcsDescending.setEnabled(!model.descending());
+            binding.arcsAscending.setSelected(!model.descending());binding.arcsDescending.setSelected(model.descending());
             binding.arcsOrderLabel.setText(model.descending() ? R.string.arcs_order_descending:R.string.arcs_order_ascending);
             if (!content) { adapter.submitList(java.util.Collections.emptyList());return; }
             binding.arcsCount.setText(getString(R.string.arcs_loaded,value.getData().size()));
