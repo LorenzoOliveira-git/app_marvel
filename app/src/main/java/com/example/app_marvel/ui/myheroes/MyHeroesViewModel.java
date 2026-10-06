@@ -126,5 +126,5 @@ public final class MyHeroesViewModel extends ViewModel {
         creations.imageUrl(id,(url,failure)->{if(stamp!=imageEpoch||!uid.equals(repository.account()))return;if(failure!=null){imageFailed.setValue(true);return;}
             loader.load(url,bitmap->{if(stamp!=imageEpoch||!uid.equals(repository.account()))return;image.setValue(bitmap);imageFailed.setValue(bitmap==null);});});
     }
-    @Override protected void onCleared(){epoch++;imageEpoch++;if(removeAuth!=null)removeAuth.run();loader.close();previews.close();thumbnails.evictAll();image.setValue(null);}
+    @Override protected void onCleared(){epoch++;imageEpoch++;previewEpoch++;if(removeAuth!=null)removeAuth.run();loader.close();previews.close();thumbnails.evictAll();image.setValue(null);}
 }
