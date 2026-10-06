@@ -154,6 +154,7 @@ public final class ComicsFragment extends Fragment {
                 "Filtros · " + getString(R.string.comics_volume), box,
                 () -> { model.volume(draft[0]); filters(); choosing = false; },
                 () -> { draft[0] = new Reference(0, getString(R.string.catalog_all), ""); search.setText(""); filter.accept(""); });
+        sheet.setOnDismissListener(d -> choosing = false);
 
     }
     private String normalized(String value) { return Normalizer.normalize(value,Normalizer.Form.NFD).replaceAll("\\p{M}","").toLowerCase(Locale.ROOT); }

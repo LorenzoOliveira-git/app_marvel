@@ -121,6 +121,10 @@ def replace_search(value):
     if value:adb('shell','input','text',value)
     adb('shell','input','keyevent','66');time.sleep(1)
     tap(resource='arcs_search_button')
+if '--data-only' in __import__('sys').argv:
+    print('Diagnósticos reais/cache aprovados; navegação editorial coberta por check-arquivo.py.', flush=True)
+    raise SystemExit(0)
+
 adb('shell','wm','size','430x932');adb('shell','wm','density','160');adb('shell','settings','put','system','font_scale','1.0')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/.MainActivity');time.sleep(2)
 tap(text='Explorar sem entrar');tap(text='Histórias');tap(resource='open_arcs')

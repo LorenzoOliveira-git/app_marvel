@@ -44,7 +44,7 @@
         <item name="android:textSize">12sp</item><item name="android:gravity">start|center_vertical</item>
         <item name="android:paddingStart">8dp</item><item name="android:paddingEnd">8dp</item>
         <item name="android:minWidth">0dp</item><item name="android:singleLine">false</item><item name="android:maxLines">3</item>
-        <item name="cornerRadius">999dp</item><item name="backgroundTint">@color/filter_background</item><item name="android:textColor">@color/filter_text</item><item name="iconTint">@color/filter_text</item><item name="insetTop">6dp</item><item name="insetBottom">6dp</item><item name="strokeColor">@color/arquivo_borda</item>
+        <item name="cornerRadius">999dp</item><item name="backgroundTint">@color/filter_background</item><item name="android:textColor">@color/filter_text</item><item name="iconTint">@color/filter_text</item><item name="android:insetTop">6dp</item><item name="android:insetBottom">6dp</item><item name="strokeColor">@color/arquivo_borda</item>
         <item name="icon">@drawable/ic_catalog_expand</item><item name="iconGravity">end</item><item name="iconSize">14dp</item><item name="iconPadding">4dp</item>
     </style>
 </resources>

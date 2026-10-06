@@ -132,7 +132,7 @@ try:
     tap_node(show('cover_title')); wait('details_name',120)
     assert find('bottom_navigation') is None
     capture('arquivo-personagem-detalhe')
-    tap('header_back'); assert wait('search_name').get('text','') == searched
+    tap('header_back'); top(); assert wait('search_name').get('text','') == searched
     # A draft filter can be cancelled without modifying the real query.
     tap('gender_filter'); wait('filter_apply'); capture('arquivo-filtros')
     adb('shell','input','keyevent','4'); assert wait('search_name').get('text','') == searched
@@ -142,7 +142,7 @@ try:
     tap_node(choices[1]); tap('filter_apply'); wait('cover_title',120)
     assert find('clear_filters') is not None
     tap('clear_filters'); wait('cover_title',120)
-    tap('homeFragment'); wait('user_name'); tap('storiesFragment'); wait('open_comics')
+    tap('homeFragment'); wait('user_name'); tap('storiesFragment'); show('open_comics')
     for route,heading,label in [('open_comics','issue_heading','quadrinhos'),
                                  ('open_movies','movie_details_heading','filmes'),
                                  ('open_series','series_details_heading','series')]:
@@ -150,7 +150,7 @@ try:
         tap_node(show('cover_title')); wait(heading,120)
         assert find('bottom_navigation') is None, label
         capture('arquivo-'+label+'-detalhe'); tap('header_back'); wait('cover_title')
-        tap('header_back'); wait('open_comics')
+        tap('header_back'); show('open_comics')
     tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')
     tap('hero_name'); adb('shell','input','text','Arquivo'); capture('arquivo-formulario-teclado')
@@ -161,6 +161,10 @@ try:
     wait('bottom_navigation'); capture('arquivo-fonte-160')
     tap('charactersFragment'); wait('expanded_screen_title'); wait('search_name'); capture('arquivo-personagens-fonte-160')
     tap('homeFragment'); wait('user_name')
+    adb('shell','settings','put','system','font_scale','1.0')
+    adb('shell','wm','size','320x640'); time.sleep(2)
+    tap('charactersFragment'); wait('search_name'); capture('arquivo-personagens-320')
+    adb('shell','wm','size','390x844'); time.sleep(2)
     fatal = adb('logcat', '-d', '-s', 'AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in fatal, 'Exceção Android durante o smoke visual'
     (OUT/'resultado.json').write_text(json.dumps({'success': True, 'checks': [
