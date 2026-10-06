@@ -22,6 +22,7 @@ def tap(resource=None,text=None):
     except RuntimeError:
         (OUT/'profile-tap-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)
         rows=nodes()
+        print('AndroidRuntime:',adb('logcat','-d','-s','AndroidRuntime:E',check=False).stdout.decode(errors='replace')[-16000:],flush=True)
         print('Controles no erro:',[(n.get('resource-id',''),n.get('text',''),n.get('bounds','')) for n in rows if n.get('text')],flush=True)
         raise
 
@@ -62,6 +63,7 @@ assert server_name()=='Nome Atualizado'
 # Cancelar alterações não grava; campos inválidos também não alteram a conta.
 tap(resource='profile_edit_name');replace_name('Nao Salvar');tap(resource='profile_cancel_name')
 (OUT/'profile-discard-dialog.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+print('AndroidRuntime:',adb('logcat','-d','-s','AndroidRuntime:E',check=False).stdout.decode(errors='replace')[-16000:],flush=True)
 print('Diálogo do perfil:',[(n.get('resource-id',''),n.get('text',''),n.get('bounds','')) for n in nodes() if n.get('text')],flush=True)
 tap(text='Continuar editando');assert wait('profile_name').get('text')=='Nao Salvar'
 tap(resource='profile_cancel_name');tap(text='Descartar');wait('profile_edit_name')

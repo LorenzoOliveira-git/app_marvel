@@ -184,7 +184,7 @@ try:
     title=wait('status_title',120)
     assert 'zzarquivozz' in title.get('text',''), 'Estado vazio não identifica a busca de arcos'
     capture('arquivo-arcos-sem-resultados'); tap('retry_button'); wait('arc_name',120)
-    top(); assert find('arc_search').get('text','')=='', 'Limpar não restaurou a busca de arcos'
+    top(); assert find('arc_search').get('text','') in ('','Buscar arco pelo nome'), 'Limpar não restaurou a busca de arcos'
     tap('header_back'); show('open_comics')
     tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')

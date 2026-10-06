@@ -147,7 +147,7 @@ try:
     capture('16-dados-ausentes'); tap('header_back'); top()
     # Clear with the visible Material control; keyboard shortcuts may race the IME.
     tap('text_input_end_icon'); wait('cover_title')
-    assert wait('search_name').get('text','') == ''
+    assert wait('search_name').get('text','') in ('','Buscar personagens')
     adb('shell','input','keyevent','4'); time.sleep(2)
     tap('homeFragment'); wait('user_name')
     adb('shell','settings','put','system','font_scale','1.6')
