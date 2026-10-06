@@ -52,7 +52,7 @@ def wait(resource, timeout=90):
 
 def tap(resource):
     node = wait(resource)
-    x1, y1, x2, y2 = map(int, re.findall(r'\d+', node['bounds']))
+    x1, y1, x2, y2 = map(int, re.findall(r'\d+', node.get('bounds', '')))
     assert x2 > x1 and y2 > y1, resource
     adb('shell', 'input', 'tap', str((x1+x2)//2), str((y1+y2)//2))
     time.sleep(1)
@@ -79,7 +79,7 @@ try:
     adb('shell', 'svc', 'wifi', 'enable'); adb('shell', 'svc', 'data', 'enable')
     time.sleep(8)
     tap('retry_button'); wait('issue_title', 120)
-    title = find('issue_title')['text']
+    title = find('issue_title').get('text', '')
     if find('retry_button') is not None:
         tap('retry_button'); wait('featured_name', 120)
     capture('arquivo-inicio')
@@ -89,7 +89,7 @@ try:
     tap('issue_more'); wait('issue_heading')
     assert find('bottom_navigation') is None, 'Navegação principal apareceu no detalhe'
     capture('arquivo-detalhe')
-    tap('header_back'); assert wait('issue_title')['text'] == title
+    tap('header_back'); assert wait('issue_title').get('text', '') == title
     assert find('bottom_navigation') is not None, 'Barra não voltou ao início'
     # Aumento real de fonte; verifica área útil e destino acessível sem depender de gesto.
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.6')
