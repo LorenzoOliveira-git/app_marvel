@@ -113,8 +113,8 @@ jobs:
           sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
       - name: Compilar e verificar lint (sem testes unitários)
         run: bash gradlew :app:assembleDebug :app:lintDebug --no-daemon --console=plain
-      - name: Disponibilizar APK somente em execução manual
-        if: github.event_name == 'workflow_dispatch'
+      - name: Disponibilizar APK de visualização
+        if: github.event_name == 'workflow_dispatch' || github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base'
         uses: actions/upload-artifact@v7
         with:
           name: app-marvel-debug
