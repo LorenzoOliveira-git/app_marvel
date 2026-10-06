@@ -26,3 +26,9 @@ Referências: [modelo](https://developers.cloudflare.com/workers-ai/models/flux-
 A [execução 37387716419](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37387716419) passou em Node 22 com Auth, Firestore, Functions e Storage reais emulados. Verificou preparação concorrente, migração de preparações antigas, reserva/cotas, isolamento e diagnóstico dos provedores ausentes. Nenhuma inferência externa foi executada.
 
 A [execução Android 37387716573](https://github.com/LorenzoOliveira-git/app_marvel/actions/runs/37387716573) compilou e passou no lint e no diagnóstico dos quatro SDKs, mas falhou no roteiro do perfil: o envio repetido de DEL pelo ADB deixou texto autocorrigido no campo. O roteiro foi ajustado para selecionar tudo, apagar e verificar o valor exato antes de salvar. A passagem completa do perfil segue pendente até a nova CI concluir.
+
+## Habilitar a primeira geração
+
+O exemplo mantém `HERO_GENERATION_ENABLED=false`. Para executar a criação após configurar Cloudflare e Cloudinary no arquivo privado, altere essa variável para `true` em `backend/.env.local` e reinicie os emuladores. Confira `npm run providers:status -- --connections`: `generationEnabled`, configuração Cloudflare/Cloudinary e resultados das consultas. O aviso genérico de indisponibilidade também pode indicar credenciais ausentes ou consulta ao modelo recusada; a flag sozinha não comprova acesso.
+
+A confirmação Android agora pede somente autorização para criar ou tentar novamente, sem mostrar valores monetários. Controles de orçamento/cotas do backend continuam ativos. A interface não apresenta a reserva interna como preço da imagem.

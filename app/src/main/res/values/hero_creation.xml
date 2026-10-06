@@ -1,22 +1,22 @@
 <resources>
     <string name="hero_generate">Gerar imagem do herói</string>
     <string name="hero_login_generate">Entrar para criar meu herói</string>
-    <string name="hero_creation_confirm_title">Confirmar criação paga</string>
-    <string name="hero_creation_confirm">Uma ilustração de HQ colorida, corpo inteiro, formato vertical 2:3.\n\nEsta tentativa pode ser cobrada e reserva US$ 0,05 do limite mensal de US$ 5. A reserva é conservadora; o custo real pode ser diferente.\n\nLimites: 3 tentativas por conta/dia e 100 no total/mês. Falhas também contam. A geração não se repete automaticamente.\n\nDeseja confirmar esta tentativa?</string>
+    <string name="hero_creation_confirm_title">Confirmar criação</string>
+    <string name="hero_creation_confirm">Marv vai criar uma ilustração de HQ colorida do seu personagem, de corpo inteiro e em formato vertical.\n\nDeseja gerar a imagem?</string>
     <string name="hero_confirm_generate">Gerar</string>
-    <string name="hero_retry_confirm_title">Confirmar nova tentativa paga</string>
-    <string name="hero_retry_confirm">Outra tentativa pode gerar nova cobrança e consumir nova cota. Primeiro use a retomada para buscar a imagem anterior.\n\nA nova tentativa reserva US$ 0,05 do limite mensal de US$ 5; a reserva não é o custo real. Limites: 3 tentativas por conta/dia e 100 no total/mês, incluindo falhas.\n\nDeseja confirmar uma nova geração?</string>
+    <string name="hero_retry_confirm_title">Confirmar nova tentativa</string>
+    <string name="hero_retry_confirm">Marv vai iniciar uma nova geração. Se a tentativa anterior ficou sem resultado confirmado, use primeiro a retomada para verificar a imagem existente.\n\nDeseja gerar uma nova imagem?</string>
     <string name="hero_creation_preparing">Marv está validando e preparando seu personagem…</string>
-    <string name="hero_creation_ready">Personagem preparado. Confirme uma tentativa paga para gerar a imagem.</string>
+    <string name="hero_creation_ready">Personagem preparado. Confirme a criação para gerar a imagem.</string>
     <string name="hero_creation_generating">Marv está gerando a imagem. Aguarde; a geração não será repetida automaticamente.</string>
     <string name="hero_creation_storing">A imagem está sendo guardada para permitir a retomada do envio…</string>
     <string name="hero_creation_uploading">Enviando a imagem do seu herói…</string>
     <string name="hero_creation_saving">Confirmando o herói salvo na sua conta…</string>
     <string name="hero_creation_saved">Herói salvo na sua conta. Sua imagem ficará fixa.</string>
     <string name="hero_creation_rejected">A geração não foi concluída. Esta tentativa conta no limite; outra geração exige nova confirmação.</string>
-    <string name="hero_creation_unknown">Não foi possível confirmar o resultado da geração. Use a retomada antes de considerar outra tentativa paga.</string>
+    <string name="hero_creation_unknown">Não foi possível confirmar o resultado da geração. Use a retomada antes de considerar outra tentativa.</string>
     <string name="hero_creation_upload_failure">O envio ou salvamento não foi concluído. Retome a mesma imagem, sem gerar outra.</string>
-    <string name="hero_creation_expired">A imagem temporária expirou. Uma nova geração exige confirmação e pode ser cobrada.</string>
+    <string name="hero_creation_expired">A imagem temporária expirou. Uma nova geração exige confirmação.</string>
     <string name="hero_creation_superseded">Esta operação foi substituída por outra versão. Revise seus dados antes de criar novamente.</string>
     <string name="hero_creation_configuration">A geração não está disponível neste ambiente agora. Seu rascunho foi mantido.</string>
     <string name="hero_creation_auth">Entre novamente na sua conta para verificar esta criação.</string>
@@ -28,11 +28,11 @@
     <string name="hero_creation_running_guide">Acompanhe o andamento abaixo. Os dados desta tentativa permanecem fixos.</string>
     <string name="hero_saved_heading">Seu herói está pronto</string>
     <string name="hero_resume_creation">Verificar e retomar criação</string>
-    <string name="hero_retry_generation">Solicitar nova geração paga</string>
+    <string name="hero_retry_generation">Solicitar nova geração</string>
     <string name="hero_generated_image">Imagem do herói criado</string>
     <string name="hero_image_loading">Carregando a imagem do herói salvo…</string>
     <string name="hero_image_failure">Seu herói está salvo, mas não foi possível carregar a imagem. Você pode tentar carregar novamente sem gerar outra.</string>
     <string name="hero_reload_image">Carregar imagem novamente</string>
     <string name="hero_new_character">Criar outro herói</string>
-    <string name="hero_creation_review_note">Confira os dados. A criação exige uma confirmação antes de qualquer tentativa paga.</string>
+    <string name="hero_creation_review_note">Confira os dados. A criação exige uma confirmação antes de gerar a imagem.</string>
 </resources>
