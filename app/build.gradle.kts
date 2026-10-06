@@ -150,3 +150,8 @@ tasks.register<LocalComicVineTask>("runLocalDebug") {
     dependsOn("assembleDebug")
     localConfiguration(); installAndLaunch.set(true)
 }
+
+// A prévia não usa Firebase e não precisa de um cliente Google para seu applicationId.
+tasks.matching { it.name == "processDesignPreviewGoogleServices" }.configureEach {
+    enabled = false
+}

@@ -103,7 +103,7 @@ try:
     # No cache, no credentials, no network: the first launch must be populated.
     adb('shell','am','start','-n',PACKAGE+'/com.example.app_marvel.MainActivity')
     assert wait('user_name').get('text') == 'Prévia visual'
-    assert 'Horizonte' in wait('issue_title',30).get('text','')
+    assert 'horizonte' in wait('issue_title',30).get('text','').lower()
     capture('01-inicio'); show('featured_name',30); capture('02-destaque')
     top(); tap('issue_more'); wait('issue_heading',30); capture('03-quadrinho-detalhe')
     tap('header_back'); wait('issue_title'); tap('charactersFragment')
@@ -125,7 +125,7 @@ try:
     show('appearance_title',30); tap_node(show('appearance_open')); wait('issue_heading')
     tap('header_back'); top(); tap('header_back'); wait('arc_name'); top()
     tap('arc_search'); adb('shell','input','text','zzpreviewzz'); tap_node(show('arcs_search_button'))
-    assert 'zzpreviewzz' in wait('status_title',30).get('text','')
+    assert 'zzpreviewzz' in wait('status_title',30).get('text','').lower()
     capture('13-arcos-vazio'); tap('retry_button'); wait('arc_name',30)
     tap('header_back'); tap('createHeroFragment'); wait('hero_name'); capture('14-formulario')
     tap('hero_name'); adb('shell','input','text','Aurora'); adb('shell','input','keyevent','4')

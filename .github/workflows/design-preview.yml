@@ -1,7 +1,5 @@
 name: APK de prévia visual
 on:
-  push:
-    branches: ["codex/arquivo-papel-preview"]
   pull_request:
     branches: [main]
     paths:
