@@ -26,6 +26,27 @@ public final class MyHeroesViewModel extends ViewModel {
     private final HeroCreationRepository creations;
     private final SavedStateHandle fields;
     private final PrivateHeroImage loader=new PrivateHeroImage();
+    private final PrivateHeroImage previews=new PrivateHeroImage();
+    private final android.util.LruCache<String,Bitmap> thumbnails=new android.util.LruCache<String,Bitmap>(8*1024*1024){
+        @Override protected int sizeOf(String key,Bitmap bitmap){return bitmap.getByteCount();}
+    };
+    private final java.util.Set<String> requestedPreviews=new java.util.HashSet<>();
+    private final MutableLiveData<Integer> previewChanged=new MutableLiveData<>(0);
+    private int previewEpoch;
+    public LiveData<Integer> previewChanged(){return previewChanged;}
+    public Bitmap thumbnail(String id){return thumbnails.get(id);}
+    public void preview(String id){
+        if(account.isEmpty()||selected!=null||thumbnails.get(id)!=null||!requestedPreviews.add(id))return;
+        int stamp=previewEpoch;String uid=account;
+        creations.imageUrl(id,(url,failure)->{
+            if(stamp!=previewEpoch||!uid.equals(repository.account()))return;
+            if(failure!=null)return;
+            previews.load(url,bitmap->{
+                if(stamp!=previewEpoch||!uid.equals(repository.account()))return;
+                if(bitmap!=null){thumbnails.put(id,Bitmap.createScaledBitmap(bitmap,144,216,true));previewChanged.setValue(previewChanged.getValue()+1);}
+            });
+        });
+    }
     private final MutableLiveData<State> state=new MutableLiveData<>();
     private final MutableLiveData<Bitmap> image=new MutableLiveData<>();
     private final MutableLiveData<Boolean> imageFailed=new MutableLiveData<>(false);
@@ -50,7 +71,7 @@ public final class MyHeroesViewModel extends ViewModel {
     private void accountChanged() {
         String uid=repository.account();if(initialized&&uid.equals(account))return;
         if(initialized&&!uid.equals(account))fields.remove("requestedHero");
-        initialized=true;account=uid;epoch++;imageEpoch++;rows.clear();cursor=null;selected=null;busy=false;more=false;saved=false;error=null;image.setValue(null);imageFailed.setValue(false);
+        initialized=true;account=uid;epoch++;imageEpoch++;previewEpoch++;thumbnails.evictAll();requestedPreviews.clear();rows.clear();cursor=null;selected=null;busy=false;more=false;saved=false;error=null;image.setValue(null);imageFailed.setValue(false);
         String owner=fields.get("owner");String id=fields.get("selectedId");
         if(!uid.equals(owner)){clearFields();fields.remove("openedArgument");id=null;}
         emit();
@@ -75,13 +96,13 @@ public final class MyHeroesViewModel extends ViewModel {
     }
     public boolean pendingHero() { return selected == null && fields.get("selectedId") != null; }
     private void clearFields(){for(String key:new String[]{"owner","selectedId","directPending","revision","heroName","realName","description"})fields.remove(key);}
-    public void refresh(){if(busy||selected!=null)return;String id=fields.get("selectedId");if(id!=null){restore(id);return;}rows.clear();cursor=null;more=false;load(false);}
+    public void refresh(){if(busy||selected!=null)return;String id=fields.get("selectedId");if(id!=null){restore(id);return;}requestedPreviews.clear();load(false);}
     public void more(){if(!busy&&more&&selected==null)load(true);}
     private void load(boolean append){
         int stamp=epoch;boolean reconnect=error==MyHeroesRepository.Failure.NETWORK;busy=true;error=null;saved=false;emit();
         repository.page(append?cursor:null,reconnect,(page,failure)->{
             if(stamp!=epoch)return;busy=false;error=failure;
-            if(page!=null){for(var hero:page.heroes)if(rows.stream().noneMatch(existing->existing.id.equals(hero.id)))rows.add(hero);cursor=page.cursor;more=page.more;}
+            if(page!=null){if(!append)rows.clear();for(var hero:page.heroes)if(rows.stream().noneMatch(existing->existing.id.equals(hero.id)))rows.add(hero);cursor=page.cursor;more=page.more;}
             emit();
         });
     }
@@ -105,5 +126,5 @@ public final class MyHeroesViewModel extends ViewModel {
         creations.imageUrl(id,(url,failure)->{if(stamp!=imageEpoch||!uid.equals(repository.account()))return;if(failure!=null){imageFailed.setValue(true);return;}
             loader.load(url,bitmap->{if(stamp!=imageEpoch||!uid.equals(repository.account()))return;image.setValue(bitmap);imageFailed.setValue(bitmap==null);});});
     }
-    @Override protected void onCleared(){epoch++;imageEpoch++;if(removeAuth!=null)removeAuth.run();loader.close();image.setValue(null);}
+    @Override protected void onCleared(){epoch++;imageEpoch++;if(removeAuth!=null)removeAuth.run();loader.close();previews.close();thumbnails.evictAll();image.setValue(null);}
 }

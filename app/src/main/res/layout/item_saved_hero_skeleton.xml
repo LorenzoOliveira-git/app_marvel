@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingTop="16dp" android:paddingBottom="16dp">
+<View android:layout_width="80dp" android:layout_height="120dp" android:background="@drawable/background_skeleton" />
+<LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:orientation="vertical">
+<View android:layout_width="match_parent" android:layout_height="24dp" android:background="@drawable/background_skeleton" />
+<View android:layout_width="100dp" android:layout_height="16dp" android:layout_marginTop="4dp" android:background="@drawable/background_skeleton" />
+<View android:layout_width="match_parent" android:layout_height="44dp" android:layout_marginTop="8dp" android:background="@drawable/background_skeleton" />
+</LinearLayout>
+</LinearLayout>

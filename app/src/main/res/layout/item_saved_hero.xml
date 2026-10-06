@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingTop="16dp" android:paddingBottom="16dp" android:background="@drawable/background_section_line" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true">
+<com.google.android.material.imageview.ShapeableImageView android:id="@+id/saved_hero_image" android:layout_width="80dp" android:layout_height="120dp" android:scaleType="fitCenter" android:background="@color/arquivo_folha" android:src="@drawable/ic_image_placeholder" android:importantForAccessibility="no" app:shapeAppearanceOverlay="@style/ShapeAppearance.Marvel.Cover" />
+<LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:orientation="vertical">
+<TextView android:id="@+id/saved_hero_title" style="@style/TextAppearance.Marvel.CardTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="2" android:ellipsize="end" />
+<TextView android:id="@+id/saved_hero_identity" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:maxLines="2" android:ellipsize="end" />
+<TextView android:id="@+id/saved_hero_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="3" android:ellipsize="end" />
+</LinearLayout>
+</LinearLayout>
