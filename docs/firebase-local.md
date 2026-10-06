@@ -23,7 +23,7 @@ O perfil é habilitado explicitamente por `-PfirebaseEmulators=true` apenas no d
 
 `10.0.2.2` é o acesso ao computador a partir do emulador Android. Para celular físico, use o encaminhamento USB descrito abaixo. HTTP é permitido somente para os hosts locais especificados na variante debug. A instância Firebase local é nomeada `marvel-local`, separando a sessão da instância normal.
 
-Os dados não são exportados automaticamente; ao encerrar os emuladores, o estado local é perdido. Usuários reais, recursos de produção e credenciais administrativas não são usados. As contas e arquivos de diagnóstico são dados de teste nos serviços reais emulados, sem imagem ou herói fictício apresentado como criação concluída.
+O comando `npm run emulators` restaura os dados de `firebase-local-data/` e exporta o estado ao encerrar normalmente com Ctrl+C. Na primeira execução, sem uma exportação anterior, começa vazio. A pasta já está ignorada pelo Git. Usuários reais, recursos de produção e credenciais administrativas não são usados. As contas e arquivos de diagnóstico são dados de teste nos serviços reais emulados, sem imagem ou herói fictício apresentado como criação concluída.
 
 ## O que foi implementado
 
@@ -104,3 +104,28 @@ Para usar Run/Debug do Android Studio, configure `firebaseEmulators=true` e `fir
 O app distingue chamada Functions, validação ComicVine e confirmação Firestore. No debug, o Logcat `HeroDraftSave` registra somente `stage` e `code`, sem personagem, UID, chaves, token ou mensagem bruta. No celular por USB, Functions depende de reverse 5001 e a releitura confirmada de reverse 8080. O backend precisa de `COMICVINE_API_KEY` em `backend/.env.local`, independentemente da chave usada pelo catálogo Android no `.env` da raiz.
 
 A alteração separa erros antes apresentados como falha genérica e mantém os campos/ID para uma nova tentativa explícita. A causa da falha específica no aparelho ainda precisa do novo aviso ou do código no Logcat; não foi reproduzida apenas com a mensagem antiga. A CI focal desta correção exercita o salvamento Android, leitura no servidor, interrupção real da porta Functions e nova tentativa usando loopback/ADB reverse.
+
+## Preservar a conta e o herói entre sessões
+
+`npm run emulators` usa `--import=./firebase-local-data` e `--export-on-exit=./firebase-local-data`. Auth, Firestore e Storage são exportados juntos: conta, rascunhos, heróis, referências da imagem, operações e contadores de tentativas permanecem na próxima sessão. Functions volta a carregar o código e `backend/.env.local`; o arquivo de ambiente não faz parte da exportação. A imagem concluída continua privada na Cloudinary, e o app pede outra URL temporária ao abrir o herói.
+
+**Se você já criou um herói com o comando antigo, mantenha os emuladores atuais abertos.** Após atualizar o repositório, execute na raiz em um segundo terminal:
+
+```powershell
+npm run emulators:export
+```
+
+Espere a confirmação de exportação antes de parar o terminal antigo com Ctrl+C. Se já houver exportação nessa pasta, a CLI pergunta antes de sobrescrevê-la. Depois inicie `npm run emulators` novamente. Não execute `check:local` no lugar dessa sessão: os diagnósticos iniciam emuladores separados, sem importar nem exportar seus dados.
+
+Nas próximas sessões, encerre com Ctrl+C uma vez e aguarde a exportação e o encerramento completo. Encerramento forçado ou queda do computador pode perder alterações desde a última exportação; `npm run emulators:export` também permite salvar manualmente durante a sessão. Não apague `firebase-local-data/` se quiser manter a conta e a coleção. O backup contém dados locais de autenticação e personagens e deve permanecer privado.
+
+Para validar seu herói real sem consumir outra geração:
+
+1. Mantenha os emuladores rodando, feche e reabra o app, entre na mesma conta e abra Perfil → Meus heróis.
+2. Abra o herói e confira imagem, nome, identidade e descrição. O download usa uma URL privada nova; não gera outra imagem.
+3. Edite um texto, salve e confirme o resultado ao sair e voltar à coleção. Essa ação não chama a Cloudflare.
+4. Faça a exportação inicial acima, encerre e reinicie os emuladores. Reabra o app na mesma conta e confira novamente o herói e a imagem.
+
+A geração real foi confirmada pelo usuário. Reabertura da coleção, edição e restauração desse herói no aparelho ainda precisam de validação local; o workspace não acessa o celular nem seus emuladores.
+
+Referência: https://firebase.google.com/docs/emulator-suite/install_and_configure#export_and_import_emulator_data
