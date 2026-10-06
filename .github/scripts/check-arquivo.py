@@ -175,7 +175,14 @@ try:
     tap_node(show('arc_source')); wait('arc_details_heading',120)
     show('appearance_title',120); capture('arquivo-aparicoes-fonte-160')
     adb('shell','settings','put','system','font_scale','1.0')
-    top(); wait('arc_details_heading'); tap('header_back'); wait('arc_name'); tap('header_back'); show('open_comics')
+    top(); wait('arc_details_heading'); tap('header_back'); wait('arc_name')
+    top(); tap('arcs_clear'); wait('arc_search'); tap('arc_search')
+    adb('shell','input','text','zzarquivozz'); tap_node(show('arcs_search_button'))
+    title=wait('status_title',120)
+    assert 'zzarquivozz' in title.get('text',''), 'Estado vazio não identifica a busca de arcos'
+    capture('arquivo-arcos-sem-resultados'); tap('retry_button'); wait('arc_name',120)
+    top(); assert find('arc_search').get('text','')=='', 'Limpar não restaurou a busca de arcos'
+    tap('header_back'); show('open_comics')
     tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')
     tap('hero_name'); adb('shell','input','text','Arquivo'); capture('arquivo-formulario-teclado')
