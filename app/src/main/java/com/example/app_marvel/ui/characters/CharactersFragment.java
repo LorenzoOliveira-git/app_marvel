@@ -152,7 +152,7 @@ public final class CharactersFragment extends Fragment {
         if (name.equals("team")) box.addView(search, new LinearLayout.LayoutParams(-1, -2));
         ListView list = new ListView(requireContext()); list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_single_choice, labels(visible)); list.setAdapter(adapter);
-        box.addView(list, new LinearLayout.LayoutParams(-1, dp(300)));
+        box.addView(list, new LinearLayout.LayoutParams(-1, dp(Math.min(300, choices.size() * 52))));
         Choice[] draft = { choices.stream().filter(c -> c.id == model.filter(name)).findFirst().orElse(choices.get(0)) };
         list.setOnItemClickListener((parent, view, position, id) -> {
             draft[0] = visible.get(position);

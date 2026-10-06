@@ -20,11 +20,38 @@ public final class FilterSheet {
         ((android.widget.FrameLayout) content.findViewById(R.id.filter_choices)).addView(choices);
         content.findViewById(R.id.filter_reset).setOnClickListener(v -> clear.run());
         content.findViewById(R.id.filter_apply).setOnClickListener(v -> { apply.run(); dialog.dismiss(); });
-        dialog.setContentView(content); dialog.show();
+        dialog.setContentView(content);
+        if (dialog.getWindow() != null) dialog.getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.show();
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content, (view, insets) -> {
-            int bottom = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars() | androidx.core.view.WindowInsetsCompat.Type.ime()).bottom;
-            view.setPadding(pad, pad, pad, pad + bottom); return insets;
+            int bottom = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).bottom;
+            int keyboard = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.ime()).bottom;
+            view.setPadding(pad, pad, pad, pad + bottom);
+            // Shrink the scrolling choices instead of adding a keyboard-sized blank area.
+            view.post(() -> {
+                int usable = context.getResources().getDisplayMetrics().heightPixels - keyboard
+                        - insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).top - bottom;
+                android.widget.ListView list = findList(choices);
+                if (list != null && list.getAdapter() != null) {
+                    int occupied = content.getHeight() - list.getHeight();
+                    int row = Math.round(52 * context.getResources().getDisplayMetrics().density);
+                    android.view.ViewGroup.LayoutParams params = list.getLayoutParams();
+                    params.height = Math.max(row, Math.min(Math.min(row * list.getAdapter().getCount(), row * 6), usable - occupied));
+                    if (list.getHeight() != params.height) list.setLayoutParams(params);
+                }
+            });
+            return insets;
         });
         return dialog;
+    }
+    private static android.widget.ListView findList(View view) {
+        if (view instanceof android.widget.ListView) return (android.widget.ListView) view;
+        if (view instanceof android.view.ViewGroup) {
+            android.view.ViewGroup group = (android.view.ViewGroup) view;
+            for (int i=0; i<group.getChildCount(); i++) {
+                android.widget.ListView found = findList(group.getChildAt(i)); if (found != null) return found;
+            }
+        }
+        return null;
     }
 }

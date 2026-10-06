@@ -14,9 +14,9 @@
             <LinearLayout android:id="@+id/title_header" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                 android:orientation="vertical" android:layout_marginEnd="@dimen/space_md">
                 <TextView android:id="@+id/brand_caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand_caption"
-                    android:textAppearance="@style/TextAppearance.Marvel.Caption" />
+                    style="@style/TextAppearance.Marvel.Caption" />
                 <TextView android:id="@+id/screen_title" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="@string/nav_home" android:textAppearance="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
+                    android:text="@string/nav_home" style="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
             </LinearLayout>
             <LinearLayout android:id="@+id/user_header" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                 android:layout_marginEnd="@dimen/space_md" android:orientation="horizontal" android:gravity="center_vertical" android:visibility="gone">
@@ -27,7 +27,7 @@
                     <TextView android:id="@+id/user_name" android:layout_width="match_parent" android:layout_height="wrap_content" android:fontFamily="@font/barlow_semibold"
                         android:textSize="16sp" android:textColor="@color/marvel_text" android:maxLines="2" android:ellipsize="end" />
                     <TextView android:id="@+id/user_email" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp"
-                        android:textAppearance="@style/TextAppearance.Marvel.Caption" android:maxLines="2" android:ellipsize="end" />
+                        style="@style/TextAppearance.Marvel.Caption" android:maxLines="2" android:ellipsize="end" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout android:layout_width="76dp" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal"
@@ -40,7 +40,7 @@
             </LinearLayout>
             </LinearLayout>
             <TextView android:id="@+id/expanded_screen_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.Marvel.CatalogHeader" android:gravity="center" android:visibility="gone" />
+                style="@style/TextAppearance.Marvel.CatalogHeader" android:gravity="center" android:visibility="gone" />
           </LinearLayout>
           <LinearLayout android:id="@+id/auth_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="106dp"
               android:orientation="vertical" android:gravity="center_horizontal" android:paddingBottom="12dp" android:visibility="gone"

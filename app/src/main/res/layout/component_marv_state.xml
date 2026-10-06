@@ -10,7 +10,7 @@
     </LinearLayout>
     <ImageView android:id="@+id/mascot" android:layout_width="120dp" android:layout_height="144dp" android:src="@drawable/marv_thinking" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
     <com.google.android.material.progressindicator.CircularProgressIndicator android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:indeterminate="true" android:visibility="gone" />
-    <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="16dp" android:textAppearance="@style/TextAppearance.Marvel.BodyStrong" />
-    <TextView android:id="@+id/status_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:accessibilityLiveRegion="polite" android:textAppearance="@style/TextAppearance.Marvel.Body" />
+    <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="16dp" style="@style/TextAppearance.Marvel.BodyStrong" />
+    <TextView android:id="@+id/status_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:accessibilityLiveRegion="polite" style="@style/TextAppearance.Marvel.Body" />
     <com.google.android.material.button.MaterialButton android:id="@+id/retry_button" style="@style/Widget.Marvel.Button.Primary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="@string/retry" android:visibility="gone" />
 </LinearLayout>

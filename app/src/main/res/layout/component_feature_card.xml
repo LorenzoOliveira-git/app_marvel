@@ -3,8 +3,8 @@
     <ImageView android:id="@+id/icon" android:layout_width="24dp" android:layout_height="24dp" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical"
         android:layout_marginStart="@dimen/space_md" android:layout_marginEnd="@dimen/space_sm" android:importantForAccessibility="noHideDescendants">
-        <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:textAppearance="@style/TextAppearance.Marvel.CardTitle" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
-        <TextView android:id="@+id/description" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xs" android:textAppearance="@style/TextAppearance.Marvel.Caption" />
+        <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/TextAppearance.Marvel.CardTitle" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
+        <TextView android:id="@+id/description" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xs" style="@style/TextAppearance.Marvel.Caption" />
     </LinearLayout>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/card_arrow" android:importantForAccessibility="no" android:textAppearance="@style/TextAppearance.Marvel.Body" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/card_arrow" android:importantForAccessibility="no" style="@style/TextAppearance.Marvel.Body" />
 </LinearLayout>

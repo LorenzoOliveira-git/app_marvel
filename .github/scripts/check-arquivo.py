@@ -147,6 +147,14 @@ try:
                                  ('open_movies','movie_details_heading','filmes'),
                                  ('open_series','series_details_heading','series')]:
         top(); tap_node(show(route)); show('cover_title',120); gallery(); capture('arquivo-'+label+'-grade')
+        if route == 'open_comics':
+            top(); tap_node(show('comics_volume')); wait('comics_volume_search',120)
+            tap('comics_volume_search'); adb('shell','input','text','Marvel')
+            time.sleep(2); capture('arquivo-filtro-teclado')
+            action=wait('filter_apply'); _,y=point(action)
+            assert y<570, 'Ação de filtro coberta pelo teclado'
+            adb('shell','input','keyevent','4'); adb('shell','input','keyevent','4')
+            show('cover_title',120)
         tap_node(show('cover_title')); wait(heading,120)
         assert find('bottom_navigation') is None, label
         capture('arquivo-'+label+'-detalhe'); tap('header_back'); wait('cover_title')
