@@ -17,7 +17,9 @@ public final class FirebaseServices {
     private FirebaseFunctions functions;
     private FirebaseStorage storage;
     public FirebaseServices(Context context) {
-        if (isLocal()) {
+        if (BuildConfig.DESIGN_PREVIEW) {
+            app = null; auth = null; // Prévia sem conta, geração paga ou serviços remotos.
+        } else if (isLocal()) {
             // Identificadores públicos de um projeto demo, sem recursos no Google Cloud.
             FirebaseApp local;
             try { local = FirebaseApp.getInstance("marvel-local"); }

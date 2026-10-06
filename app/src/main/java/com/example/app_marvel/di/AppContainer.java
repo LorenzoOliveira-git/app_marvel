@@ -31,7 +31,10 @@ public final class AppContainer {
         heroDrafts = new com.example.app_marvel.data.herodraft.HeroDraftRepository(firebase);
         heroCreations = new com.example.app_marvel.data.herodraft.HeroCreationRepository(firebase);
         myHeroes = new com.example.app_marvel.data.herodraft.MyHeroesRepository(firebase);
-        translations = new MlKitTranslationRepository(context);
+        translations = com.example.app_marvel.BuildConfig.DESIGN_PREVIEW
+                ? (entity, field, original, callback) -> new android.os.Handler(android.os.Looper.getMainLooper())
+                    .post(() -> callback.complete(TranslationRepository.Result.content(original, true)))
+                : new MlKitTranslationRepository(context);
         comicVine = new ComicVineClient(context);
         catalog = new MarvelRepository(context, comicVine);
         images = new ComicVineImages(context.getApplicationContext());

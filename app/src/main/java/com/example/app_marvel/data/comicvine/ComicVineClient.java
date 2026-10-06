@@ -38,6 +38,7 @@ public final class ComicVineClient {
     public interface Callback { void complete(Result result); }
     private static final Set<String> PARAMETERS = Collections.unmodifiableSet(new HashSet<>(
             Arrays.asList("offset", "limit", "field_list", "filter", "sort")));
+    private final Context context;
     private final ComicVineCredentials credentials;
     private final ComicVineRateLimiter rateLimiter;
     private final ExecutorService network = Executors.newSingleThreadExecutor();
@@ -46,6 +47,7 @@ public final class ComicVineClient {
     private final boolean debug;
 
     public ComicVineClient(Context context) {
+        this.context = context.getApplicationContext();
         debug = (context.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         credentials = new ComicVineCredentials(context);
         rateLimiter = new ComicVineRateLimiter(context.getApplicationContext());
@@ -76,6 +78,11 @@ public final class ComicVineClient {
         execute(path, parameters, callback, 0);
     }
     private void execute(String path, Map<String, String> parameters, Callback callback, int attempt) {
+        if (com.example.app_marvel.BuildConfig.DESIGN_PREVIEW) {
+            try { deliver(callback, new Result(PreviewCatalog.read(context, path, parameters), null, 200)); }
+            catch (IOException | JSONException invalid) { deliver(callback, new Result(null, Failure.RESPONSE, 0)); }
+            return; // Nunca consulta credenciais, rede ou limite da API nesta variante.
+        }
         String key;
         try { key = credentials.read(); }
         catch (IOException absent) { deliver(callback, new Result(null, Failure.CREDENTIAL_REQUIRED, 0)); return; }
