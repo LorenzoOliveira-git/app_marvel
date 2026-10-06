@@ -94,7 +94,7 @@ try:
     # Aumento real de fonte; verifica área útil e destino acessível sem depender de gesto.
     adb('shell', 'settings', 'put', 'system', 'font_scale', '1.6')
     wait('bottom_navigation'); capture('arquivo-fonte-160')
-    tap('charactersFragment'); wait('screen_title')
+    tap('charactersFragment'); wait('expanded_screen_title')
     tap('homeFragment'); wait('user_name')
     fatal = adb('logcat', '-d', '-s', 'AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in fatal, 'Exceção Android durante o smoke visual'
