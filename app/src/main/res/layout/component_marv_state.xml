@@ -1,13 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:orientation="vertical" android:gravity="center_horizontal" android:padding="@dimen/space_md">
-    <ImageView android:id="@+id/mascot" android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_state_error"
-        android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
-    <com.google.android.material.progressindicator.CircularProgressIndicator android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_md" android:indeterminate="true" android:visibility="gone" />
-    <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center"
-        android:layout_marginTop="@dimen/space_md" android:textAppearance="@style/TextAppearance.Marvel.Body" android:fontFamily="@font/inter_semibold" app:fontFamily="@font/inter_semibold" />
-    <TextView android:id="@+id/status_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
-        android:gravity="center" android:accessibilityLiveRegion="polite" android:textAppearance="@style/TextAppearance.Marvel.Body" />
-    <com.google.android.material.button.MaterialButton android:id="@+id/retry_button" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_lg" android:text="@string/retry" android:visibility="gone" />
+    android:orientation="vertical" android:gravity="center_horizontal" android:padding="16dp">
+    <LinearLayout android:id="@+id/skeleton" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:visibility="gone" android:importantForAccessibility="noHideDescendants">
+        <View android:id="@+id/skeleton_thumb" android:layout_width="80dp" android:layout_height="120dp" android:background="@drawable/background_skeleton" />
+        <LinearLayout android:id="@+id/skeleton_lines" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:orientation="vertical">
+            <View android:layout_width="match_parent" android:layout_height="24dp" android:background="@drawable/background_skeleton" />
+            <View android:layout_width="match_parent" android:layout_height="12dp" android:layout_marginTop="12dp" android:background="@drawable/background_skeleton" />
+            <View android:layout_width="80dp" android:layout_height="12dp" android:layout_marginTop="8dp" android:background="@drawable/background_skeleton" />
+        </LinearLayout>
+    </LinearLayout>
+    <ImageView android:id="@+id/mascot" android:layout_width="120dp" android:layout_height="144dp" android:src="@drawable/marv_thinking" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
+    <com.google.android.material.progressindicator.CircularProgressIndicator android:id="@+id/progress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:indeterminate="true" android:visibility="gone" />
+    <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="16dp" android:textAppearance="@style/TextAppearance.Marvel.BodyStrong" />
+    <TextView android:id="@+id/status_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:accessibilityLiveRegion="polite" android:textAppearance="@style/TextAppearance.Marvel.Body" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/retry_button" style="@style/Widget.Marvel.Button.Primary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="@string/retry" android:visibility="gone" />
 </LinearLayout>

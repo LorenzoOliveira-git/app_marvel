@@ -1,0 +1,4 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+    <path android:fillColor="@color/arquivo_pergaminho" android:pathData="M0,0H96V96H0Z" />
+    <path android:fillColor="@android:color/transparent" android:strokeColor="@color/arquivo_texto_secundario" android:strokeWidth="2" android:strokeLineJoin="round" android:pathData="M28,28H68V68H28ZM28,58L40,46L50,56L58,48L68,58M54,38A3,3 0,1 0,60,38A3,3 0,1 0,54,38" />
+</vector>

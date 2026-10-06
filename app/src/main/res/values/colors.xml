@@ -28,7 +28,7 @@
     <color name="marvel_primary_strong">@color/arquivo_vermelho</color>
     <color name="marvel_on_primary">@color/arquivo_sobre_vermelho</color>
     <color name="marvel_text">@color/arquivo_tinta</color>
-    <color name="marvel_text_secondary">@color/arquivo_texto_secundario</color>
+    <color name="marvel_text_secondary">@color/arquivo_texto_corpo</color>
     <color name="marvel_border">@color/arquivo_borda</color>
     <color name="marvel_nav">@color/arquivo_tinta</color>
     <color name="marvel_nav_overlay">@color/arquivo_tinta</color>

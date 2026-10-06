@@ -9,7 +9,7 @@
         <item name="colorOnSurface">@color/marvel_text</item>
         <item name="colorOnSurfaceVariant">@color/marvel_text_secondary</item>
         <item name="android:windowBackground">@color/marvel_background</item>
-        <item name="android:fontFamily">@font/inter</item><item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/barlow</item><item name="fontFamily">@font/barlow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/arquivo_tinta</item>

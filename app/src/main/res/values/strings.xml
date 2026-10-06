@@ -17,9 +17,9 @@
     <string name="home_create_description">Dê forma à sua ideia com a ajuda do Marv.</string>
     <string name="home_profile_description">Encontre sua coleção de heróis personalizados.</string>
     <string name="open_section_description">Abrir %1$s. %2$s</string>
-    <string name="state_loading_title">Só um instante…</string><string name="state_loading_body">Estou buscando as informações para você.</string>
-    <string name="state_empty_title">Nada por aqui ainda</string><string name="state_empty_body">Nenhum resultado foi encontrado.</string>
-    <string name="state_error_title">Não consegui carregar</string><string name="state_error_body">Tente novamente em instantes.</string>
+    <string name="state_loading_title">Só um instante…</string><string name="state_loading_body">Buscando informações…</string>
+    <string name="state_empty_title">Nada por aqui ainda</string><string name="state_empty_body">Experimente outra busca ou ajuste os filtros.</string>
+    <string name="state_error_title">Não foi possível carregar</string><string name="state_error_body">Confira sua conexão e tente novamente.</string>
     <string name="retry">Tentar novamente</string><string name="return_home">Voltar ao início</string><string name="card_arrow">→</string>
     <string name="auth_login_title">Faça login</string>
     <string name="auth_register_title">Crie sua conta</string>
@@ -51,4 +51,11 @@
     <string name="auth_email_hint">seu.email@gmail.com</string>
     <string name="auth_password_hint">Sua senha</string>
     <string name="auth_confirmation_hint">Repita sua senha</string>
+    <string name="arquivo_character_label">Personagem</string>
+    <string name="arquivo_open_character">Ver personagem</string>
+    <string name="arquivo_unknown">Não informado</string>
+    <string name="arquivo_description_missing">Descrição ainda não disponível.</string>
+    <string name="arquivo_description_error">Não foi possível carregar o resumo.</string>
+    <string name="arquivo_character_named">Retrato de %1$s</string>
+    <string name="arquivo_cover_named">Capa do quadrinho %1$s</string>
 </resources>

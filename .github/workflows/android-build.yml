@@ -151,6 +151,18 @@ jobs:
               assert all(key not in apk.read(name) for name in apk.namelist()), 'Credencial encontrada no APK'
           print('Credencial local fora do APK conferida.')
           PY
+      - name: Verificar Arquivo de Papel, detalhe e acessibilidade
+        if: steps.emulator.outcome == 'success' && (github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base')
+        timeout-minutes: 8
+        run: python3 .github/scripts/check-arquivo.py
+      - name: Disponibilizar prévia do Arquivo de Papel
+        if: always() && (github.head_ref == 'codex/arquivo-papel-base' || github.ref_name == 'codex/arquivo-papel-base')
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-arquivo-preview
+          path: app/build/arquivo-preview/*
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Verificar ML Kit e cache persistente no emulador
         if: steps.emulator.outcome == 'success'
         timeout-minutes: 6
