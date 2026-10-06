@@ -41,6 +41,7 @@ public final class ComicVineImages {
         view.setTag(url);
         view.setImageResource(R.drawable.ic_image_placeholder);
         if (com.example.app_marvel.BuildConfig.DESIGN_PREVIEW) {
+            if (url.isEmpty()) return; // Dados ausentes conservam o placeholder normal.
             int[] colors = {0xffB7C7D6, 0xffC9B7AA, 0xffBCCBB7, 0xffC8B9CF, 0xffD7C99E, 0xffB3C9C5};
             view.setImageDrawable(new android.graphics.drawable.ColorDrawable(colors[Math.floorMod(url.hashCode(), colors.length)]));
             return;

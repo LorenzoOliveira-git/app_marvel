@@ -1,9 +1,13 @@
-name: APK de prévia visual
+name: Validação visual Arquivo de Papel
 on:
   pull_request:
     branches: [main]
     paths:
       - "app/src/designPreview/**"
+      - "app/src/main/**"
+      - "app/build.gradle.kts"
+      - ".github/scripts/check-design-tokens.py"
+      - ".github/scripts/emulator_ui.py"
       - ".github/workflows/design-preview.yml"
       - ".github/scripts/check-design-preview.py"
   workflow_dispatch:
@@ -29,15 +33,10 @@ jobs:
           log-accepted-android-sdk-licenses: false
       - name: Instalar plataforma
         run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+      - name: Verificar tokens e contraste
+        run: python3 .github/scripts/check-design-tokens.py
       - name: Compilar e verificar prévia
         run: bash gradlew :app:assembleDesignPreview :app:lintDesignPreview --no-daemon --console=plain
-      - name: Disponibilizar APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: sua-marvel-previa-visual
-          path: app/build/outputs/apk/designPreview/app-designPreview.apk
-          if-no-files-found: error
-          retention-days: 14
       - name: Iniciar emulador sem credenciais
         timeout-minutes: 12
         run: |
@@ -61,7 +60,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: sua-marvel-previa-capturas
+          name: validacao-arquivo-de-papel
           path: app/build/design-preview/*
           if-no-files-found: ignore
           retention-days: 14

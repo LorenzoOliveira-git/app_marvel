@@ -39,7 +39,8 @@ public final class MovieCoverAdapter extends RecyclerView.Adapter<MovieCoverAdap
         ConstraintLayout.LayoutParams picture = (ConstraintLayout.LayoutParams) holder.binding.coverImage.getLayoutParams();
         picture.dimensionRatio = "2:3"; holder.binding.coverImage.setLayoutParams(picture);
         holder.binding.coverImage.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-        holder.itemView.setContentDescription(item.title);
+        holder.itemView.setContentDescription(holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.arquivo_movie_named, item.title));
         holder.itemView.setOnClickListener(view -> {
             int index = holder.getBindingAdapterPosition(); if (index != RecyclerView.NO_POSITION) select.accept(index);
         });

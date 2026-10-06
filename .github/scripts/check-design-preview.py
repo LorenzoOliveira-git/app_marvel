@@ -6,6 +6,7 @@ import subprocess
 import time
 import traceback
 import xml.etree.ElementTree as ET
+from emulator_ui import dismiss_launcher_anr
 
 PACKAGE = 'com.example.app_marvel.preview'
 OUT = Path('app/build/design-preview')
@@ -30,7 +31,9 @@ def nodes():
         if start < 0:
             start = raw.find(b'<hierarchy')
         try:
-            return list(ET.fromstring(raw[start:] if start >= 0 else raw).iter('node'))
+            snapshot = list(ET.fromstring(raw[start:] if start >= 0 else raw).iter('node'))
+            if dismiss_launcher_anr(snapshot, adb): continue
+            return snapshot
         except ET.ParseError:
             (OUT/'ui-read-failure.txt').write_bytes(raw[:4096])
             if attempt == 2:
@@ -59,6 +62,7 @@ def tap(resource):
 
 def capture(name):
     (OUT/(name+'.png')).write_bytes(adb('exec-out', 'screencap', '-p'))
+    print('Tela validada: '+name, flush=True)
 
 def point(node):
     x1, y1, x2, y2 = map(int, re.findall(r'\d+', node.get('bounds', '')))
@@ -108,6 +112,9 @@ try:
     top(); tap('issue_more'); wait('issue_heading',30); capture('03-quadrinho-detalhe')
     tap('header_back'); wait('issue_title'); tap('charactersFragment')
     wait('cover_title',30); gallery(); capture('04-personagens')
+    for resource in ['header_back','origin_filter','gender_filter','team_filter','search_name']:
+        target=wait(resource); x1,y1,x2,y2=map(int,re.findall(r'\d+',target.get('bounds','')))
+        assert x2-x1>=44 and y2-y1>=44, 'Área de toque pequena: '+resource
     tap_node(show('cover_title')); wait('details_name',30); capture('05-personagem-detalhe')
     tap('header_back'); wait('cover_title'); tap('gender_filter'); wait('filter_apply'); capture('06-filtros')
     adb('shell','input','keyevent','4'); tap('storiesFragment'); wait('identity_name',30)
@@ -119,7 +126,7 @@ try:
                                ('open_series','series_details_heading','series')]:
         top(); tap_node(show(route)); show('cover_title',30); gallery(); capture('09-'+label)
         tap_node(show('cover_title')); wait(heading,30); capture('10-'+label+'-detalhe')
-        tap('header_back'); wait('cover_title'); tap('header_back'); wait('identity_name')
+        tap('header_back'); wait('cover_title'); tap('header_back'); top(); wait('identity_name')
     top(); tap_node(show('open_arcs')); wait('arc_name',30); capture('11-arcos')
     tap_node(show('arc_source')); wait('arc_details_heading',30); capture('12-arco-detalhe')
     show('appearance_title',30); tap_node(show('appearance_open')); wait('issue_heading')
@@ -132,12 +139,35 @@ try:
     tap('hero_real_name'); adb('shell','input','text','Lia'); adb('shell','input','keyevent','4')
     tap_node(show('hero_next')); wait('hero_origin'); tap('hero_origin'); wait('filter_heading')
     capture('15-origens'); adb('shell','input','keyevent','4')
-    tap('homeFragment'); wait('user_name'); adb('shell','settings','put','system','font_scale','1.6')
-    wait('issue_title'); capture('16-fonte-ampliada')
+    tap('charactersFragment'); top(); tap('search_name'); adb('shell','input','text','Estrela')
+    adb('shell','input','keyevent','66'); time.sleep(1); tap_node(show('cover_title'))
+    assert 'Não informado' in wait('details_real_name').get('text','')
+    assert 'Não informado' in wait('details_origin').get('text','')
+    assert wait('details_description').get('text','')=='Descrição ainda não disponível.'
+    capture('16-dados-ausentes'); tap('header_back'); top(); tap('search_name')
+    adb('shell','input','keycombination','113','29'); adb('shell','input','keyevent','67')
+    adb('shell','input','keyevent','4'); time.sleep(1); wait('cover_title')
+    tap('homeFragment'); wait('user_name')
+    adb('shell','settings','put','system','font_scale','1.6')
+    wait('issue_title'); capture('17-fonte-ampliada')
+    tap('charactersFragment'); wait('cover_title'); capture('18-grade-fonte-ampliada')
+    adb('shell','wm','size','320x720'); wait('cover_title'); capture('19-tela-estreita')
+    # Narrow screens / large fonts show one column, without losing the main navigation.
+    titles=[n for n in nodes() if n.get('resource-id','').endswith('/cover_title')]
+    assert titles and all(point(n)[0]==point(titles[0])[0] for n in titles)
+    x1,_,x2,_=map(int,re.findall(r'\d+',titles[0].get('bounds','')))
+    assert x2-x1>240, 'Grade não passou a uma coluna em tela estreita'
+    assert find('bottom_navigation') is not None
+    adb('shell','settings','put','system','font_scale','1.0')
+    adb('shell','wm','size','700x1000'); wait('cover_title'); capture('20-tela-larga')
+    # The centered content column must never stretch to the full tablet width.
+    field=wait('search_name'); x1,_,x2,_=map(int,re.findall(r'\d+',field.get('bounds','')))
+    assert x2-x1<=430, 'Conteúdo excedeu 430dp em tela larga'
+    adb('shell','wm','size','390x844')
     logs=adb('logcat','-d','-s','AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in logs, logs
     (OUT/'verification.txt').write_text('Prévia sem credenciais e offline: início, personagens, quadrinhos, filmes, séries, arcos, detalhes, filtros, estado vazio, formulário e fonte 160% verificados.\n')
-    print('Prévia offline aprovada.')
+    print('Validação visual offline aprovada.')
 except Exception:
     capture('failure'); (OUT/'failure.xml').write_bytes(adb('exec-out','cat','/sdcard/arquivo-ui.xml'))
     (OUT/'failure.txt').write_text(traceback.format_exc())

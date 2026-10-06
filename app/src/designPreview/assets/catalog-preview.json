@@ -32,7 +32,7 @@
     },
     {
      "id": 106,
-     "name": "Estrela de Aço",
+     "name": "Estrela de Aço e os Guardiões do Horizonte Distante",
      "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
     }
    ],
@@ -647,7 +647,7 @@
   },
   {
    "id": 106,
-   "name": "Estrela de Aço",
+   "name": "Estrela de Aço e os Guardiões do Horizonte Distante",
    "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/",
    "publisher": {
     "id": 1,
@@ -655,18 +655,15 @@
     "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
    },
    "image": {
-    "medium_url": "preview://character/106"
+    "medium_url": ""
    },
    "site_detail_url": "",
-   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
-   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "deck": "",
+   "description": "",
    "aliases": "Aventura de demonstração",
-   "real_name": "Clara Mendes",
+   "real_name": "",
    "gender": 2,
-   "origin": {
-    "id": 1,
-    "name": "Human"
-   },
+   "origin": null,
    "count_of_issue_appearances": 6,
    "first_appeared_in_issue": {
     "id": 301,

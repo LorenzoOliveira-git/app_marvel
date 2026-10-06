@@ -43,7 +43,7 @@ public final class MarvStateView extends LinearLayout {
             action.width=LayoutParams.WRAP_CONTENT;action.gravity=android.view.Gravity.START;action.topMargin=dp(8);
             binding.retryButton.setLayoutParams(action);
             binding.retryButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
-            binding.retryButton.setTextColor(androidx.core.content.ContextCompat.getColor(context,R.color.arquivo_vermelho));
+            binding.retryButton.setTextColor(androidx.core.content.ContextCompat.getColor(context,R.color.arquivo_vermelho_texto));
         }
         updateSkeletonSize(0);
     }

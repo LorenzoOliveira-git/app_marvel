@@ -5,6 +5,8 @@
     <color name="arquivo_pergaminho">#E8E4DD</color>
     <color name="arquivo_tinta">#2D2D2D</color>
     <color name="arquivo_vermelho">#D92D20</color>
+    <!-- Texto de ação pequeno: variante de contraste, sem alterar o vermelho de seleção. -->
+    <color name="arquivo_vermelho_texto">#BD281C</color>
     <color name="arquivo_sobre_vermelho">#FBFAF7</color>
     <color name="arquivo_texto_corpo">#CC2D2D2D</color>
     <color name="arquivo_texto_secundario">#992D2D2D</color>

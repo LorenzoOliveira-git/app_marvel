@@ -5,4 +5,6 @@
     <string name="arquivo_character_search">Buscar personagens</string>
     <string name="arquivo_no_results">Sem resultados para “%1$s”</string>
     <string name="arquivo_description_unavailable">Descrição ainda não disponível.</string>
+    <string name="arquivo_movie_named">Filme: %1$s</string>
+    <string name="arquivo_series_named">Série: %1$s</string>
 </resources>

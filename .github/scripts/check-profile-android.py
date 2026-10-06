@@ -4,6 +4,7 @@ import subprocess
 import time
 import json
 import urllib.request
+import os
 helper=Path('.github/scripts/check-hero-drafts-local.py').read_text().split("subprocess.run(['python3'")[0]
 helper=helper.replace("resource=='createHeroFragment'", "resource in ('createHeroFragment','profileFragment')")
 exec(compile(helper,'profile-ui-helpers','exec'))
@@ -28,7 +29,7 @@ def replace_name(value):
         raise RuntimeError('O campo de nome não corresponde ao texto solicitado pelo roteiro.')
 
 email=f'profile-{int(time.time())}@example.test';password='local-emulator-only-928374'
-def server_name():
+def server_account():
     # Token usado somente em memória para verificar a conta real; não imprime credenciais.
     root='http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/'
     def post(method,data):
@@ -37,7 +38,9 @@ def server_name():
     identity=post('signInWithPassword',{'email':email,'password':password,'returnSecureToken':True})
     account=post('lookup',{'idToken':identity['idToken']})['users'][0]
     assert account['email']==email
-    return account.get('displayName','')
+    return account
+
+def server_name():return server_account().get('displayName','')
 
 subprocess.run(['python3','.github/scripts/check-firebase-local.py'],check=True)
 adb('shell','wm','size',f'{W}x{H}');adb('shell','wm','density','160')
@@ -48,7 +51,9 @@ tap(resource='submit');wait('user_name','Conta Perfil');tap(resource='profileFra
 tap(resource='profile_edit_name');replace_name('Nome Atualizado');tap(resource='profile_save_name');wait('profile_status','Nome confirmado',timeout=90)
 assert server_name()=='Nome Atualizado'
 # Cancelar alterações não grava; campos inválidos também não alteram a conta.
-tap(resource='profile_edit_name');replace_name('Nao Salvar');tap(resource='profile_cancel_name');tap(resource='button1');wait('profile_edit_name')
+tap(resource='profile_edit_name');replace_name('Nao Salvar');tap(resource='profile_cancel_name')
+tap(text='Continuar editando');assert wait('profile_name').get('text')=='Nao Salvar'
+tap(resource='profile_cancel_name');tap(text='Descartar');wait('profile_edit_name')
 assert server_name()=='Nome Atualizado'
 tap(resource='profile_edit_name');replace_name('');tap(resource='profile_save_name');wait('profile_status','Informe um nome')
 assert server_name()=='Nome Atualizado'
@@ -69,8 +74,33 @@ assert wait('profile_name').get('text')=='Nome Retomado'
 tap(resource='profile_save_name');wait('profile_status','Nome confirmado',timeout=90)
 top();(OUT/'profile-saved-font200.png').write_bytes(adb('exec-out','screencap','-p').stdout)
 assert server_name()=='Nome Retomado'
-tap(resource='account_my_heroes');wait('collection_status','Você ainda não tem heróis concluídos',timeout=90)
+tap(resource='account_my_heroes');wait('collection_empty_title',timeout=90)
+assert wait('collection_empty_title').get('text','').casefold()=='comece sua coleção'
+(OUT/'collection-empty.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+# Fixtures are written only to this temporary test account in the local Firestore emulator.
+subprocess.run(['node','tools/seed-design-collection.cjs'],check=True,
+               env={**os.environ,'DESIGN_TEST_UID':server_account()['localId']})
+adb('shell','input','keyevent','4');tap(resource='account_my_heroes');wait('saved_hero_title')
+assert '2 heróis' in wait('collection_summary').get('text','')
+(OUT/'collection-filled-font200.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
+tap(resource='saved_hero_title');wait('edit_hero_name')
+(OUT/'collection-editor.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+tap(resource='edit_hero_name');adb('shell','input','keycombination','113','29')
+adb('shell','input','text','Aurora%sRevisada');adb('shell','input','keyevent','4')
+assert wait('edit_hero_name').get('text','')=='Aurora Revisada'
+tap(resource='collection_close');tap(text='Continuar editando')
+assert wait('edit_hero_name').get('text','')=='Aurora Revisada'
+tap(resource='collection_save');wait('collection_saved',timeout=90)
+subprocess.run(['node','tools/seed-design-collection.cjs','verify'],check=True,
+               env={**os.environ,'DESIGN_TEST_UID':server_account()['localId']})
+(OUT/'collection-saved.png').write_bytes(adb('exec-out','screencap','-p').stdout)
+tap(resource='edit_hero_name');adb('shell','input','keycombination','113','29')
+adb('shell','input','text','Nao%sSalvar');adb('shell','input','keyevent','4')
+tap(resource='collection_close');tap(text='Descartar');wait('saved_hero_title')
+subprocess.run(['node','tools/seed-design-collection.cjs','verify'],check=True,
+               env={**os.environ,'DESIGN_TEST_UID':server_account()['localId']})
 adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
 adb('shell','input','keyevent','4');tap(resource='action');wait('submit')
-(OUT/'profile-android.json').write_text(json.dumps({'success':True,'actualAuthNameConfirmed':True,'emailUnchanged':True,'cancelDoesNotWrite':True,'emptyNameRejected':True,'actualNetworkFailure':True,'fieldsPreserved':True,'explicitRetryConfirmed':True,'font200':True,'collectionStillEmpty':True,'signOut':True,'completedHeroAccessNotExercised':True,'paidProvidersNotExercised':True},indent=2))
+(OUT/'profile-android.json').write_text(json.dumps({'success':True,'actualAuthNameConfirmed':True,'emailUnchanged':True,'cancelDoesNotWrite':True,'emptyNameRejected':True,'actualNetworkFailure':True,'fieldsPreserved':True,'explicitRetryConfirmed':True,'font200':True,'emptyCollection':True,'populatedCollection':True,'editorAndSafeDialog':True,'serverEditConfirmed':True,'discardDoesNotWrite':True,'signOut':True,'privateImageNotExercised':True,'paidProvidersNotExercised':True},indent=2))
 print('Perfil: nome confirmado no Auth, cancelamento/validação, rede/retomada e fonte 200% verificados.',flush=True)

@@ -97,6 +97,8 @@ public final class AccountFragment extends Fragment {
         }
         binding.profileStatus.setVisibility(signed && message != 0 ? View.VISIBLE : View.GONE);
         if (message != 0) binding.profileStatus.setText(message);
+        binding.profileStatus.setTextColor(getResources().getColor(state.error != null ? R.color.arquivo_erro
+                : state.saved ? R.color.arquivo_sucesso : R.color.arquivo_texto_corpo, null));
         if (state.editing && (binding.profileName.getText() == null || !binding.profileName.getText().toString().equals(model.name()))) {
             syncing = true; binding.profileName.setText(model.name()); syncing = false;
         }
