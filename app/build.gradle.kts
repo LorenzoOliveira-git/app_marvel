@@ -7,6 +7,12 @@ if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
 }
 
+// Somente hosts locais cobertos pela política HTTP debug; celular físico usa ADB reverse.
+val firebaseEmulatorHost = providers.gradleProperty("firebaseEmulatorHost").orElse("10.0.2.2").get()
+require(firebaseEmulatorHost in setOf("10.0.2.2", "127.0.0.1")) {
+    "firebaseEmulatorHost deve ser 10.0.2.2 (emulador) ou 127.0.0.1 (USB/ADB reverse)."
+}
+
 android {
     namespace = "com.example.app_marvel"
     compileSdk {
@@ -20,12 +26,14 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("boolean", "FIREBASE_EMULATORS", "false")
+        buildConfigField("String", "FIREBASE_EMULATOR_HOST", "\"10.0.2.2\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
+            buildConfigField("String", "FIREBASE_EMULATOR_HOST", "\"$firebaseEmulatorHost\"")
             buildConfigField("boolean", "FIREBASE_EMULATORS", providers.gradleProperty("firebaseEmulators").map { (it == "true").toString() }.orElse("false").get())
         }
         release {
