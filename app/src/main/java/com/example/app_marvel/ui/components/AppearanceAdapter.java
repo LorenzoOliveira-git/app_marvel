@@ -29,7 +29,15 @@ public final class AppearanceAdapter extends RecyclerView.Adapter<AppearanceAdap
     @Override public int getItemCount() { return items.size(); }
     @Override public long getItemId(int position) { return items.get(position).id; }
     @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int type) {
-        return new Holder(ItemAppearanceBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        var binding=ItemAppearanceBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
+        var config=parent.getResources().getConfiguration();
+        if(config.screenWidthDp<360||config.fontScale>=1.3f){
+            binding.appearanceContent.setOrientation(android.widget.LinearLayout.VERTICAL);
+            var metadata=new android.widget.LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            metadata.topMargin=Math.round(8*parent.getResources().getDisplayMetrics().density);
+            binding.appearanceMetadata.setLayoutParams(metadata);
+        }
+        return new Holder(binding);
     }
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         Issue issue = items.get(position); var view = holder.view;

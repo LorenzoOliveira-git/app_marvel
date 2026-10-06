@@ -30,8 +30,7 @@ final class StoryArcAdapter extends ListAdapter<StoryArc,StoryArcAdapter.Holder>
     @Override public void onBindViewHolder(@NonNull Holder holder,int position) {
         StoryArc arc=getItem(position);var binding=holder.binding;
         binding.arcName.setText(arc.name);ViewCompat.setAccessibilityHeading(binding.arcName,true);
-        binding.arcImage.setVisibility(arc.imageUrl.isEmpty() ? View.GONE:View.VISIBLE);
-        if (!arc.imageUrl.isEmpty()) images.show(binding.arcImage,arc.imageUrl);
+        images.show(binding.arcImage,arc.imageUrl);
         binding.arcSource.setVisibility(View.VISIBLE); binding.arcSource.setText(R.string.arc_open);
         binding.arcSource.setContentDescription(binding.getRoot().getContext().getString(R.string.arc_open_named,arc.name));
         binding.arcSource.setOnClickListener(v -> open.accept(arc.id));

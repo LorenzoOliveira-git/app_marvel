@@ -20,15 +20,15 @@ final class HistoryIdentityBinder {
         if (configuration.screenWidthDp < 360 || configuration.fontScale > 1.3f) {
             view.getRoot().setOrientation(LinearLayout.VERTICAL);
             view.identityText.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
-            LinearLayout.LayoutParams image = new LinearLayout.LayoutParams(-1, Math.round(290 * view.getRoot().getResources().getDisplayMetrics().density));
+            LinearLayout.LayoutParams image = new LinearLayout.LayoutParams(-1, -2);
             image.topMargin = Math.round(16 * view.getRoot().getResources().getDisplayMetrics().density);
             view.identityImageCard.setLayoutParams(image);
         }
     }
     void character(Character item) {
         view.identityName.setText(item.name);
-        view.identityRealName.setText(item.realName.isEmpty() ? "" : view.getRoot().getContext().getString(R.string.catalog_real_name, item.realName));
-        view.identityRealName.setVisibility(item.realName.isEmpty() ? View.GONE : View.VISIBLE);
+        view.identityRealName.setText(view.getRoot().getContext().getString(R.string.catalog_real_name,item.realName.isEmpty() ? view.getRoot().getContext().getString(R.string.arquivo_not_informed) : item.realName));
+        view.identityRealName.setVisibility(View.VISIBLE);
         images.show(view.identityImage, item.imageUrl);
     }
     void description(UiState<String> state, Runnable retry) {
