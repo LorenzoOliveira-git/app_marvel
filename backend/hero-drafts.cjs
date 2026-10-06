@@ -21,12 +21,12 @@ async function catalog(kind) {
       const response = await fetch(url, {headers: {'User-Agent': 'MarvelMobileLocalDrafts/1.0'}, signal: AbortSignal.timeout(20000)});
       if (!response.ok) throw new Error();
       data = await response.json();
-    } catch (_) { throw new HttpsError('unavailable', 'Não foi possível validar o catálogo ComicVine. Tente novamente.'); }
+    } catch (_) { throw new HttpsError('unavailable', 'Não foi possível validar o catálogo ComicVine. Tente novamente.', {reason: 'comicvine-unavailable'}); }
     if (data.status_code !== 1 || !Array.isArray(data.results) || !Number.isInteger(data.number_of_total_results) || data.number_of_total_results > 1000 || data.results.length === 0) {
-      throw new HttpsError('unavailable', 'Catálogo ComicVine indisponível para validação.');
+      throw new HttpsError('unavailable', 'Catálogo ComicVine indisponível para validação.', {reason: 'comicvine-unavailable'});
     }
     for (const row of data.results) {
-      if (!Number.isInteger(row.id) || row.id <= 0 || typeof row.name !== 'string' || !row.name.trim()) throw new HttpsError('unavailable', 'Resposta do catálogo inválida.');
+      if (!Number.isInteger(row.id) || row.id <= 0 || typeof row.name !== 'string' || !row.name.trim()) throw new HttpsError('unavailable', 'Resposta do catálogo inválida.', {reason: 'comicvine-unavailable'});
       rows.push({id: row.id, name: row.name.trim()});
     }
     offset += data.results.length; total = data.number_of_total_results;

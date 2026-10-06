@@ -98,3 +98,9 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 Se o Android SDK estiver em outro caminho, ajuste `$adb`. Abra o app instalado diretamente no celular. As quatro portas no aparelho encaminham para os serviços no computador, sem expor os emuladores na rede Wi-Fi. Repita `adb reverse` após desconectar/reiniciar o aparelho ou o ADB. Com vários dispositivos, acrescente `-s SERIAL` ao ADB e selecione o celular para instalação.
 
 Para usar Run/Debug do Android Studio, configure `firebaseEmulators=true` e `firebaseEmulatorHost=127.0.0.1` no seu arquivo Gradle local, sincronize e mantenha os encaminhamentos ativos. Para voltar ao emulador Android, use `firebaseEmulatorHost=10.0.2.2` (padrão). Release conserva os emuladores desativados. Contas do Auth emulado são separadas das contas de produção; cadastre uma conta local.
+
+## Identificar falhas ao salvar rascunhos
+
+O app distingue chamada Functions, validação ComicVine e confirmação Firestore. No debug, o Logcat `HeroDraftSave` registra somente `stage` e `code`, sem personagem, UID, chaves, token ou mensagem bruta. No celular por USB, Functions depende de reverse 5001 e a releitura confirmada de reverse 8080. O backend precisa de `COMICVINE_API_KEY` em `backend/.env.local`, independentemente da chave usada pelo catálogo Android no `.env` da raiz.
+
+A alteração separa erros antes apresentados como falha genérica e mantém os campos/ID para uma nova tentativa explícita. A causa da falha específica no aparelho ainda precisa do novo aviso ou do código no Logcat; não foi reproduzida apenas com a mensagem antiga. A CI focal desta correção exercita o salvamento Android, leitura no servidor, interrupção real da porta Functions e nova tentativa usando loopback/ADB reverse.

@@ -57,7 +57,7 @@ public final class CreateHeroViewModel extends ViewModel {
     private int creationEpoch;
     private String creationAccount = "", readingHero = "";
     private boolean restoring, retryConfirmation, accountInitialized;
-    public enum DraftStatus { IDLE, SAVING, SAVED, AUTH, INVALID, CONFIGURATION, NETWORK, ERROR }
+    public enum DraftStatus { IDLE, SAVING, SAVED, AUTH, INVALID, CONFIGURATION, NETWORK, CATALOG, FUNCTION_UNAVAILABLE, FIRESTORE_NETWORK, FIRESTORE_PERMISSION, ERROR }
     private final MutableLiveData<DraftStatus> draftStatus = new MutableLiveData<>(DraftStatus.IDLE);
     private String savedAccount = "";
     private final MutableLiveData<UiState<List<Choice>>> origins = new MutableLiveData<>(UiState.empty());

@@ -263,7 +263,12 @@ public final class CreateHeroFragment extends Fragment {
             case AUTH: message = R.string.hero_draft_auth; break;
             case INVALID: message = R.string.hero_draft_invalid; break;
             case CONFIGURATION: message = R.string.hero_draft_configuration; break;
-            case NETWORK: case ERROR: message = R.string.hero_draft_failure; break;
+            case NETWORK: message = R.string.hero_draft_backend_network; break;
+            case CATALOG: message = R.string.hero_draft_catalog_failure; break;
+            case FUNCTION_UNAVAILABLE: message = R.string.hero_draft_function_unavailable; break;
+            case FIRESTORE_NETWORK: message = R.string.hero_draft_firestore_network; break;
+            case FIRESTORE_PERMISSION: message = R.string.hero_draft_firestore_permission; break;
+            case ERROR: message = R.string.hero_draft_failure; break;
             default: message = 0;
         }
         binding.heroDraftStatus.setVisibility(message == 0 ? View.GONE : View.VISIBLE);
