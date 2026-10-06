@@ -48,8 +48,8 @@ async function normalizeImage(source) {
       || (metadata.pages || 1) !== 1) throw new Error('invalid-image');
   return png(await image.png().toBuffer());
 }
-function generationError(state, stage, httpStatus = null, apiCodes = []) {
-  const diagnostic = {stage, httpStatus, apiCodes};
+function generationError(state, stage, httpStatus = null, apiCodes = [], apiSignals = []) {
+  const diagnostic = {stage, httpStatus, apiCodes, apiSignals};
   // Não registrar resposta bruta, mensagens externas, prompt, conta ou token.
   if (process.env.FUNCTIONS_EMULATOR === 'true') console.warn('CloudflareGeneration', JSON.stringify(diagnostic));
   return Object.assign(new Error(state), {diagnostic});
@@ -71,13 +71,30 @@ async function generate(input) {
       body: form, signal: AbortSignal.timeout(180000)});
   } catch (_) { throw generationError('generation-unknown', 'transport'); }
   if (!result.ok) {
-    let apiCodes = [];
+    let apiCodes = [], apiSignals = [];
     try {
       const body = await result.json();
-      if (Array.isArray(body.errors)) apiCodes = body.errors.slice(0, 8).map(error => error?.code).filter(Number.isSafeInteger);
+      if (Array.isArray(body.errors)) {
+        const errors = body.errors.slice(0, 8);
+        apiCodes = errors.map(error => error?.code).filter(Number.isSafeInteger);
+        // Sinais de categorias fixas; nunca retornar/registrar a mensagem externa.
+        const signals = new Set();
+        for (const error of errors) {
+          if (typeof error?.message !== 'string') continue;
+          const message = error.message.slice(0, 10000).toLowerCase();
+          if (/nsfw|content.?filter|output has been flagged|unsafe content/.test(message)) signals.add('content_filter');
+          if (/validat|invalid input|missing required|multipart|boundary/.test(message)) {
+            signals.add('input_validation');
+            for (const field of ['prompt','width','height','multipart','boundary']) if (message.includes(field)) signals.add('field_' + field);
+          }
+          if (/paid plan|billing|payment|quota|allocation|rate limit/.test(message)) signals.add('plan_or_quota');
+          if (/unauthori|permission|forbidden|access denied/.test(message)) signals.add('access');
+        }
+        apiSignals = [...signals];
+      }
     } catch (_) { /* HTTP permanece útil mesmo se a resposta não for JSON. */ }
     throw generationError(result.status >= 400 && result.status < 500 ? 'generation-failed' : 'generation-unknown',
-      'http-response', result.status, apiCodes);
+      'http-response', result.status, apiCodes, apiSignals);
   }
   try {
     const data = await result.json();
