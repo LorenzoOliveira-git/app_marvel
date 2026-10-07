@@ -20,6 +20,5 @@
         <ProgressBar android:id="@+id/arcs_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
         <TextView android:id="@+id/arcs_page_error" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:accessibilityLiveRegion="polite" android:text="@string/arcs_page_error" android:visibility="gone" />
         <com.google.android.material.button.MaterialButton android:id="@+id/arcs_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:text="@string/catalog_load_more" android:visibility="gone" />
-        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/arcs_source" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

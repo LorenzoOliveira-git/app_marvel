@@ -8,7 +8,7 @@
 <LinearLayout android:id="@+id/appearance_metadata" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:orientation="vertical">
 <TextView android:id="@+id/appearance_title" style="@style/TextAppearance.Marvel.CardTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="2" android:ellipsize="end" />
 <TextView android:id="@+id/appearance_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" />
-<com.google.android.material.button.MaterialButton android:id="@+id/appearance_open" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/history_external" />
+<com.google.android.material.button.MaterialButton android:id="@+id/appearance_open" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/issue_open" />
 </LinearLayout>
 </LinearLayout>
 </LinearLayout>

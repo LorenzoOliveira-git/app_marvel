@@ -1,5 +1,4 @@
 <resources>
-    <string name="details_source_caption">Fonte: ComicVine · Tradução automática com revisão de rótulos</string>
     <string name="details_back">Voltar à tela anterior</string>
     <string name="details_description">Descrição</string>
     <string name="details_first_appearance">Primeira aparição</string>
@@ -9,8 +8,6 @@
     <string name="details_teams">Equipes</string>
     <string name="details_friends">Aliados</string>
     <string name="details_enemies">Inimigos</string>
-    <string name="details_external">Abrir na ComicVine ↗</string>
-    <string name="details_team_external">Na ComicVine ↗</string>
     <string name="details_more_teams">Carregar mais equipes</string>
     <string name="details_more_friends">Carregar mais aliados</string>
     <string name="details_more_enemies">Carregar mais inimigos</string>

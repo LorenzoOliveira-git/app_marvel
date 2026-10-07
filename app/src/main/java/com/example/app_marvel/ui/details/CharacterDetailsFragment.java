@@ -64,8 +64,6 @@ public final class CharacterDetailsFragment extends Fragment {
             binding.countSection.setVisibility(details.appearanceCount < 0 ? View.GONE : View.VISIBLE);
             if (details.appearanceCount >= 0) binding.appearanceCount.setText(getResources().getQuantityString(R.plurals.details_appearances,
                     details.appearanceCount == 1 ? 1 : 2, NumberFormat.getIntegerInstance(new Locale("pt", "BR")).format(details.appearanceCount)));
-            binding.detailsSource.setVisibility(item.siteUrl.isEmpty() ? View.GONE : View.VISIBLE);
-            binding.detailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(), item.siteUrl));
         });
         model.getDescription().observe(getViewLifecycleOwner(), state -> {
             boolean missing = state.getStatus() == UiState.Status.UNAVAILABLE;
@@ -118,8 +116,7 @@ public final class CharacterDetailsFragment extends Fragment {
         boolean team = kind.equals("teams"); var group = model.group(kind);
         section.relationHeading.setText(heading); ViewCompat.setAccessibilityHeading(section.relationHeading, true);
         RelatedCharacterAdapter adapter = new RelatedCharacterAdapter(container.getImages(), team, item -> {
-            if (team) ComicVineNavigation.open(requireContext(), item.siteUrl);
-            else ((MainActivity) requireActivity()).openCharacter(item.id);
+            if (!team) ((MainActivity) requireActivity()).openCharacter(item.id);
         });
         section.relationList.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         section.relationList.setAdapter(adapter);

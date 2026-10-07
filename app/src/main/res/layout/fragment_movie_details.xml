@@ -27,8 +27,6 @@
                 <com.google.android.material.button.MaterialButton android:id="@+id/movie_read_description" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/movie_read_description" />
                 <TextView android:id="@+id/movie_description" style="@style/TextAppearance.Marvel.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textColor="@color/marvel_text" />
             </LinearLayout>
-            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/issue_source" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/movie_details_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_external" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

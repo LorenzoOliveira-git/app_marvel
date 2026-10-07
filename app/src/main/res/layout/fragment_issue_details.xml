@@ -26,9 +26,6 @@
             <include android:id="@+id/issue_characters_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
             <include android:id="@+id/issue_teams_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
             <LinearLayout android:id="@+id/issue_credits" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
-            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/issue_source" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/issue_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_external" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/issue_volume_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_volume_external" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

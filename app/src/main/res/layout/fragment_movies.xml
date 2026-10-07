@@ -20,6 +20,5 @@
         </LinearLayout>
         <ProgressBar android:id="@+id/page_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:visibility="gone" />
         <com.google.android.material.button.MaterialButton android:id="@+id/load_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:text="@string/catalog_load_more" android:visibility="gone" />
-        <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:padding="20dp" android:gravity="center" android:text="@string/movies_source" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

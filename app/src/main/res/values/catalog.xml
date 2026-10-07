@@ -5,10 +5,9 @@
     <string name="catalog_recent">Últimas atualizações</string>
     <string name="catalog_featured">Personagem em destaque</string>
     <string name="catalog_did_you_know">Você sabia?</string>
-    <string name="catalog_source">Fonte: ComicVine · Tradução automática</string>
     <string name="catalog_issue">Quadrinho</string>
     <string name="catalog_more">Ver mais →</string>
-    <string name="catalog_character_more">Saiba mais →</string>
+    <string name="catalog_character_more">Ver personagem →</string>
     <string name="catalog_real_name">Nome verdadeiro: %1$s</string>
     <string name="catalog_origin_value">Origem: %1$s</string>
     <string name="catalog_filter_by">Filtrar por:</string>

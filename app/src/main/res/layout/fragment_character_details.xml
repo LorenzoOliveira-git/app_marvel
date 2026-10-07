@@ -26,7 +26,7 @@
                         <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/first_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" />
                         <TextView android:id="@+id/first_title" style="@style/TextAppearance.Marvel.CatalogFilter" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
                         <TextView android:id="@+id/first_date" style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
-                        <com.google.android.material.button.MaterialButton android:id="@+id/first_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_team_external"  />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/first_more" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/issue_open"  />
                     </LinearLayout>
                     <LinearLayout android:id="@+id/count_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/background_section_line" android:paddingVertical="16dp" android:orientation="vertical">
                         <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_appearance_count" />
@@ -42,8 +42,6 @@
                 <include android:id="@+id/teams_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
                 <include android:id="@+id/friends_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
                 <include android:id="@+id/enemies_section" layout="@layout/component_details_relations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" />
-                <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/details_source_caption" />
-                <com.google.android.material.button.MaterialButton android:id="@+id/details_source" style="@style/Widget.Marvel.AuthLink" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/details_external" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

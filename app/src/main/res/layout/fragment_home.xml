@@ -34,7 +34,6 @@
                 <com.example.app_marvel.ui.components.MarvCompanionView android:id="@+id/fact_marv" android:layout_width="88dp" android:layout_height="104dp" android:layout_marginStart="8dp" />
             </LinearLayout>
             <com.example.app_marvel.ui.components.MarvStateView android:id="@+id/fact_state" android:layout_width="match_parent" android:layout_height="wrap_content" app:inlineState="true" app:textOnlySkeleton="true" />
-            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/catalog_source" />
         </LinearLayout>
         <TextView android:id="@+id/explore_heading" style="@style/TextAppearance.Marvel.Section" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/home_explore_title" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp" android:layout_marginBottom="16dp" android:background="@color/arquivo_borda" android:importantForAccessibility="no" />

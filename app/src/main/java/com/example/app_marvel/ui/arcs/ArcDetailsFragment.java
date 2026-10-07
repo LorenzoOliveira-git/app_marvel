@@ -52,8 +52,6 @@ public final class ArcDetailsFragment extends Fragment {
             if (!item.arc.imageUrl.isEmpty()) container.getImages().show(binding.arcDetailsImage,item.arc.imageUrl);
             binding.arcReferenceCount.setText(getString(R.string.arc_reference_count,item.issues.size()));
             binding.arcReferenceCount.setVisibility(item.issues.isEmpty() ? View.GONE:View.VISIBLE);
-            binding.arcDetailsSource.setVisibility(item.arc.siteUrl.isEmpty() ? View.GONE:View.VISIBLE);
-            binding.arcDetailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),item.arc.siteUrl));
         });
         model.deck().observe(getViewLifecycleOwner(),state -> description(state,binding.arcDeckSection,binding.arcDeckState,binding.arcDeck,"deck"));
         model.description().observe(getViewLifecycleOwner(),state -> {

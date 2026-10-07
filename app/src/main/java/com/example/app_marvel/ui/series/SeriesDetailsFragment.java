@@ -56,8 +56,6 @@ public final class SeriesDetailsFragment extends Fragment {
             binding.seriesDetailsPublisher.setText(R.string.series_publisher);
             text(binding.seriesFirstEpisode,item.firstEpisode==null ? "":getString(R.string.series_first_episode,episodeLabel(item.firstEpisode)));
             text(binding.seriesLastEpisode,item.lastEpisode==null ? "":getString(R.string.series_last_episode,episodeLabel(item.lastEpisode)));
-            binding.seriesDetailsSource.setVisibility(item.series.siteUrl.isEmpty() ? View.GONE:View.VISIBLE);
-            binding.seriesDetailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),item.series.siteUrl));
         });
         model.deck().observe(getViewLifecycleOwner(),state -> description(state,binding.seriesDeckSection,binding.seriesDeckState,binding.seriesDeck,"deck"));
         model.description().observe(getViewLifecycleOwner(),state -> {
@@ -100,8 +98,7 @@ public final class SeriesDetailsFragment extends Fragment {
         boolean team = kind.equals("teams"); var group = model.group(kind);
         var images = ((MarvelApplication) requireActivity().getApplication()).getContainer().getImages();
         RelatedCharacterAdapter adapter = new RelatedCharacterAdapter(images,team,item -> {
-            if (team) ComicVineNavigation.open(requireContext(),item.siteUrl);
-            else ((MainActivity) requireActivity()).openCharacter(item.id);
+            if (!team) ((MainActivity) requireActivity()).openCharacter(item.id);
         });
         section.relationHeading.setText(heading); ViewCompat.setAccessibilityHeading(section.relationHeading,true);
         section.relationList.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false));
@@ -136,11 +133,6 @@ public final class SeriesDetailsFragment extends Fragment {
                 String date=new java.text.SimpleDateFormat("dd/MM/yyyy",new java.util.Locale("pt","BR")).format(original.parse(item.airDate));
                 episodeText(content,getString(R.string.series_episode_air_date,date));
             } catch(java.text.ParseException ignored) { /* Campo inválido é omitido. */ }
-        }
-        if(!item.siteUrl.isEmpty()) {
-            MaterialButton link=(MaterialButton)getLayoutInflater().inflate(R.layout.component_issue_credit,content,false);
-            link.setText(R.string.details_external);link.setContentDescription(getString(R.string.series_episode_external,item.name));link.setSingleLine(false);link.setMinHeight(dp(48));
-            link.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),item.siteUrl));content.addView(link,new LinearLayout.LayoutParams(-1,-2));
         }
     }
     private void episodeText(LinearLayout parent,String value) {

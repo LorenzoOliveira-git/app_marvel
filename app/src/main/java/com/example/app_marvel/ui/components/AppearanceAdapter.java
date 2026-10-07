@@ -50,10 +50,10 @@ public final class AppearanceAdapter extends RecyclerView.Adapter<AppearanceAdap
         } catch (Exception invalidDate) { /* Seção opcional: nenhum ano é presumido. */ }
         view.appearanceDate.setVisibility(view.appearanceDate.getText().length() > 0 ? View.VISIBLE : View.GONE);
         view.timelineLine.setVisibility(position + 1 < items.size() || continues ? View.VISIBLE : View.INVISIBLE);
-        view.appearanceOpen.setVisibility(open == null && issue.siteUrl.isEmpty() ? View.GONE : View.VISIBLE);
-        view.appearanceOpen.setContentDescription(view.getRoot().getContext().getString(open == null ? R.string.history_external_issue : R.string.issue_open_named,issue.title));
-        view.appearanceOpen.setText(open == null ? R.string.history_external : R.string.issue_open);
-        view.appearanceOpen.setOnClickListener(v -> { if (open != null) open.accept(issue.id); else ComicVineNavigation.open(v.getContext(),issue.siteUrl); });
+        view.appearanceOpen.setVisibility(open == null ? View.GONE : View.VISIBLE);
+        view.appearanceOpen.setContentDescription(view.getRoot().getContext().getString(R.string.issue_open_named,issue.title));
+        view.appearanceOpen.setText(R.string.issue_open);
+        view.appearanceOpen.setOnClickListener(v -> { if (open != null) open.accept(issue.id); });
         images.show(view.appearanceImage, issue.imageUrl);
     }
     static final class Holder extends RecyclerView.ViewHolder {

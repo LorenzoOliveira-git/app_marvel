@@ -52,12 +52,9 @@ public final class RecentIssueAdapter extends RecyclerView.Adapter<RecentIssueAd
         if (open != null) {
             view.issueMore.setText(R.string.issue_open);
             view.issueMore.setContentDescription(view.getRoot().getContext().getString(R.string.issue_open_named,item.title));
-        } else if (explicitExternal) {
-            view.issueMore.setText(R.string.history_external);
-            view.issueMore.setContentDescription(view.getRoot().getContext().getString(R.string.history_external_issue, item.title));
         }
-        view.issueMore.setEnabled(open != null || !item.siteUrl.isEmpty());
-        view.issueMore.setOnClickListener(clicked -> { if (open != null) open.accept(item.id); else ComicVineNavigation.open(clicked.getContext(),item.siteUrl); });
+        view.issueMore.setVisibility(open == null ? View.GONE : View.VISIBLE);
+        view.issueMore.setOnClickListener(clicked -> { if (open != null) open.accept(item.id); });
         view.issueImage.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         view.issueImage.setContentDescription(view.getRoot().getContext().getString(R.string.arquivo_cover_named, item.title));
         images.show(view.issueImage, item.imageUrl);

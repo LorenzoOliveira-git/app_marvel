@@ -11,11 +11,10 @@
     <string name="series_query_invalid">Use um título sem vírgula, dois-pontos ou barra vertical.</string>
     <string name="series_order_selected">Ordem selecionada</string>
     <string name="series_year">Ano inicial informado: %1$s</string>
-    <plurals name="series_episodes"><item quantity="one">Episódio cadastrado na fonte: %1$d</item><item quantity="other">Episódios cadastrados na fonte: %1$d</item></plurals>
+    <plurals name="series_episodes"><item quantity="one">Episódio: %1$d</item><item quantity="other">Episódios: %1$d</item></plurals>
     <string name="series_previous">Série anterior</string>
     <string name="series_next">Próxima série</string>
     <string name="series_empty_title">Nenhuma série neste lote</string>
     <string name="series_empty_body">Tente outra busca ou carregue mais registros, se disponível.</string>
-    <string name="series_source">Fonte: ComicVine. Séries com editora Marvel na fonte, incluindo títulos licenciados. Catálogo parcial. Busque pelo título original.</string>
     <item name="series_search_input" type="id" />
 </resources>

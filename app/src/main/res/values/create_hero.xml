@@ -18,7 +18,6 @@
     <string name="hero_powers">Poderes</string>
     <string name="hero_selected_powers">Poderes escolhidos: %1$d</string>
     <string name="hero_remove_power">Remover %1$s</string>
-    <string name="hero_catalog_source">Origens e poderes: catálogo geral da ComicVine. Estas opções não são exclusivas da Marvel.</string>
     <string name="hero_description">Descrição do personagem</string>
     <string name="hero_description_hint">Conte sua história, personalidade e como usa seus poderes</string>
     <string name="hero_required">Preencha este campo.</string>
@@ -32,7 +31,7 @@
     <string name="hero_loading_origins">Marv está carregando e traduzindo as origens…</string>
     <string name="hero_loading_powers">Marv está carregando e traduzindo os poderes…</string>
     <string name="hero_catalog_error">Não foi possível carregar ou traduzir as opções. Seu rascunho foi mantido.</string>
-    <string name="hero_catalog_empty">A fonte não retornou opções neste catálogo.</string>
+    <string name="hero_catalog_empty">Nenhuma opção encontrada. Tente novamente.</string>
     <plurals name="hero_loaded_powers">
         <item quantity="one">%1$d de %2$d poder carregado</item>
         <item quantity="other">%1$d de %2$d poderes carregados</item>
@@ -51,7 +50,7 @@
     <string name="hero_local_review_note">Você pode salvar os dados como rascunho na sua conta. A geração da imagem será disponibilizada em outra etapa.</string>
     <string name="hero_local_draft_note">Nomes: até 100 caracteres. Descrição: até 2.000. O rascunho salvo ainda não é um herói da coleção.</string>
     <string name="hero_draft_backend_network">Não foi possível confirmar o salvamento no backend local. Confira o emulador Functions e a conexão USB da porta 5001. Seus campos foram mantidos.</string>
-    <string name="hero_draft_catalog_failure">O backend não conseguiu validar a origem e os poderes na ComicVine. Tente novamente depois; seus campos foram mantidos.</string>
+    <string name="hero_draft_catalog_failure">Não foi possível validar a origem e os poderes. Tente novamente depois; seus campos foram mantidos.</string>
     <string name="hero_draft_function_unavailable">A função de salvar rascunho não está disponível. Reinicie os emuladores com o backend atualizado. Seus campos foram mantidos.</string>
     <string name="hero_draft_firestore_network">O backend respondeu, mas não foi possível confirmar o rascunho no Firestore. Confira o emulador Firestore e a conexão USB da porta 8080. Seus campos foram mantidos; tentar novamente reutiliza o mesmo rascunho.</string>
     <string name="hero_draft_firestore_permission">O Firestore recusou a leitura do rascunho. Confira a conta local e as regras carregadas pelos emuladores. Seus campos foram mantidos.</string>
