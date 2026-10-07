@@ -57,6 +57,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         }
         binding.headerBack.setOnClickListener(view -> {
             if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.myHeroesFragment) { getOnBackPressedDispatcher().onBackPressed(); return; }
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.createHeroFragment) { navController.navigateUp(); return; }
             if (navController.getCurrentDestination() != null && (navController.getCurrentDestination().getId() == R.id.characterDetailsFragment
                     || navController.getCurrentDestination().getId() == R.id.characterHistoryFragment
                     || navController.getCurrentDestination().getId() == R.id.arcDetailsFragment
@@ -73,12 +74,12 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         ((MarvelApplication) getApplication()).getContainer().getAuth().getSession().observe(this, this::renderUserHeader);
         binding.bottomNavigation.setItemActiveIndicatorEnabled(true);
         binding.bottomNavigation.setItemActiveIndicatorWidth(dp(44));
-        binding.bottomNavigation.setItemActiveIndicatorHeight(dp(44));
+        binding.bottomNavigation.setItemActiveIndicatorHeight(dp(40));
         binding.bottomNavigation.setItemActiveIndicatorColor(android.content.res.ColorStateList.valueOf(
                 androidx.core.content.ContextCompat.getColor(this, R.color.arquivo_vermelho)));
         binding.bottomNavigation.setItemActiveIndicatorShapeAppearance(
                 com.google.android.material.shape.ShapeAppearanceModel.builder()
-                        .setAllCornerSizes(dp(22)).build());
+                        .setAllCornerSizes(dp(20)).build());
         boolean showLabels = getResources().getBoolean(R.bool.navigation_labels_visible)
                 && getResources().getConfiguration().fontScale <= 1.3f;
         binding.bottomNavigation.setLabelVisibilityMode(showLabels
@@ -91,7 +92,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             boolean details = destination.getId() == R.id.characterDetailsFragment;
             boolean history = destination.getId() == R.id.seriesDetailsFragment || destination.getId() == R.id.seriesFragment || destination.getId() == R.id.movieDetailsFragment || destination.getId() == R.id.moviesFragment || destination.getId() == R.id.arcDetailsFragment || destination.getId() == R.id.arcsFragment || destination.getId() == R.id.characterHistoryFragment || destination.getId() == R.id.comicsFragment || destination.getId() == R.id.issueDetailsFragment;
             boolean catalog = destination.getId() == R.id.myHeroesFragment || destination.getId() == R.id.createHeroFragment || destination.getId() == R.id.charactersFragment || details || history || destination.getId() == R.id.storiesFragment;
-            if (destination.getId() == R.id.myHeroesFragment) binding.bottomNavigation.getMenu().findItem(R.id.profileFragment).setChecked(true);
+            if (destination.getId() == R.id.createHeroFragment) binding.bottomNavigation.getMenu().findItem(R.id.myHeroesFragment).setChecked(true);
             if (details) binding.bottomNavigation.getMenu().findItem(R.id.charactersFragment).setChecked(true);
             if (history) binding.bottomNavigation.getMenu().findItem(R.id.storiesFragment).setChecked(true);
             binding.headerBack.setContentDescription(getString(details || history ? R.string.details_back : R.string.catalog_back));
@@ -129,9 +130,11 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
                 : session.getName().isEmpty() ? getString(R.string.home_account_name) : session.getName());
         binding.userEmail.setText(session.getEmail());
         binding.userEmail.setVisibility(signed && !session.getEmail().isEmpty() ? View.VISIBLE : View.GONE);
-        ((MarvelApplication) getApplication()).getContainer().getImages()
-                .showProfilePhoto(binding.userAvatar, session.getPhotoUrl());
+        int avatar=com.example.app_marvel.ui.components.MarvAvatars.selected(this,session.getUid());
+        if(avatar>=0)com.example.app_marvel.ui.components.MarvAvatars.show(binding.userAvatar,avatar);
+        else ((MarvelApplication) getApplication()).getContainer().getImages().showProfilePhoto(binding.userAvatar, session.getPhotoUrl());
     }
+    public void refreshAvatar(){renderUserHeader(((MarvelApplication)getApplication()).getContainer().getAuth().getSession().getValue());}
 
     private void applySafeInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, insets) -> {
@@ -230,7 +233,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         if (navController == null || navController.getCurrentDestination() == null) return;
         int id = navController.getCurrentDestination().getId();
         boolean firstLevel = id == R.id.homeFragment || id == R.id.charactersFragment
-                || id == R.id.storiesFragment || id == R.id.createHeroFragment || id == R.id.profileFragment;
+                || id == R.id.storiesFragment || id == R.id.myHeroesFragment || id == R.id.profileFragment;
         // Camadas internas usam voltar; o teclado mantém a ação do formulário visível.
         binding.bottomNavigation.setVisibility(firstLevel && keyboardBottom == 0 ? View.VISIBLE : View.GONE);
     }

@@ -269,13 +269,35 @@ public final class CreateHeroFragment extends Fragment {
         ViewCompat.setAccessibilityLiveRegion(view, ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
     }
     private void review() {
-        if (model.origin() == null) { binding.heroReviewData.setText(model.text("heroName")); return; }
-        StringBuilder summary = new StringBuilder();
-        row(summary, R.string.hero_name, model.text("heroName").trim()); row(summary, R.string.hero_real_name, model.text("realName").trim());
-        row(summary, R.string.hero_birthday, displayDate()); row(summary, R.string.hero_origin, model.origin().label);
+        binding.heroReviewData.removeAllViews();
+        reviewField(R.string.hero_name, "heroName", false);
+        reviewField(R.string.hero_real_name, "realName", false);
+        reviewValue(R.string.hero_birthday, displayDate());
+        reviewValue(R.string.hero_origin, model.origin() == null ? "" : model.origin().label);
         StringBuilder powers = new StringBuilder(); for (var power : model.selectedPowers()) { if (powers.length() > 0) powers.append(", "); powers.append(power.label); }
-        row(summary, R.string.hero_powers, powers.toString()); row(summary, R.string.hero_description, model.text("description").trim());
-        binding.heroReviewData.setText(summary.toString());
+        reviewValue(R.string.hero_powers, powers.toString());
+        reviewField(R.string.hero_description, "description", true);
+    }
+    private void reviewValue(int label, String value) {
+        TextView heading = new TextView(requireContext()); heading.setText(label); heading.setTextAppearance(R.style.TextAppearance_Marvel_AuthLabel);
+        heading.setPadding(0, dp(16), 0, dp(6)); binding.heroReviewData.addView(heading);
+        TextView content = new TextView(requireContext()); content.setText(value); content.setTextAppearance(R.style.TextAppearance_Marvel_Body);
+        binding.heroReviewData.addView(content);
+    }
+    private void reviewField(int label, String key, boolean multiline) {
+        TextView heading = new TextView(requireContext()); heading.setText(label); heading.setTextAppearance(R.style.TextAppearance_Marvel_AuthLabel);
+        heading.setPadding(0, dp(16), 0, dp(6)); binding.heroReviewData.addView(heading);
+        TextInputLayout frame = new TextInputLayout(requireContext()); frame.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        TextInputEditText edit = new TextInputEditText(frame.getContext()); edit.setText(model.text(key));
+        edit.setInputType(multiline ? android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE : android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        edit.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(multiline ? 2000 : 100)});
+        edit.setEnabled(!model.locked() && !model.saving()); edit.setMinHeight(dp(48)); edit.setContentDescription(getString(label));
+        edit.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s,int start,int count,int after) { }
+            public void onTextChanged(CharSequence s,int start,int before,int count) { model.text(key,s.toString()); }
+            public void afterTextChanged(Editable s) { }
+        });
+        frame.addView(edit); binding.heroReviewData.addView(frame);
     }
     private void renderDraft() {
         boolean busy = model.saving() || model.creating();

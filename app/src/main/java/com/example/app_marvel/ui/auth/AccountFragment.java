@@ -38,6 +38,8 @@ public final class AccountFragment extends Fragment {
         ViewCompat.setAccessibilityHeading(binding.heading, true);
         ViewCompat.setAccessibilityHeading(binding.profileNameLabel, true);
         binding.profileEditName.setOnClickListener(v -> model.startEdit());
+        binding.profileAvatar.setOnClickListener(v -> chooseAvatar());
+        binding.profileChooseAvatar.setOnClickListener(v -> chooseAvatar());
         binding.profileSaveName.setOnClickListener(v -> model.save());
         binding.profileCancelName.setOnClickListener(v -> cancelEdit());
         binding.profileName.addTextChangedListener(new android.text.TextWatcher() {
@@ -56,6 +58,10 @@ public final class AccountFragment extends Fragment {
         binding.accountMyHeroes.setOnClickListener(v -> androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.myHeroesFragment));
         model.getSession().observe(getViewLifecycleOwner(), session -> {
             boolean signed = session.isAuthenticated();
+            int avatar=com.example.app_marvel.ui.components.MarvAvatars.selected(requireContext(),session.getUid());
+            if(avatar>=0)com.example.app_marvel.ui.components.MarvAvatars.show(binding.profileAvatar,avatar);
+            else binding.profileAvatar.setImageResource(R.drawable.ic_profile_avatar);
+            binding.profileChooseAvatar.setVisibility(signed?View.VISIBLE:View.GONE);
             binding.accountMyHeroes.setVisibility(signed ? View.VISIBLE : View.GONE);
             binding.heading.setText(signed ? R.string.account_title : R.string.account_signed_out);
             binding.name.setText(session.getName()); binding.email.setText(session.getEmail());
@@ -74,6 +80,25 @@ public final class AccountFragment extends Fragment {
         });
         view.post(() -> { if (binding != null) ((MainActivity) requireActivity()).updateContentInsets(); });
     }
+    private void chooseAvatar(){
+        String uid=model.getSession().getValue().getUid();if(uid.isEmpty())return;
+        android.widget.GridLayout grid=new android.widget.GridLayout(requireContext());grid.setColumnCount(2);
+        grid.setPadding(16,16,16,16);
+        var dialog=new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog)
+            .setTitle(R.string.profile_choose_marv).setView(grid).setNegativeButton(android.R.string.cancel,null).create();
+        for(int index=0;index<com.example.app_marvel.ui.components.MarvAvatars.LABELS.length;index++){
+            final int chosen=index;android.widget.ImageView image=new android.widget.ImageView(requireContext());
+            com.example.app_marvel.ui.components.MarvAvatars.show(image,index);
+            image.setContentDescription(com.example.app_marvel.ui.components.MarvAvatars.LABELS[index]);
+            android.widget.GridLayout.LayoutParams params=new android.widget.GridLayout.LayoutParams();params.width=dp(104);params.height=dp(104);
+            params.setMargins(dp(8),dp(8),dp(8),dp(8));grid.addView(image,params);
+            image.setOnClickListener(v->{com.example.app_marvel.ui.components.MarvAvatars.select(requireContext(),uid,chosen);
+                com.example.app_marvel.ui.components.MarvAvatars.show(binding.profileAvatar,chosen);
+                ((MainActivity)requireActivity()).refreshAvatar();dialog.dismiss();});
+        }
+        dialog.show();
+    }
+    private int dp(int n){return Math.round(n*getResources().getDisplayMetrics().density);}
     private void cancelEdit() {
         if (model.edit().getValue().busy) return;
         if (model.name().equals(model.getSession().getValue().getName())) { model.cancel(); return; }

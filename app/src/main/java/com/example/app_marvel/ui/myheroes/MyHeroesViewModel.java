@@ -114,11 +114,24 @@ public final class MyHeroesViewModel extends ViewModel {
         int stamp=epoch;busy=true;emit();repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;selected=hero;Long revision=fields.get("revision");if(hero!=null&&Boolean.TRUE.equals(fields.get("directPending"))){fill(hero);fields.remove("directPending");}else if(hero!=null&&(revision==null||revision!=hero.revision))error=MyHeroesRepository.Failure.CONFLICT;emit();if(hero!=null)loadImage();});
     }
     public void reloadSelected(){if(busy||selected==null)return;int stamp=epoch;String id=selected.id;busy=true;error=null;emit();repository.read(id,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;if(hero!=null){selected=hero;fill(hero);saved=false;}emit();});}
-    public void save(){
+    public void save(){save(false);}
+    public void saveAndRegenerate(){save(true);}
+    private void save(boolean regenerate){
         if(busy||selected==null||error==MyHeroesRepository.Failure.CONFLICT)return;
         String name=field("heroName").trim(),real=field("realName").trim(),description=field("description").trim();
         if(name.isEmpty()||name.length()>100||real.isEmpty()||real.length()>100||description.isEmpty()||description.length()>2000){error=MyHeroesRepository.Failure.INVALID;saved=false;emit();return;}
-        int stamp=epoch;busy=true;error=null;saved=false;emit();repository.update(selected,name,real,description,(hero,failure)->{if(stamp!=epoch)return;busy=false;error=failure;if(hero!=null){selected=hero;fill(hero);saved=true;for(int i=0;i<rows.size();i++)if(rows.get(i).id.equals(hero.id))rows.set(i,hero);}emit();});
+        int stamp=epoch;busy=true;error=null;saved=false;emit();repository.update(selected,name,real,description,(hero,failure)->{
+            if(stamp!=epoch)return;
+            if(hero==null){busy=false;error=failure;emit();return;}
+            selected=hero;fill(hero);for(int i=0;i<rows.size();i++)if(rows.get(i).id.equals(hero.id))rows.set(i,hero);
+            if(!regenerate){busy=false;saved=true;emit();return;}
+            String attempt=java.util.UUID.randomUUID().toString();
+            repository.regenerate(hero,attempt,(updated,problem)->{
+                if(stamp!=epoch)return;busy=false;error=problem;saved=updated!=null;
+                if(updated!=null){selected=updated;loadImage();thumbnails.remove(updated.id);requestedPreviews.remove(updated.id);}
+                emit();
+            });
+        });
     }
     public void closeEditor(){if(busy)return;epoch++;imageEpoch++;selected=null;clearFields();image.setValue(null);imageFailed.setValue(false);saved=false;error=null;emit();refresh();}
     public void loadImage(){

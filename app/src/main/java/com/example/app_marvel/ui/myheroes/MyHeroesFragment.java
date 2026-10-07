@@ -43,14 +43,24 @@ public final class MyHeroesFragment extends Fragment {
         model.openHero(getArguments()==null ? "" : getArguments().getString("heroId", ""));
         ViewCompat.setAccessibilityHeading(binding.collectionHeading,true);
         field(binding.editHeroName,"heroName");field(binding.editRealName,"realName");field(binding.editDescription,"description");
-        binding.collectionRefresh.setOnClickListener(v->model.refresh());binding.collectionMore.setOnClickListener(v->model.more());binding.collectionSave.setOnClickListener(v->model.save());
-        binding.collectionCreate.setOnClickListener(v->((MainActivity)requireActivity()).openFeature(AppFeature.CREATE_HERO));
+        binding.collectionRefresh.setOnClickListener(v->model.refresh());binding.collectionMore.setOnClickListener(v->model.more());
+        binding.collectionCreate.setOnClickListener(v->binding.collectionActions.setVisibility(binding.collectionActions.getVisibility()==View.VISIBLE?View.GONE:View.VISIBLE));
+        binding.collectionNew.setOnClickListener(v->{binding.collectionActions.setVisibility(View.GONE);androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.createHeroFragment);});
+        binding.collectionEdit.setOnClickListener(v->{binding.collectionActions.setVisibility(View.GONE);chooseHero();});
+        binding.collectionSave.setOnClickListener(v->new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog)
+            .setTitle(R.string.hero_hub_image_title).setMessage(R.string.hero_hub_image_question)
+            .setNegativeButton(R.string.hero_hub_keep_image,(dialog,which)->model.save())
+            .setPositiveButton(R.string.hero_hub_regenerate,(dialog,which)->model.saveAndRegenerate()).show());
         binding.collectionClose.setOnClickListener(v->discard(model::closeEditor));binding.collectionReload.setOnClickListener(v->discard(model::reloadSelected));
         binding.collectionLeavePending.setOnClickListener(v->model.closeEditor());
         binding.collectionImageRetry.setOnClickListener(v->model.loadImage());
         model.state().observe(getViewLifecycleOwner(),this::render);
         model.previewChanged().observe(getViewLifecycleOwner(),ignored->updatePreviews());
         binding.collectionScroll.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener)(scroll,x,y,oldX,oldY)->{updatePreviews();loadVisiblePreviews();});
+        binding.collectionGallery.setOnScrollChangeListener((android.view.View.OnScrollChangeListener)(scroll,x,y,oldX,oldY)->{
+            loadVisiblePreviews();
+            if(x+scroll.getWidth()>=binding.collectionList.getWidth()-dp(180))model.more();
+        });
         model.image().observe(getViewLifecycleOwner(),bitmap->{binding.collectionImage.setImageBitmap(bitmap);binding.collectionImage.setVisibility(bitmap==null?View.GONE:View.VISIBLE);});
         model.imageFailed().observe(getViewLifecycleOwner(),failed->binding.collectionImageRetry.setVisibility(Boolean.TRUE.equals(failed)?View.VISIBLE:View.GONE));
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),new OnBackPressedCallback(true){
@@ -68,7 +78,7 @@ public final class MyHeroesFragment extends Fragment {
     }
     private void render(MyHeroesViewModel.State state){
         boolean editor=state.selected!=null;boolean pending=model.pendingHero();
-        binding.collectionEditor.setVisibility(editor?View.VISIBLE:View.GONE);binding.collectionList.setVisibility(editor?View.GONE:View.VISIBLE);
+        binding.collectionEditor.setVisibility(editor?View.VISIBLE:View.GONE);binding.collectionGallery.setVisibility(editor?View.GONE:View.VISIBLE);
         boolean empty=!editor&&!pending&&!state.busy&&state.error==null&&state.rows.isEmpty();
         binding.collectionMascot.setVisibility(empty?View.VISIBLE:View.GONE);
         binding.collectionEmptyTitle.setVisibility(empty?View.VISIBLE:View.GONE);
@@ -85,6 +95,8 @@ public final class MyHeroesFragment extends Fragment {
         binding.collectionRefresh.setText(state.error==null?R.string.my_heroes_refresh:R.string.catalog_retry);binding.collectionRefresh.setEnabled(!state.busy);
         binding.collectionMore.setVisibility(!editor&&state.more?View.VISIBLE:View.GONE);binding.collectionMore.setEnabled(!state.busy);
         binding.collectionCreate.setVisibility(!editor?View.VISIBLE:View.GONE);binding.collectionCreate.setEnabled(!state.busy);
+        if(editor)binding.collectionActions.setVisibility(View.GONE);
+        binding.collectionEdit.setEnabled(!state.rows.isEmpty()&&!state.busy);
         binding.collectionSave.setEnabled(!state.busy&&state.error!=com.example.app_marvel.data.herodraft.MyHeroesRepository.Failure.CONFLICT);binding.collectionClose.setEnabled(!state.busy);binding.collectionReload.setEnabled(!state.busy);
         binding.collectionReload.setVisibility(state.error!=null?View.VISIBLE:View.GONE);
         binding.collectionLeavePending.setVisibility(pending&&!state.busy?View.VISIBLE:View.GONE);
@@ -94,6 +106,7 @@ public final class MyHeroesFragment extends Fragment {
         if(!editor)for(var hero:state.rows){
             var row=ItemSavedHeroBinding.inflate(getLayoutInflater(),binding.collectionList,false);
             row.savedHeroTitle.setText(hero.name);row.savedHeroIdentity.setText(hero.realName);row.savedHeroDescription.setText(hero.description);
+            row.getRoot().setLayoutParams(new android.widget.LinearLayout.LayoutParams(dp(264),android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
             row.getRoot().setEnabled(!state.busy);row.getRoot().setOnClickListener(v->model.select(hero));
             heroViews.put(hero.id,row);binding.collectionList.addView(row.getRoot());
         }
@@ -109,13 +122,35 @@ public final class MyHeroesFragment extends Fragment {
         }
     }
     private void loadVisiblePreviews(){
-        if(binding==null||binding.collectionList.getVisibility()!=View.VISIBLE)return;
+        if(binding==null||binding.collectionGallery.getVisibility()!=View.VISIBLE)return;
         android.graphics.Rect viewport=new android.graphics.Rect();binding.collectionScroll.getGlobalVisibleRect(viewport);
         for(var entry:heroViews.entrySet()){
             android.graphics.Rect row=new android.graphics.Rect();
             if(entry.getValue().getRoot().getGlobalVisibleRect(row)&&android.graphics.Rect.intersects(viewport,row))model.preview(entry.getKey());
         }
     }
+    private void chooseHero(){
+        var state=model.state().getValue();if(state.rows.isEmpty())return;
+        android.widget.ScrollView scroll=new android.widget.ScrollView(requireContext());
+        android.widget.LinearLayout rows=new android.widget.LinearLayout(requireContext());rows.setOrientation(android.widget.LinearLayout.VERTICAL);
+        rows.setPadding(dp(16),dp(8),dp(16),dp(8));scroll.addView(rows);
+        var dialog=new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_Marvel_Dialog)
+            .setTitle(R.string.hero_hub_choose).setView(scroll).setNegativeButton(android.R.string.cancel,null).create();
+        for(var hero:state.rows){
+            android.widget.LinearLayout row=new android.widget.LinearLayout(requireContext());row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            row.setPadding(0,dp(6),0,dp(6));
+            android.widget.ImageView thumbnail=new android.widget.ImageView(requireContext());thumbnail.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            thumbnail.setImageBitmap(model.thumbnail(hero.id));if(model.thumbnail(hero.id)==null)thumbnail.setImageResource(R.drawable.ic_image_placeholder);
+            row.addView(thumbnail,new android.widget.LinearLayout.LayoutParams(dp(48),dp(64)));
+            android.widget.TextView name=new android.widget.TextView(requireContext());name.setText(hero.name);name.setTextAppearance(R.style.TextAppearance_Marvel_Body);
+            android.widget.LinearLayout.LayoutParams params=new android.widget.LinearLayout.LayoutParams(0,dp(64),1);params.leftMargin=dp(16);
+            name.setGravity(android.view.Gravity.CENTER_VERTICAL);row.addView(name,params);row.setContentDescription(hero.name);
+            row.setOnClickListener(v->{dialog.dismiss();model.select(hero);});rows.addView(row,new android.widget.LinearLayout.LayoutParams(-1,-2));
+        }
+        dialog.show();
+    }
+    private int dp(int value){return Math.round(value*getResources().getDisplayMetrics().density);}
+    @Override public void onResume(){super.onResume();if(model!=null&&model.state().getValue()!=null&&model.state().getValue().selected==null)model.refresh();}
 
     private void set(TextInputEditText input,String value){if(input.getText()==null||!input.getText().toString().equals(value))input.setText(value);}
     @Override public void onDestroyView(){super.onDestroyView();heroViews.clear();binding=null;}

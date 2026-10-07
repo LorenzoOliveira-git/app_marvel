@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.app_marvel.MainActivity;
 import com.example.app_marvel.MarvelApplication;
@@ -59,12 +59,19 @@ public final class CharactersFragment extends Fragment {
                 return type.cast(new CharactersViewModel(container.getCatalog(), container.getTranslations(), SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(CharactersViewModel.class);
-        GridLayoutManager layout = new GridLayoutManager(requireContext(), 2);
+        LinearLayoutManager layout = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
         binding.portraits.setLayoutManager(layout);
+        new PagerSnapHelper().attachToRecyclerView(binding.portraits);
         portraits = new CharacterPortraitAdapter(container.getImages(), position -> { model.select(position); ((MainActivity) requireActivity()).openCharacter(portraits.item(position).id); });
         binding.portraits.setAdapter(portraits);
         binding.portraits.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
             if (r - l > 0 && r - l != or - ol) geometry(r - l);
+        });
+        binding.portraits.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override public void onScrollStateChanged(@NonNull RecyclerView list, int state) {
+                if (state == RecyclerView.SCROLL_STATE_IDLE && layout.findLastVisibleItemPosition() >= portraits.getItemCount() - 2
+                        && Boolean.TRUE.equals(model.getHasMore().getValue()) && !Boolean.TRUE.equals(model.getLoadingMore().getValue())) model.more();
+            }
         });
 
         binding.searchName.setText(model.query());
@@ -103,8 +110,7 @@ public final class CharactersFragment extends Fragment {
         renderFilters();
     }
     private void geometry(int width) {
-        ((GridLayoutManager) binding.portraits.getLayoutManager()).setSpanCount(
-                getResources().getConfiguration().screenWidthDp >= 360 && getResources().getConfiguration().fontScale < 1.3f ? 2 : 1);
+        portraits.cardWidth(Math.max(dp(220), width - dp(72)));
     }
     private void renderSelection() {
         binding.selectionCount.setText(getString(R.string.arquivo_loaded_count, portraits.getItemCount()));

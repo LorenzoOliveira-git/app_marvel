@@ -146,7 +146,10 @@ async function retryHeroGeneration(request) {
 async function heroImageUrl(request) {
   const uid = identity(request), {operationId: id} = parse(request.data), r = state.refs(uid,id);
   const doc = await r.hero.get();
-  if (!doc.exists || doc.get('uid') !== uid || doc.get('image.publicId') !== provider.publicId(uid,id)) throw new HttpsError('not-found', 'Imagem não encontrada na sua conta.');
+  const asset=doc.get('image');
+  const prefix=provider.publicId(uid,'').replace(/\/$/,'')+'/';
+  if (!doc.exists || doc.get('uid') !== uid || doc.get('operationId') !== id || !asset || typeof asset.publicId !== 'string'
+      || !asset.publicId.startsWith(prefix) || !UUID.test(asset.publicId.slice(prefix.length))) throw new HttpsError('not-found', 'Imagem não encontrada na sua conta.');
   return provider.downloadUrl(doc.get('image'));
 }
 module.exports = {executeHeroCreation,resumeHeroCreation,retryHeroGeneration,heroImageUrl};

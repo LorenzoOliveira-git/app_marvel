@@ -2,6 +2,6 @@
     <item android:id="@+id/homeFragment" android:icon="@drawable/ic_arquivo_home" android:title="@string/nav_home" />
     <item android:id="@+id/charactersFragment" android:icon="@drawable/ic_arquivo_characters" android:title="@string/nav_characters" />
     <item android:id="@+id/storiesFragment" android:icon="@drawable/ic_arquivo_stories" android:title="@string/nav_stories" />
-    <item android:id="@+id/createHeroFragment" android:icon="@drawable/ic_arquivo_create" android:title="@string/nav_create" />
+    <item android:id="@+id/myHeroesFragment" android:icon="@drawable/ic_arquivo_create" android:title="@string/nav_create" />
     <item android:id="@+id/profileFragment" android:icon="@drawable/ic_arquivo_profile" android:title="@string/nav_profile" />
 </menu>

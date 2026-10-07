@@ -86,6 +86,17 @@ public final class MyHeroesRepository {
             });
         });
     }
+    public void regenerate(Hero hero,String attemptId,Callback<Hero> callback){
+        if(!ready(callback))return;String uid=account();Map<String,Object> data=new HashMap<>();
+        data.put("heroId",hero.id);data.put("attemptId",attemptId);data.put("revision",hero.revision);data.put("confirmPaidGeneration",true);
+        services.functions().getHttpsCallable("regenerateHeroImage").call(data).addOnCompleteListener(task->{
+            if(!uid.equals(account())){callback.complete(null,Failure.AUTH);return;}
+            if(!task.isSuccessful()){callback.complete(null,error(task.getException()));return;}
+            Object result=task.getResult().getData();
+            if(!(result instanceof Map)||!"completed".equals(((Map<?,?>)result).get("state"))){callback.complete(null,Failure.UNAVAILABLE);return;}
+            read(hero.id,callback);
+        });
+    }
     private Failure error(Exception exception) {
         if(exception instanceof FirebaseFunctionsException) switch(((FirebaseFunctionsException)exception).getCode()) {
             case UNAUTHENTICATED: case PERMISSION_DENIED:return Failure.AUTH;

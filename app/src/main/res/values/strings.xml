@@ -59,4 +59,12 @@
     <string name="arquivo_character_named">Retrato de %1$s</string>
     <string name="arquivo_cover_named">Capa do quadrinho %1$s</string>
     <string name="splash_skip">Pular animação de abertura</string>
+    <string name="profile_choose_marv">Escolher expressão do Marv</string>
+    <string name="hero_hub_actions">Opções de personagem</string>
+    <string name="hero_hub_edit">Editar personagem</string>
+    <string name="hero_hub_choose">Escolha um personagem</string>
+    <string name="hero_hub_image_title">Imagem do personagem</string>
+    <string name="hero_hub_image_question">Deseja manter a imagem atual ou gerar uma nova? Uma nova geração usa o serviço de imagens e pode consumir sua cota.</string>
+    <string name="hero_hub_keep_image">Manter imagem</string>
+    <string name="hero_hub_regenerate">Gerar nova imagem</string>
 </resources>
