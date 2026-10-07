@@ -71,12 +71,19 @@ def point(node):
 def show(resource, timeout=90):
     deadline = time.monotonic()+timeout
     while time.monotonic()<deadline:
-        snapshot = nodes(); node = find(resource, snapshot)
+        snapshot=nodes(); node=find(resource,snapshot)
+        root=find('main',snapshot)
+        assert root is not None, 'A tela do app não está em primeiro plano'
+        left,_,right,bottom=map(int,re.findall(r'\d+',root.get('bounds','')))
+        header=find('header',snapshot); nav=find('bottom_navigation',snapshot)
+        top_edge=int(re.findall(r'\d+',header.get('bounds',''))[3]) if header is not None else 95
+        bottom=int(re.findall(r'\d+',nav.get('bounds',''))[1]) if nav is not None else bottom-24
         if node is not None:
-            x, y = point(node)
-            if 110 < y < 720:
+            _,y=point(node)
+            if top_edge+15 < y < bottom-15:
                 return node
-        adb('shell', 'input', 'swipe', '195', '710', '195', '450', '400')
+        x=(left+right)//2; region=bottom-top_edge
+        adb('shell','input','swipe',str(x),str(top_edge+int(region*.8)),str(x),str(top_edge+int(region*.35)),'400')
         time.sleep(1)
     raise AssertionError('Controle não ficou visível: '+resource)
 
@@ -156,9 +163,9 @@ try:
     adb('shell','input','keyevent','66'); wait('bottom_navigation'); wait('cover_title')
     tap('homeFragment'); wait('user_name')
     adb('shell','settings','put','system','font_scale','1.6')
-    wait('issue_title'); capture('17-fonte-ampliada')
-    tap('charactersFragment'); wait('cover_title'); capture('18-grade-fonte-ampliada')
-    adb('shell','wm','size','320x720'); wait('cover_title'); capture('19-tela-estreita')
+    top(); show('issue_title'); capture('17-fonte-ampliada')
+    tap('charactersFragment'); top(); show('cover_title'); capture('18-grade-fonte-ampliada')
+    adb('shell','wm','size','320x720'); top(); show('cover_title'); capture('19-tela-estreita')
     # Narrow screens / large fonts show one column, without losing the main navigation.
     titles=[n for n in nodes() if n.get('resource-id','').endswith('/cover_title')]
     assert titles and all(point(n)[0]==point(titles[0])[0] for n in titles)
@@ -166,10 +173,11 @@ try:
     assert x2-x1>240, 'Grade não passou a uma coluna em tela estreita'
     assert find('bottom_navigation') is not None
     adb('shell','settings','put','system','font_scale','1.0')
-    adb('shell','wm','size','700x1000'); wait('cover_title'); capture('20-tela-larga')
+    adb('shell','wm','size','700x1000'); top()
     # The centered content column must never stretch to the full tablet width.
     field=wait('search_name'); x1,_,x2,_=map(int,re.findall(r'\d+',field.get('bounds','')))
     assert x2-x1<=430, 'Conteúdo excedeu 430dp em tela larga'
+    show('cover_title'); capture('20-tela-larga')
     adb('shell','wm','size','390x844')
     logs=adb('logcat','-d','-s','AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in logs, logs
