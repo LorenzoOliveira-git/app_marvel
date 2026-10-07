@@ -43,7 +43,7 @@ public final class FeatureResources {
         switch (feature) {
             case CHARACTERS: return R.id.charactersFragment;
             case STORIES: return R.id.storiesFragment;
-            case CREATE_HERO: return R.id.createHeroFragment;
+            case CREATE_HERO: return R.id.myHeroesFragment;
             case PROFILE: return R.id.profileFragment;
             case HOME: return R.id.homeFragment;
             default: throw new IllegalArgumentException("Destino desconhecido");

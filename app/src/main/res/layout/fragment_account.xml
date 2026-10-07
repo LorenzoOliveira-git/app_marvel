@@ -1,7 +1,8 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/account_scroll"
     android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/screen_padding" android:gravity="center_horizontal">
-        <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@drawable/ic_profile_avatar" android:scaleType="fitCenter" android:importantForAccessibility="no" android:contentDescription="@null" />
+        <ImageView android:id="@+id/profile_avatar" android:layout_width="80dp" android:layout_height="80dp" android:src="@drawable/ic_profile_avatar" android:scaleType="fitCenter" android:contentDescription="@string/profile_choose_marv" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/profile_choose_avatar" style="@style/Widget.Marvel.AuthLink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_choose_marv" />
         <TextView android:id="@+id/heading" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_lg"
             android:text="@string/account_signed_out" style="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" />
         <TextView android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md" style="@style/TextAppearance.Marvel.Title" android:fontFamily="@font/bebas_neue_regular" app:fontFamily="@font/bebas_neue_regular" android:visibility="gone" />

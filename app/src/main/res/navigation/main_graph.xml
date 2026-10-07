@@ -29,7 +29,7 @@
     <fragment android:id="@+id/characterHistoryFragment" android:name="com.example.app_marvel.ui.history.CharacterHistoryFragment" android:label="@string/nav_stories">
         <argument android:name="characterId" app:argType="integer" />
     </fragment>
-    <fragment android:id="@id/createHeroFragment" android:name="com.example.app_marvel.ui.createhero.CreateHeroFragment" android:label="@string/nav_create">
+    <fragment android:id="@+id/createHeroFragment" android:name="com.example.app_marvel.ui.createhero.CreateHeroFragment" android:label="@string/nav_create">
         <argument android:name="feature" app:argType="string" android:defaultValue="CREATE_HERO" />
     </fragment>
     <fragment android:id="@id/profileFragment" android:name="com.example.app_marvel.ui.auth.AccountFragment" android:label="@string/nav_profile">

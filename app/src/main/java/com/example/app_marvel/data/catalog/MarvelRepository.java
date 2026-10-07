@@ -293,9 +293,10 @@ public final class MarvelRepository {
     }
 
     public void featured(Callback<CatalogModels.Character> callback) {
-        characters("", 0, 0, 0, 0, result -> deliver(callback, result.failure != null
+        characters("Spider-Man", 0, 0, 0, 0, result -> deliver(callback, result.failure != null
                 ? Result.failed(result.failure) : result.data.characters.isEmpty() ? Result.failed(Failure.DATA)
-                : Result.success(result.data.characters.get(0))));
+                : Result.success(result.data.characters.stream().filter(item -> "Spider-Man".equalsIgnoreCase(item.name))
+                    .findFirst().orElse(result.data.characters.get(0)))));
     }
 
     private static List<Reference> references(JSONArray rows, String resource) {

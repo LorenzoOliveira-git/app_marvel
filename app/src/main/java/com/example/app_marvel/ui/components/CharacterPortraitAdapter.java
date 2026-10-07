@@ -16,6 +16,7 @@ public final class CharacterPortraitAdapter extends RecyclerView.Adapter<Charact
     private final ComicVineImages images;
     private final IntConsumer select;
     private final List<CatalogModels.Character> items = new ArrayList<>();
+    private int cardWidth;
     public CharacterPortraitAdapter(ComicVineImages images, IntConsumer select) {
         this.images = images; this.select = select; setHasStableIds(true);
         setStateRestorationPolicy(StateRestorationPolicy.PREVENT_WHEN_EMPTY);
@@ -25,6 +26,7 @@ public final class CharacterPortraitAdapter extends RecyclerView.Adapter<Charact
         items.clear(); items.addAll(data); notifyDataSetChanged();
     }
     public CatalogModels.Character item(int index) { return items.get(index); }
+    public void cardWidth(int width) { if (cardWidth != width) { cardWidth = width; notifyDataSetChanged(); } }
     @Override public long getItemId(int position) { return items.get(position).id; }
     @Override public int getItemCount() { return items.size(); }
     @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int type) {
@@ -32,13 +34,14 @@ public final class CharacterPortraitAdapter extends RecyclerView.Adapter<Charact
     }
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         var item = items.get(position);
+        if (cardWidth > 0) holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(cardWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
         holder.binding.coverTitle.setText(item.name);
         String meta = item.realName.isEmpty() ? holder.itemView.getContext().getString(
                 com.example.app_marvel.R.string.arquivo_not_informed) : item.realName;
         holder.binding.coverMeta.setText(meta);
         holder.binding.coverMeta.setVisibility(meta.isEmpty() ? View.GONE : View.VISIBLE);
         ConstraintLayout.LayoutParams picture = (ConstraintLayout.LayoutParams) holder.binding.coverImage.getLayoutParams();
-        picture.dimensionRatio = "4:5"; holder.binding.coverImage.setLayoutParams(picture);
+        picture.dimensionRatio = "2:3"; holder.binding.coverImage.setLayoutParams(picture);
         holder.binding.coverImage.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
         holder.itemView.setContentDescription(holder.itemView.getContext().getString(
                 com.example.app_marvel.R.string.arquivo_character_named, item.name));

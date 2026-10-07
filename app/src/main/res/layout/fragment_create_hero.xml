@@ -43,7 +43,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
         <LinearLayout android:id="@+id/hero_review_section" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-            <TextView android:id="@+id/hero_review_data" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/hero_review_title" style="@style/TextAppearance.Marvel.Body" />
+            <LinearLayout android:id="@+id/hero_review_data" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" />
             <TextView android:id="@+id/hero_review_note" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/hero_review_note" style="@style/TextAppearance.Marvel.Caption" />
             <com.google.android.material.button.MaterialButton android:id="@+id/hero_save_draft" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:singleLine="false" android:text="@string/hero_save_draft" android:visibility="gone" />
             <ProgressBar android:id="@+id/hero_draft_progress" android:layout_width="40dp" android:layout_height="40dp" android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:visibility="gone" />
