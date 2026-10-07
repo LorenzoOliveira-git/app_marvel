@@ -8,11 +8,17 @@ A Home usa o Marv atento junto à curiosidade. A coleção vazia usa a saudaçã
 
 ## Assets e movimento
 
-- `app/src/main/res/drawable-nodpi/marv_welcome.png` e `marv_thinking.png`: ilustrações já presentes no projeto, usadas conforme o contexto.
-- `app/src/main/java/com/example/app_marvel/ui/components/MarvCompanionView.java`: transição de opacidade, oscilação e inclinação suaves; celebração com pequenos saltos. A saudação termina em repouso.
+- `app/src/main/res/drawable-nodpi/marv_companion_atlas.webp`: atlas transparente com seis poses em três colunas e duas linhas.
+- `app/src/main/java/com/example/app_marvel/ui/components/MarvCompanionView.java`: desenho das células, transição de opacidade, oscilação e inclinação suaves; celebração com pequenos saltos. A saudação termina em repouso.
 - `app/src/main/res/values/marv_companion.xml`: dicas e mensagens em português.
 
-São duas ilustrações 2D com volume e movimentos curtos, não um modelo 3D articulado nem seis artes distintas. As imagens são compartilhadas em memória; nenhuma biblioteca nova foi adicionada. Os movimentos duram poucos segundos, param quando o componente sai da área visível ou a tela pausa, e respeitam a escala de duração de animação do Android. Desativar animações mantém a expressão e a mensagem estáticas. O desenho é decorativo para leitores de tela; os textos e o botão continuam acessíveis.
+São ilustrações 2D com volume e animações de transformação, não um modelo 3D articulado. A imagem é compartilhada em memória; nenhuma biblioteca nova foi adicionada. Os movimentos duram poucos segundos, param quando o componente sai da área visível ou a tela pausa, e respeitam a escala de duração de animação do Android. Desativar animações mantém a expressão e a mensagem estáticas. O desenho é decorativo para leitores de tela; os textos e o botão continuam acessíveis.
+
+## Origem visual
+
+Asset criado com a ferramenta integrada de geração de imagens a partir de `marv_welcome.png`. Prompt usado:
+
+> Create one production animation sprite atlas PNG for Android, transparent background. Reference image is the identity of MARV: preserve exactly this white/black/red cute robot with red cape, crest and M chest, same polished volumetric illustration. A precise 3 columns by 2 rows equal-cell grid, each full-body character centered at identical scale, generous padding within cells, no overlap, no ground shadows, no labels or text except M emblem. Row 1 left: calm neutral idle friendly open eyes, arms down. Row 1 middle: cheerful welcome waving one hand. Row 1 right: attentive explaining pointing one finger upwards. Row 2 left: thinking hand at chin, curious eyes. Row 2 middle: celebrating both hands up happy eyes. Row 2 right: reassuring gentle empathetic expression, open hands. All six poses clearly distinct, same proportions and frontal viewpoint. This is a sprite atlas, precisely aligned equal cells for programmatic rendering.
 
 ## Entrega
 
