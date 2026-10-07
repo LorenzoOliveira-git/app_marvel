@@ -12,7 +12,6 @@
     <string name="comics_store_date">Data de venda: %1$s</string>
     <string name="comics_previous">Quadrinho anterior</string>
     <string name="comics_next">Próximo quadrinho</string>
-    <string name="comics_source">Fonte: ComicVine. Edições ordenadas pela data de venda.</string>
     <string name="comics_empty_title">Nenhuma edição nesta seleção</string>
     <string name="comics_empty_body">Escolha outro volume ou continue para a próxima página.</string>
     <style name="Widget.Marvel.ComicsOrder" parent="Widget.Marvel.CatalogFilter">

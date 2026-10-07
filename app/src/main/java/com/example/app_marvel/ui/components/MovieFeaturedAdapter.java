@@ -41,10 +41,10 @@ public final class MovieFeaturedAdapter extends RecyclerView.Adapter<MovieFeatur
         view.movieVolume.setVisibility(View.GONE);
         view.movieDate.setText(item.runtime>0 ? view.getRoot().getContext().getString(R.string.movies_runtime,item.runtime):"");
         view.movieDate.setVisibility(item.runtime>0 ? View.VISIBLE:View.GONE);
-        view.movieMore.setText(open==null ? R.string.history_external:R.string.movie_open);
-        view.movieMore.setContentDescription(view.getRoot().getContext().getString(open==null ? R.string.movies_external_named:R.string.movie_open_named,item.title));
-        view.movieMore.setEnabled(open!=null || !item.siteUrl.isEmpty());
-        view.movieMore.setOnClickListener(clicked -> { if (open!=null) open.accept(item.id);else ComicVineNavigation.open(clicked.getContext(),item.siteUrl); });
+        view.movieMore.setVisibility(open == null ? View.GONE : View.VISIBLE);
+        view.movieMore.setText(R.string.movie_open);
+        view.movieMore.setContentDescription(view.getRoot().getContext().getString(R.string.movie_open_named,item.title));
+        view.movieMore.setOnClickListener(clicked -> { if (open!=null) open.accept(item.id); });
         images.show(view.movieImage, item.imageUrl);
     }
     static final class Holder extends RecyclerView.ViewHolder {

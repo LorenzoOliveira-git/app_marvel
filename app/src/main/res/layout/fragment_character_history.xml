@@ -14,7 +14,6 @@
             <androidx.recyclerview.widget.RecyclerView android:id="@+id/history_timeline_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:nestedScrollingEnabled="false" android:overScrollMode="never" />
             <ProgressBar android:id="@+id/history_page_progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" android:visibility="gone" />
             <com.google.android.material.button.MaterialButton android:id="@+id/history_page_more" style="@style/Widget.Marvel.Button.Secondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/history_more" android:visibility="gone" />
-            <TextView style="@style/TextAppearance.Marvel.Caption" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="@string/history_source" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

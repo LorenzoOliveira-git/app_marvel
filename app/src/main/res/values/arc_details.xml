@@ -2,9 +2,9 @@
     <string name="arc_details_title">Detalhes do arco</string>
     <string name="arc_open">Ver arco</string>
     <string name="arc_open_named">Ver arco %1$s</string>
-    <string name="arc_reference_count">Edições vinculadas na ComicVine: %1$d</string>
+    <string name="arc_reference_count">Edições vinculadas: %1$d</string>
     <string name="arc_issues_heading">Edições do arco</string>
-    <string name="arc_sequence_note">Sequência dos vínculos na ComicVine; não é uma ordem oficial de leitura. Exibimos as edições de volumes confirmados como Marvel.</string>
+    <string name="arc_sequence_note">Esta sequência não representa uma ordem oficial de leitura.</string>
     <string name="arc_more_issues">Carregar mais edições</string>
     <string name="arc_read_description">Ler descrição</string>
 </resources>

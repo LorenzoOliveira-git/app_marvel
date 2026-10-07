@@ -1,6 +1,7 @@
 package com.example.app_marvel.ui.components;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,9 +34,10 @@ public final class RelatedCharacterAdapter extends RecyclerView.Adapter<RelatedC
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         RelatedItem item = items.get(position); var view = holder.binding;
         view.relatedName.setText(item.name); images.show(view.relatedImage, item.imageUrl);
-        view.relatedMore.setText(team ? R.string.details_team_external : R.string.catalog_character_more);
+        view.relatedMore.setVisibility(team ? View.GONE : View.VISIBLE);
+        view.relatedMore.setText(R.string.catalog_character_more);
         view.relatedMore.setContentDescription(view.relatedMore.getText() + ": " + item.name);
-        view.relatedMore.setEnabled(!team || !item.siteUrl.isEmpty());
+        view.relatedMore.setEnabled(!team);
         view.relatedMore.setOnClickListener(v -> listener.open(item));
     }
     @Override public void onViewRecycled(@NonNull Holder holder) { images.show(holder.binding.relatedImage, ""); super.onViewRecycled(holder); }

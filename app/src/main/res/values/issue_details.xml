@@ -13,10 +13,7 @@
     <string name="issue_concepts">Conceitos relacionados</string>
     <string name="issue_more_characters">Carregar mais personagens</string>
     <string name="issue_more_teams">Carregar mais equipes</string>
-    <string name="issue_credit_external">%1$s · Na ComicVine ↗</string>
     <string name="issue_creator_role">%1$s · %2$s</string>
-    <string name="issue_volume_external">Volume na ComicVine ↗</string>
-    <string name="issue_source">Fonte: ComicVine · Descrições traduzidas automaticamente. Créditos e relações conforme o catálogo.</string>
     <string name="issue_role_artist">Arte</string>
     <string name="issue_role_cover">Capa</string>
     <string name="issue_role_writer">Roteiro</string>

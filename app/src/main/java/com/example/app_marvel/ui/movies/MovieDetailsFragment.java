@@ -59,8 +59,6 @@ public final class MovieDetailsFragment extends Fragment {
             binding.movieCredits.removeAllViews();
             credits(R.string.movie_studios,item.studios);credits(R.string.movie_producers,item.producers);credits(R.string.movie_writers,item.writers);
             credits(R.string.issue_locations,item.locations);credits(R.string.issue_objects,item.objects);credits(R.string.issue_concepts,item.concepts);
-            binding.movieDetailsSource.setVisibility(item.movie.siteUrl.isEmpty() ? View.GONE:View.VISIBLE);
-            binding.movieDetailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),item.movie.siteUrl));
         });
         model.deck().observe(getViewLifecycleOwner(),state -> description(state,binding.movieDeckSection,binding.movieDeckState,binding.movieDeck,"deck"));
         model.description().observe(getViewLifecycleOwner(),state -> {
@@ -83,8 +81,7 @@ public final class MovieDetailsFragment extends Fragment {
         boolean team = kind.equals("teams"); var group = model.group(kind);
         var images = ((MarvelApplication) requireActivity().getApplication()).getContainer().getImages();
         RelatedCharacterAdapter adapter = new RelatedCharacterAdapter(images,team,item -> {
-            if (team) ComicVineNavigation.open(requireContext(),item.siteUrl);
-            else ((MainActivity) requireActivity()).openCharacter(item.id);
+            if (!team) ((MainActivity) requireActivity()).openCharacter(item.id);
         });
         section.relationHeading.setText(heading); ViewCompat.setAccessibilityHeading(section.relationHeading,true);
         section.relationList.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false));
@@ -111,15 +108,8 @@ public final class MovieDetailsFragment extends Fragment {
         ViewCompat.setAccessibilityHeading(title,true);LinearLayout.LayoutParams margin=new LinearLayout.LayoutParams(-1,-2);margin.topMargin=dp(32);margin.bottomMargin=dp(16);
         binding.movieCredits.addView(title,margin);
         for (Credit credit:items) {
-            if (credit.siteUrl.isEmpty()) {
-                TextView name=new TextView(requireContext());name.setTextAppearance(R.style.TextAppearance_Marvel_Body);name.setText(credit.reference.name);
-                name.setTextColor(requireContext().getColor(R.color.marvel_text));binding.movieCredits.addView(name,new LinearLayout.LayoutParams(-1,-2));
-            } else {
-                MaterialButton button=(MaterialButton)getLayoutInflater().inflate(R.layout.component_issue_credit,binding.movieCredits,false);
-                button.setTextAppearance(R.style.TextAppearance_Marvel_CatalogFilter);button.setText(getString(R.string.issue_credit_external,credit.reference.name));
-                button.setContentDescription(getString(R.string.movie_credit_external,credit.reference.name));button.setSingleLine(false);button.setMinHeight(dp(52));
-                button.setOnClickListener(v -> ComicVineNavigation.open(requireContext(),credit.siteUrl));binding.movieCredits.addView(button,new LinearLayout.LayoutParams(-1,-2));
-            }
+            TextView name=new TextView(requireContext());name.setTextAppearance(R.style.TextAppearance_Marvel_Body);name.setText(credit.reference.name);
+            name.setTextColor(requireContext().getColor(R.color.marvel_text));binding.movieCredits.addView(name,new LinearLayout.LayoutParams(-1,-2));
         }
     }
     private int dp(int value) { return Math.round(value*getResources().getDisplayMetrics().density); }
