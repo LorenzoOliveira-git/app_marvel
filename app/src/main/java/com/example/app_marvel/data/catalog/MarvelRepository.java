@@ -25,10 +25,86 @@ public final class MarvelRepository {
     private final ExecutorService storage = Executors.newSingleThreadExecutor();
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Map<String, List<Callback<JSONObject>>> pending = new HashMap<>();
+    private volatile TeamScope teamScope;
+    private static final Set<String> TARGET_TEAMS = new HashSet<>(Arrays.asList(
+            "avengers", "fantasticfour", "xmen", "guardiansofthegalaxy"));
     private static final class Publisher {
         final int id;
         final String path;
         Publisher(int id, String path) { this.id = id; this.path = path; }
+    }
+    private static final class TeamScope {
+        final int publisherId;
+        final List<Reference> teams = new ArrayList<>();
+        final Map<Integer, Set<Integer>> members = new HashMap<>();
+        final Set<Integer> characters = new HashSet<>(), issues = new HashSet<>(), volumes = new HashSet<>(),
+                arcs = new HashSet<>(), movies = new HashSet<>();
+        TeamScope(int publisherId) { this.publisherId = publisherId; }
+        boolean contains(String field, int id) {
+            switch (field) {
+                case "teams": return members.containsKey(id);
+                case "characters": return characters.contains(id);
+                case "volumes": return volumes.contains(id);
+                case "story_arcs": return arcs.contains(id);
+                default: return false;
+            }
+        }
+    }
+
+    private static String teamName(String name) {
+        return searchText(name).replaceFirst("^the\\s+", "").replaceAll("[^a-z0-9]", "");
+    }
+    private static void addIds(Set<Integer> target, JSONArray rows, String resource) {
+        if (rows == null) return;
+        for (int i = 0; i < rows.length(); i++) {
+            JSONObject ref = rows.optJSONObject(i);
+            if (ref == null) continue;
+            int id = ref.optInt("id");
+            String path = resourcePath(text(ref, "api_detail_url"), resource);
+            if (id > 0 && path != null && path.endsWith("-" + id + "/")) target.add(id);
+        }
+    }
+    private void scope(Publisher publisher, Callback<TeamScope> callback) {
+        TeamScope cached = teamScope;
+        if (cached != null && cached.publisherId == publisher.id) { callback.complete(Result.success(cached)); return; }
+        indexRaw(publisher, "teams", result -> {
+            if (result.failure != null) { callback.complete(Result.failed(result.failure)); return; }
+            List<Reference> selected = new ArrayList<>();
+            Set<String> found = new HashSet<>();
+            for (Reference team : result.data) {
+                String name = teamName(team.name);
+                if (TARGET_TEAMS.contains(name)) { selected.add(team); found.add(name); }
+            }
+            if (!found.equals(TARGET_TEAMS)) { callback.complete(Result.failed(Failure.DATA)); return; }
+            resolveTeams(publisher, selected, 0, new TeamScope(publisher.id), callback);
+        });
+    }
+    private void resolveTeams(Publisher publisher, List<Reference> selected, int position,
+                              TeamScope scope, Callback<TeamScope> callback) {
+        if (position == selected.size()) {
+            teamScope = scope;
+            callback.complete(Result.success(scope)); return;
+        }
+        Reference ref = selected.get(position);
+        request(ref.path, params("field_list", "id,name,api_detail_url,publisher,characters,issue_credits,volume_credits,story_arc_credits,movies"), DAY, result -> {
+            JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
+            JSONObject owner = row == null ? null : row.optJSONObject("publisher");
+            if (row == null || row.optInt("id") != ref.id || !ref.path.equals(resourcePath(text(row, "api_detail_url"), "team"))
+                    || !teamName(text(row, "name")).equals(teamName(ref.name)) || owner == null
+                    || owner.optInt("id") != publisher.id || row.optJSONArray("characters") == null) {
+                callback.complete(Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
+            }
+            scope.teams.add(ref);
+            Set<Integer> members = new HashSet<>();
+            addIds(members, row.optJSONArray("characters"), "character");
+            scope.members.put(ref.id, members);
+            scope.characters.addAll(members);
+            addIds(scope.issues, row.optJSONArray("issue_credits"), "issue");
+            addIds(scope.volumes, row.optJSONArray("volume_credits"), "volume");
+            addIds(scope.arcs, row.optJSONArray("story_arc_credits"), "story_arc");
+            addIds(scope.movies, row.optJSONArray("movies"), "movie");
+            resolveTeams(publisher, selected, position + 1, scope, callback);
+        });
     }
 
     public MarvelRepository(Context context, ComicVineClient client) {
@@ -116,6 +192,18 @@ public final class MarvelRepository {
     }
 
     private void index(Publisher publisher, String field, Callback<List<Reference>> callback) {
+        scope(publisher, scoped -> {
+            if (scoped.failure != null) { callback.complete(Result.failed(scoped.failure)); return; }
+            if (field.equals("teams")) { callback.complete(Result.success(scoped.data.teams)); return; }
+            indexRaw(publisher, field, raw -> {
+                if (raw.failure != null) { callback.complete(Result.failed(raw.failure)); return; }
+                List<Reference> filtered = new ArrayList<>();
+                for (Reference ref : raw.data) if (scoped.data.contains(field, ref.id)) filtered.add(ref);
+                callback.complete(Result.success(filtered));
+            });
+        });
+    }
+    private void indexRaw(Publisher publisher, String field, Callback<List<Reference>> callback) {
         request(publisher.path, params("field_list", "id,name," + field), DAY, result -> {
             JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
             JSONArray refs = row == null ? null : row.optJSONArray(field);
@@ -147,22 +235,9 @@ public final class MarvelRepository {
     }
 
     public void featured(Callback<CatalogModels.Character> callback) {
-        publisher(pub -> {
-            if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
-            request("characters/", params("filter", "name:Spider-Man", "limit", "100", "field_list", CHARACTER_FIELDS), DAY, result -> {
-                JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
-                CatalogModels.Character selected = null;
-                if (rows != null) for (int i = 0; i < rows.length(); i++) {
-                    JSONObject row = rows.optJSONObject(i);
-                    CatalogModels.Character item = row == null ? null : character(row, pub.data.id);
-                    if (item != null && item.name.equals("Spider-Man")) {
-                        if (selected != null) { deliver(callback, Result.failed(Failure.DATA)); return; }
-                        selected = item;
-                    }
-                }
-                deliver(callback, selected == null ? Result.failed(result.failure == null ? Failure.DATA : result.failure) : Result.success(selected));
-            });
-        });
+        characters("", 0, 0, 0, 0, result -> deliver(callback, result.failure != null
+                ? Result.failed(result.failure) : result.data.characters.isEmpty() ? Result.failed(Failure.DATA)
+                : Result.success(result.data.characters.get(0))));
     }
 
     private static List<Reference> references(JSONArray rows, String resource) {
@@ -174,6 +249,11 @@ public final class MarvelRepository {
                 unique.put(id, new Reference(id, text(row, "name"), path));
         }
         return new ArrayList<>(unique.values());
+    }
+    private static List<Reference> only(List<Reference> refs, Set<Integer> ids) {
+        List<Reference> filtered = new ArrayList<>();
+        for (Reference ref : refs) if (ids.contains(ref.id)) filtered.add(ref);
+        return filtered;
     }
 
     public void details(int characterId, Callback<CharacterDetails> callback) {
@@ -194,7 +274,7 @@ public final class MarvelRepository {
                     }
                     JSONObject first = row.optJSONObject("first_appeared_in_issue");
                     Reference firstRef = null;
-                    if (first != null) {
+                    if (first != null && teamScope.issues.contains(first.optInt("id"))) {
                         int id = first.optInt("id");
                         // A API real usa o alias first_appeared_in_issue no vínculo; a consulta usa issues/id.
                         String path = resourcePath(text(first, "api_detail_url"), "first_appeared_in_issue");
@@ -203,8 +283,10 @@ public final class MarvelRepository {
                     }
                     deliver(callback, Result.success(new CharacterDetails(item,
                             row.has("count_of_issue_appearances") && !row.isNull("count_of_issue_appearances") ? row.optInt("count_of_issue_appearances", -1) : -1,
-                            firstRef, references(row.optJSONArray("powers"), "power"), references(row.optJSONArray("teams"), "team"),
-                            references(row.optJSONArray("character_friends"), "character"), references(row.optJSONArray("character_enemies"), "character"))));
+                            firstRef, references(row.optJSONArray("powers"), "power"),
+                            only(references(row.optJSONArray("teams"), "team"), teamScope.members.keySet()),
+                            only(references(row.optJSONArray("character_friends"), "character"), teamScope.characters),
+                            only(references(row.optJSONArray("character_enemies"), "character"), teamScope.characters))));
                 });
             });
         });
@@ -300,7 +382,7 @@ public final class MarvelRepository {
                         JSONObject issue=issues.optJSONObject(i); if (issue==null) { deliver(callback,Result.failed(Failure.DATA)); return; }
                         int id=issue.optInt("id"); String path=resourcePath(text(issue,"api_detail_url"),"issue");
                         if (id<=0 || path==null || !path.endsWith("-"+id+"/")) { deliver(callback,Result.failed(Failure.DATA)); return; }
-                        refs.putIfAbsent(id,new Reference(id,text(issue,"name"),path));
+                        if (teamScope.issues.contains(id)) refs.putIfAbsent(id,new Reference(id,text(issue,"name"),path));
                     }
                     String url=website(text(row,"site_detail_url"));
                     if (!url.endsWith("/4045-"+arcId+"/")) url="";
@@ -392,6 +474,7 @@ public final class MarvelRepository {
             if (pub.failure != null) { deliver(callback, Result.failed(pub.failure)); return; }
             index(pub.data, "volumes", indexed -> {
                 if (indexed.failure != null) { deliver(callback, Result.failed(indexed.failure)); return; }
+                if (!teamScope.issues.contains(issueId)) { deliver(callback, Result.failed(Failure.DATA)); return; }
                 Map<Integer, Reference> canonical = new HashMap<>();
                 for (Reference ref : indexed.data) canonical.put(ref.id, ref);
                 request("issues/", params("filter", "id:" + issueId, "limit", "100", "field_list", "id,api_detail_url,volume"), DAY, lookup -> {
@@ -425,8 +508,9 @@ public final class MarvelRepository {
                                     text(row,"store_date"), image(row), website(text(row,"site_detail_url")));
                             deliver(callback, Result.success(new IssueDetails(item, pub.data.id, text(row,"name"), text(row,"cover_date"),
                                     text(row,"deck"), text(row,"description"), website(text(volumeRow,"site_detail_url")),
-                                    references(row.optJSONArray("character_credits"),"character"), references(row.optJSONArray("team_credits"),"team"),
-                                    credits(row.optJSONArray("person_credits"),"person"), credits(row.optJSONArray("story_arc_credits"),"story_arc"),
+                                    only(references(row.optJSONArray("character_credits"),"character"), teamScope.characters),
+                                    only(references(row.optJSONArray("team_credits"),"team"), teamScope.members.keySet()),
+                                    credits(row.optJSONArray("person_credits"),"person"), onlyCredits(credits(row.optJSONArray("story_arc_credits"),"story_arc"), teamScope.arcs),
                                     credits(row.optJSONArray("location_credits"),"location"), credits(row.optJSONArray("object_credits"),"object"),
                                     credits(row.optJSONArray("concept_credits"),"concept"))));
                         });
@@ -446,6 +530,11 @@ public final class MarvelRepository {
             result.put(id,new Credit(new Reference(id,name,path),text(row,"role"),url));
         }
         return new ArrayList<>(result.values());
+    }
+    private static List<Credit> onlyCredits(List<Credit> credits, Set<Integer> ids) {
+        List<Credit> filtered = new ArrayList<>();
+        for (Credit credit : credits) if (ids.contains(credit.reference.id)) filtered.add(credit);
+        return filtered;
     }
 
     private void relationPage(Publisher publisher, String kind, List<Reference> refs, int offset, int attempt,
@@ -524,7 +613,7 @@ public final class MarvelRepository {
                         JSONObject ref = refs.optJSONObject(i); if (ref == null) continue;
                         int id = ref.optInt("id"); String path = resourcePath(text(ref, "api_detail_url"), "issue");
                         // Os nomes de muitos vínculos são nulos; o título é obtido da edição/volume.
-                        if (id > 0 && path != null && path.endsWith("-" + id + "/"))
+                        if (id > 0 && teamScope.issues.contains(id) && path != null && path.endsWith("-" + id + "/"))
                             unique.putIfAbsent(id, new Reference(id, text(ref, "name"), path));
                     }
                     deliver(callback, Result.success(new AppearanceIndex(details.character.id, pub.data.id, new ArrayList<>(unique.values()))));
@@ -630,32 +719,15 @@ public final class MarvelRepository {
                     String name = Normalizer.normalize(ref.name, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT);
                     if (name.contains(search)) refs.add(ref);
                 }
-                if (search.isEmpty()) refs.sort(Comparator.comparingInt((Reference ref) -> ref.name.equals("Spider-Man") ? 0 : 1)
-                        .thenComparing(ref -> ref.name.toLowerCase(Locale.ROOT)).thenComparingInt(ref -> ref.id));
+                if (search.isEmpty()) refs.sort(Comparator.comparing((Reference ref) -> ref.name.toLowerCase(Locale.ROOT))
+                        .thenComparingInt(ref -> ref.id));
                 if (teamId == 0) {
                     page(pub.data, refs, originId, gender, Math.max(0, offset), 0, new ArrayList<>(), callback); return;
                 }
-                index(pub.data, "teams", teams -> {
-                    if (teams.failure != null) { deliver(callback, Result.failed(teams.failure)); return; }
-                    Reference selected = null;
-                    for (Reference team : teams.data) if (team.id == teamId) selected = team;
-                    if (selected == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
-                    request(selected.path, params("field_list", "id,name,publisher,characters"), DAY, membership -> {
-                        JSONObject team = membership.data == null ? null : membership.data.optJSONObject("results");
-                        JSONObject owner = team == null ? null : team.optJSONObject("publisher");
-                        JSONArray characters = team == null ? null : team.optJSONArray("characters");
-                        if (team == null || team.optInt("id") != teamId || owner == null || owner.optInt("id") != pub.data.id || characters == null) {
-                            deliver(callback, Result.failed(membership.failure == null ? Failure.DATA : membership.failure)); return;
-                        }
-                        Set<Integer> members = new HashSet<>();
-                        for (int i = 0; i < characters.length(); i++) {
-                            JSONObject member = characters.optJSONObject(i);
-                            if (member != null && member.optInt("id") > 0) members.add(member.optInt("id"));
-                        }
-                        refs.removeIf(ref -> !members.contains(ref.id));
-                        page(pub.data, refs, originId, gender, Math.max(0, offset), 0, new ArrayList<>(), callback);
-                    });
-                });
+                Set<Integer> members = teamScope.members.get(teamId);
+                if (members == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                refs.removeIf(ref -> !members.contains(ref.id));
+                page(pub.data, refs, originId, gender, Math.max(0, offset), 0, new ArrayList<>(), callback);
             });
         });
     }
@@ -691,6 +763,12 @@ public final class MarvelRepository {
     }
 
     private static final String SERIES_FIELDS="id,name,api_detail_url,image,site_detail_url,publisher,start_year,count_of_episodes";
+    private static final String[] SERIES_TERMS = {"Avengers", "Fantastic Four", "X-Men", "Guardians of the Galaxy"};
+    private static boolean teamTitle(String title) {
+        String normalized = teamName(title);
+        for (String name : TARGET_TEAMS) if (normalized.contains(name)) return true;
+        return false;
+    }
     private static Series series(JSONObject row,Publisher publisher) {
         if (row==null || row.optInt("id")<=0 || text(row,"name").isEmpty()) return null;
         JSONObject owner=row.optJSONObject("publisher");String path=resourcePath(text(row,"api_detail_url"),"series");int id=row.optInt("id");
@@ -703,41 +781,42 @@ public final class MarvelRepository {
         return new Series(id,publisher.id,text(row,"name"),year,Math.max(-1,count),image(row),site);
     }
     public void featuredSeries(Callback<Series> callback) {
-        publisher(pub -> {
-            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
-            request("series_list/",params("filter","name:Agents of S.H.I.E.L.D.","field_list",SERIES_FIELDS,"limit","100"),DAY,result -> {
-                JSONArray rows=result.data==null ? null:result.data.optJSONArray("results");Series found=null;
-                if (rows!=null) for (int i=0;i<rows.length();i++) {
-                    Series item=series(rows.optJSONObject(i),pub.data);
-                    if (item!=null && item.id==1 && item.title.equals("Agents of S.H.I.E.L.D.")) { found=item;break; }
-                }
-                deliver(callback,found==null ? Result.failed(result.failure==null ? Failure.DATA:result.failure):Result.success(found));
-            });
-        });
+        series("",false,0,result -> deliver(callback,result.failure!=null ? Result.failed(result.failure)
+                : result.data.items.isEmpty() ? Result.failed(Failure.DATA) : Result.success(result.data.items.get(0))));
     }
     public void series(String query,boolean descending,int offset,Callback<SeriesPage> callback) {
         String value=query.trim();
         if (offset<0 || value.length()>80 || value.matches(".*[,|:].*")) { deliver(callback,Result.failed(Failure.DATA));return; }
         publisher(pub -> {
             if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
-            seriesBatch(pub.data,value,descending,offset,0,new LinkedHashMap<>(),callback);
+            scope(pub.data, scoped -> {
+                if (scoped.failure!=null) { deliver(callback,Result.failed(scoped.failure));return; }
+                seriesByTeam(pub.data,value,descending,offset,0,0,new LinkedHashMap<>(),callback);
+            });
         });
     }
-    private void seriesBatch(Publisher publisher,String query,boolean descending,int offset,int batches,Map<Integer,Series> found,Callback<SeriesPage> callback) {
-        Map<String,String> parameters=params("field_list",SERIES_FIELDS,"limit","100","offset",String.valueOf(offset),"sort","name:"+(descending ? "desc":"asc"));
-        if (!query.isEmpty()) parameters.put("filter","name:"+query);
-        request("series_list/",parameters,DAY,result -> {
+    private void seriesByTeam(Publisher publisher,String query,boolean descending,int offset,int term,int sourceOffset,
+                              Map<Integer,Series> found,Callback<SeriesPage> callback) {
+        if (term==SERIES_TERMS.length) {
+            List<Series> sorted=new ArrayList<>(found.values());
+            sorted.sort(Comparator.comparing((Series item)->item.title.toLowerCase(Locale.ROOT)).thenComparingInt(item->item.id));
+            if (descending) Collections.reverse(sorted);
+            int end=Math.min(sorted.size(),offset+12);
+            deliver(callback,Result.success(new SeriesPage(offset>=sorted.size() ? Collections.emptyList()
+                    : sorted.subList(offset,end),end,end<sorted.size())));return;
+        }
+        request("series_list/",params("filter","name:"+SERIES_TERMS[term],"field_list",SERIES_FIELDS,
+                "limit","100","offset",String.valueOf(sourceOffset)),DAY,result -> {
             if (result.failure!=null) { deliver(callback,Result.failed(result.failure));return; }
             JSONArray rows=result.data.optJSONArray("results");int total=result.data.optInt("number_of_total_results",-1);
-            if (rows==null || total<0 || rows.length()>100 || (rows.length()==0 && offset<total)) { deliver(callback,Result.failed(Failure.DATA));return; }
+            if (rows==null || total<0 || (rows.length()==0 && sourceOffset<total)) { deliver(callback,Result.failed(Failure.DATA));return; }
             for (int i=0;i<rows.length();i++) {
                 Series item=series(rows.optJSONObject(i),publisher);
-                if (item!=null && item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) found.putIfAbsent(item.id,item);
+                if (item!=null && teamTitle(item.title) && searchText(item.title).contains(searchText(query))) found.putIfAbsent(item.id,item);
             }
-            int next=offset+rows.length();boolean more=next<total;
-            // No máximo 3 lotes por ação; editora conferida em cada referência, sem detalhes por item.
-            if (more && found.size()<12 && batches<2) seriesBatch(publisher,query,descending,next,batches+1,found,callback);
-            else deliver(callback,Result.success(new SeriesPage(new ArrayList<>(found.values()),next,more)));
+            int next=sourceOffset+rows.length();
+            seriesByTeam(publisher,query,descending,offset,next<total ? term : term+1,
+                    next<total ? next : 0,found,callback);
         });
     }
 
@@ -745,9 +824,11 @@ public final class MarvelRepository {
         if (id<=0) { deliver(callback,Result.failed(Failure.DATA));return; }
         publisher(pub -> {
             if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            scope(pub.data, scoped -> {
+                if (scoped.failure!=null) { deliver(callback,Result.failed(scoped.failure));return; }
             request("series/4075-"+id+"/",params("field_list",SERIES_FIELDS+",deck,description,characters,episodes,first_episode,last_episode"),DAY,result -> {
                 JSONObject row=result.data==null ? null:result.data.optJSONObject("results");Series item=series(row,pub.data);
-                if (item==null || item.id!=id) { deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure));return; }
+                if (item==null || item.id!=id || !teamTitle(item.title)) { deliver(callback,Result.failed(result.failure==null ? Failure.DATA:result.failure));return; }
                 Map<Integer,Episode> unique=new LinkedHashMap<>();JSONArray refs=row.optJSONArray("episodes");
                 if (refs!=null) for (int i=0;i<refs.length();i++) { Episode e=episode(refs.optJSONObject(i));if(e!=null) unique.putIfAbsent(e.id,e); }
                 List<Episode> episodes=new ArrayList<>(unique.values());
@@ -762,7 +843,9 @@ public final class MarvelRepository {
                 });
                 Episode first=episode(row.optJSONObject("first_episode")),last=episode(row.optJSONObject("last_episode"));
                 if(first!=null) first=unique.get(first.id);if(last!=null) last=unique.get(last.id);
-                deliver(callback,Result.success(new SeriesDetails(item,text(row,"deck"),text(row,"description"),references(row.optJSONArray("characters"),"character"),episodes,first,last)));
+                deliver(callback,Result.success(new SeriesDetails(item,text(row,"deck"),text(row,"description"),
+                        only(references(row.optJSONArray("characters"),"character"),scoped.data.characters),episodes,first,last)));
+            });
             });
         });
     }
@@ -834,6 +917,9 @@ public final class MarvelRepository {
         if (movieId<=0) { deliver(callback,Result.failed(Failure.DATA));return; }
         publisher(pub -> {
             if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure));return; }
+            scope(pub.data, scoped -> {
+                if (scoped.failure!=null) { deliver(callback,Result.failed(scoped.failure));return; }
+                if (!scoped.data.movies.contains(movieId)) { deliver(callback,Result.failed(Failure.DATA));return; }
             request("movies/",params("filter","id:"+movieId,"field_list",MOVIE_FIELDS+",api_detail_url","limit","1"),DAY,lookup -> {
                 JSONArray rows=lookup.data==null ? null:lookup.data.optJSONArray("results");
                 JSONObject ref=rows==null || rows.length()!=1 ? null:rows.optJSONObject(0);
@@ -850,11 +936,13 @@ public final class MarvelRepository {
                     }
                     String distributor=row.opt("distributor") instanceof String ? plain(text(row,"distributor")):"";
                     deliver(callback,Result.success(new MovieDetails(item,text(row,"rating"),distributor,text(row,"deck"),text(row,"description"),
-                        references(row.optJSONArray("characters"),"character"),references(row.optJSONArray("teams"),"team"),
+                        only(references(row.optJSONArray("characters"),"character"),scoped.data.characters),
+                        only(references(row.optJSONArray("teams"),"team"),scoped.data.members.keySet()),
                         movieCredits(row.optJSONArray("studios"),"studio","publisher"),movieCredits(row.optJSONArray("producers"),"producer","person"),
                         movieCredits(row.optJSONArray("writers"),"writer","person"),credits(row.optJSONArray("locations"),"location"),
                         credits(row.optJSONArray("objects"),"object"),credits(row.optJSONArray("concepts"),"concept"))));
                 });
+            });
             });
         });
     }
@@ -888,41 +976,43 @@ public final class MarvelRepository {
     }
 
     public void featuredMovie(Callback<Movie> callback) {
-        publisher(pub -> {
-            if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
-            request("movies/",params("filter","id:17","field_list",MOVIE_FIELDS,"limit","1"),DAY,result -> {
-                JSONArray rows=result.data==null ? null:result.data.optJSONArray("results");
-                Movie item=rows==null || rows.length()!=1 ? null:movie(rows.optJSONObject(0),pub.data);
-                deliver(callback,item!=null && item.id==17 ? Result.success(item):Result.failed(result.failure==null ? Failure.DATA:result.failure));
-            });
-        });
+        movies("",false,0,result -> deliver(callback,result.failure!=null ? Result.failed(result.failure)
+                : result.data.items.isEmpty() ? Result.failed(Failure.DATA) : Result.success(result.data.items.get(0))));
     }
     public void movies(String query,boolean descending,int offset,Callback<MoviesPage> callback) {
         String value=query.trim();
         if (offset<0 || value.length()>80 || value.matches(".*[,|:].*")) { deliver(callback,Result.failed(Failure.DATA)); return; }
         publisher(pub -> {
             if (pub.failure!=null) { deliver(callback,Result.failed(pub.failure)); return; }
-            movieBatch(pub.data,value,descending,offset,0,new LinkedHashMap<>(),callback);
+            scope(pub.data, scoped -> {
+                if (scoped.failure!=null) { deliver(callback,Result.failed(scoped.failure));return; }
+                List<Integer> ids=new ArrayList<>(scoped.data.movies);Collections.sort(ids);
+                movieBatch(pub.data,ids,value,descending,offset,0,new LinkedHashMap<>(),callback);
+            });
         });
     }
-    private void movieBatch(Publisher publisher,String query,boolean descending,int offset,int batches,
+    private void movieBatch(Publisher publisher,List<Integer> ids,String query,boolean descending,int offset,int position,
             Map<Integer,Movie> found,Callback<MoviesPage> callback) {
-        Map<String,String> parameters=params("field_list",MOVIE_FIELDS,"limit","100","offset",String.valueOf(offset),"sort","name:"+(descending ? "desc":"asc"));
-        if (!query.isEmpty()) parameters.put("filter","name:"+query);
-        request("movies/",parameters,DAY,result -> {
+        if (position>=ids.size()) {
+            List<Movie> sorted=new ArrayList<>(found.values());
+            sorted.sort(Comparator.comparing((Movie item)->item.title.toLowerCase(Locale.ROOT)).thenComparingInt(item->item.id));
+            if (descending) Collections.reverse(sorted);
+            int end=Math.min(sorted.size(),offset+12);
+            deliver(callback,Result.success(new MoviesPage(offset>=sorted.size() ? Collections.emptyList()
+                    : sorted.subList(offset,end),end,end<sorted.size())));return;
+        }
+        int end=Math.min(ids.size(),position+40);
+        StringBuilder selected=new StringBuilder();
+        for (int id:ids.subList(position,end)) { if (selected.length()>0) selected.append('|'); selected.append(id); }
+        request("movies/",params("filter","id:"+selected,"field_list",MOVIE_FIELDS,"limit","100"),DAY,result -> {
             if (result.failure!=null) { deliver(callback,Result.failed(result.failure)); return; }
-            JSONArray rows=result.data.optJSONArray("results"); int total=result.data.optInt("number_of_total_results",-1);
-            if (rows==null || total<0 || rows.length()>100 || (rows.length()==0 && offset<total)) {
-                deliver(callback,Result.failed(Failure.DATA)); return;
-            }
+            JSONArray rows=result.data.optJSONArray("results");
+            if (rows==null) { deliver(callback,Result.failed(Failure.DATA));return; }
             for (int i=0;i<rows.length();i++) {
                 Movie item=movie(rows.optJSONObject(i),publisher);
-                if (item!=null && item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) found.putIfAbsent(item.id,item);
+                if (item!=null && ids.contains(item.id) && searchText(item.title).contains(searchText(query))) found.putIfAbsent(item.id,item);
             }
-            int next=offset+rows.length(); boolean more=next<total;
-            // No máximo três lotes por ação; nenhum detalhe por filme e nenhuma lista global indiscriminada.
-            if (more && found.size()<12 && batches<2) movieBatch(publisher,query,descending,next,batches+1,found,callback);
-            else deliver(callback,Result.success(new MoviesPage(new ArrayList<>(found.values()),next,more)));
+            movieBatch(publisher,ids,query,descending,offset,end,found,callback);
         });
     }
 
@@ -960,7 +1050,7 @@ public final class MarvelRepository {
                 List<Issue> complete = new ArrayList<>(); Set<Integer> ids = new HashSet<>(); int committed = 0;
                 for (int i = 0; i < rows.length(); i++) {
                     JSONObject row = rows.getJSONObject(i); String date = text(row, "store_date");
-                    Issue item = comic(row, volumes, scope, lower, upper);
+                    Issue item = comic(row, volumes, scope, lower, upper, teamScope.issues);
                     if (!ids.add(row.optInt("id")) || (previous != null && (oldest ? date.compareTo(previous) < 0 : date.compareTo(previous) > 0)))
                         throw new IllegalArgumentException("Ordem inválida");
                     previous = date;
@@ -986,7 +1076,7 @@ public final class MarvelRepository {
                 int previous = -1;
                 for (int i = 0; i < rows.length(); i++) {
                     JSONObject row = rows.getJSONObject(i); int id = row.optInt("id");
-                    Issue item = comic(row, volumes, scope, cursor.date, cursor.date);
+                    Issue item = comic(row, volumes, scope, cursor.date, cursor.date, teamScope.issues);
                     if (previous >= 0 && (oldest ? id <= previous : id >= previous)) throw new IllegalArgumentException("Ordem inválida");
                     previous = id; if (item != null) items.add(item);
                 }
@@ -1001,7 +1091,7 @@ public final class MarvelRepository {
                     String bound = dates.format(date.getTime()); next = new ComicsCursor(bound, -1, examined);
                     more = bound.compareTo("1900-01-01") >= 0 && bound.compareTo(today) <= 0;
                 }
-                if (items.isEmpty() && more && attempt < 2) comicsPage(volumes, scope, oldest, today, next, attempt + 1, callback);
+                if (items.isEmpty() && more && attempt < 8) comicsPage(volumes, scope, oldest, today, next, attempt + 1, callback);
                 else deliver(callback, Result.success(new ComicsPage(items, next, more)));
             } catch (Exception invalid) { deliver(callback, Result.failed(Failure.DATA)); }
         });
@@ -1009,12 +1099,14 @@ public final class MarvelRepository {
     private static String comicsFilter(int scope, String lower, String upper) {
         return (scope == 0 ? "" : "volume:" + scope + ",") + "store_date:" + lower + "|" + upper;
     }
-    private static Issue comic(JSONObject row, Map<Integer, Reference> volumes, int scope, String lower, String upper) {
+    private static Issue comic(JSONObject row, Map<Integer, Reference> volumes, int scope, String lower, String upper,
+                               Set<Integer> eligibleIssues) {
         int id = row.optInt("id"); String path = resourcePath(text(row, "api_detail_url"), "issue"), date = text(row, "store_date");
         JSONObject volume = row.optJSONObject("volume");
         if (id <= 0 || path == null || !path.endsWith("-" + id + "/") || !date.matches("\\d{4}-\\d{2}-\\d{2}")
                 || date.compareTo(lower) < 0 || date.compareTo(upper) > 0
                 || (scope != 0 && (volume == null || volume.optInt("id") != scope))) throw new IllegalArgumentException("Edição inválida");
+        if (!eligibleIssues.contains(id)) return null;
         Reference known = volume == null ? null : volumes.get(volume.optInt("id"));
         if (known == null || !known.path.equals(resourcePath(text(volume, "api_detail_url"), "volume")) || text(volume, "name").isEmpty()) return null;
         String name = text(volume, "name"), number = text(row, "issue_number");
@@ -1028,22 +1120,27 @@ public final class MarvelRepository {
                 if (index.failure != null) { deliver(callback, Result.failed(index.failure)); return; }
                 Set<Integer> volumes = new HashSet<>(); for (Reference ref : index.data) volumes.add(ref.id);
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(new Date());
-                issues(volumes, today, 0, new LinkedHashMap<>(), callback);
+                List<Integer> ids = new ArrayList<>(teamScope.issues);
+                ids.sort(Collections.reverseOrder());
+                issues(volumes, ids, today, 0, new LinkedHashMap<>(), callback);
             });
         });
     }
 
-    private void issues(Set<Integer> volumes, String today, int page, Map<Integer, Issue> matches, Callback<List<Issue>> callback) {
-        if (page >= 5 || matches.size() >= 6) {
+    private void issues(Set<Integer> volumes, List<Integer> ids, String today, int position,
+                        Map<Integer, Issue> matches, Callback<List<Issue>> callback) {
+        if (position >= ids.size() || matches.size() >= 6) {
             List<Issue> result = new ArrayList<>(matches.values());
             result.sort(Comparator.comparing((Issue issue) -> issue.publicationDate).reversed().thenComparingInt(issue -> issue.id));
             deliver(callback, Result.success(result.subList(0, Math.min(6, result.size())))); return;
         }
-        request("issues/", params("limit", "100", "offset", String.valueOf(page * 100), "sort", "store_date:desc",
-                "filter", "store_date:1900-01-01|" + today, "field_list", ISSUE_FIELDS), 900_000L, result -> {
+        int end = Math.min(ids.size(), position + 40);
+        List<String> selected = new ArrayList<>();
+        for (int id : ids.subList(position, end)) selected.add(String.valueOf(id));
+        request("issues/", params("limit", "100", "filter", "id:" + String.join("|", selected),
+                "field_list", ISSUE_FIELDS), DAY, result -> {
             JSONArray rows = result.data == null ? null : result.data.optJSONArray("results");
             if (rows == null) {
-                if (!matches.isEmpty()) { issues(volumes, today, 5, matches, callback); return; }
                 deliver(callback, Result.failed(result.failure == null ? Failure.DATA : result.failure)); return;
             }
             for (int i = 0; i < rows.length(); i++) {
@@ -1053,11 +1150,10 @@ public final class MarvelRepository {
                 String date = text(row, "store_date");
                 if (volume == null || !volumes.contains(volume.optInt("id")) || !date.matches("\\d{4}-\\d{2}-\\d{2}") || date.compareTo(today) > 0) continue;
                 int id = row.optInt("id"); String name = text(volume, "name"), number = text(row, "issue_number");
-                if (id > 0 && !name.isEmpty()) matches.put(id, new Issue(id, volume.optInt("id"),
+                if (ids.subList(position, end).contains(id) && !name.isEmpty()) matches.put(id, new Issue(id, volume.optInt("id"),
                         name + (number.isEmpty() ? "" : " #" + number), name, date, image(row), website(text(row, "site_detail_url"))));
             }
-            boolean exhausted = rows.length() == 0 || (page + 1) * 100 >= result.data.optInt("number_of_total_results");
-            issues(volumes, today, exhausted ? 5 : page + 1, matches, callback);
+            issues(volumes, ids, today, end, matches, callback);
         });
     }
 }
