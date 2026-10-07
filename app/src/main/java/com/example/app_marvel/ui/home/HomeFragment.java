@@ -34,6 +34,8 @@ public final class HomeFragment extends Fragment {
         binding.recentState.setMascotEnabled(false);
         binding.featuredState.setMascotEnabled(false);
         binding.factState.setMascotEnabled(false);
+        binding.factMarv.bindLifecycle(getViewLifecycleOwner());
+        binding.factMarv.setPose(com.example.app_marvel.ui.components.MarvCompanionView.Pose.ATTENTIVE);
         binding.featuredState.setLoadingSquare(true);
         AppContainer container = ((MarvelApplication) requireActivity().getApplication()).getContainer();
         HomeViewModel model = new ViewModelProvider(this, new ViewModelProvider.Factory() {

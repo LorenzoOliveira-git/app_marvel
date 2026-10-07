@@ -1,0 +1,17 @@
+<resources>
+    <string name="marv_companion_label">MARV · seu parceiro de criação</string>
+    <string name="marv_next_tip">Marv, me dê uma dica</string>
+    <string name="marv_identity">Vamos criar alguém único? Comece pelo nome de herói e pela identidade por trás dele.</string>
+    <string name="marv_name">Um nome marcante pode nascer do poder, da origem ou da missão do seu herói.</string>
+    <string name="marv_birthday">Você também pode escolher um aniversário para fazer parte da história dele.</string>
+    <string name="marv_description">Descreva roupa, cores, aparência e personalidade. Esses detalhes ajudam a dar forma à imagem.</string>
+    <string name="marv_origin">De onde vieram os poderes? Escolha a origem que combina com a história que você imaginou.</string>
+    <string name="marv_powers">Combine poderes que façam sentido juntos. O que torna seu personagem especial?</string>
+    <string name="marv_powers_selected">Os poderes já estão escolhidos! Conte na descrição como eles aparecem no visual do herói.</string>
+    <string name="marv_review">Confira a ficha antes de gerar. Está tudo com a cara do seu herói?</string>
+    <string name="marv_working">Estou acompanhando a criação. O andamento aparece abaixo, junto às ações disponíveis.</string>
+    <string name="marv_completed">Seu herói ganhou vida e está salvo! Vamos conhecer a nova ficha da coleção?</string>
+    <string name="marv_draft_saved">Rascunho guardado! Você pode continuar preparando os detalhes.</string>
+    <string name="marv_retry">Encontramos um imprevisto. Confira a mensagem abaixo para saber como continuar.</string>
+    <string name="marv_required">Falta um detalhe para continuar. Confira os campos indicados.</string>
+</resources>
