@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,11 +21,12 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import com.example.app_marvel.R;
 
-/** Contextual Marv reactions using the two illustrations already shipped with the app. */
+/** Six illustrated poses, crossfades and short, lifecycle-aware motion accents. */
 public final class MarvCompanionView extends View {
     public enum Pose { IDLE, WELCOME, ATTENTIVE, THINKING, CELEBRATE, REASSURE }
-    private static Bitmap welcome, thinking;
+    private static Bitmap atlas;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+    private final Rect source = new Rect();
     private final Rect visible = new Rect();
     private final RectF destination = new RectF();
     private Pose pose = Pose.IDLE, previous = Pose.IDLE;
@@ -46,8 +48,7 @@ public final class MarvCompanionView extends View {
     public MarvCompanionView(Context context) { this(context, null); }
     public MarvCompanionView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        if (welcome == null) welcome = BitmapFactory.decodeResource(getResources(), R.drawable.marv_welcome);
-        if (thinking == null) thinking = BitmapFactory.decodeResource(getResources(), R.drawable.marv_thinking);
+        if (atlas == null) atlas = BitmapFactory.decodeResource(getResources(), R.drawable.marv_companion_atlas);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
     }
     public void bindLifecycle(LifecycleOwner value) {
@@ -97,7 +98,7 @@ public final class MarvCompanionView extends View {
     }
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (welcome == null || thinking == null) return;
+        if (atlas == null) return;
         float side = Math.min(getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom()) * .92f;
         float cx = getPaddingLeft() + (getWidth() - getPaddingLeft() - getPaddingRight()) / 2f;
         float cy = getPaddingTop() + (getHeight() - getPaddingTop() - getPaddingBottom()) / 2f;
@@ -112,13 +113,10 @@ public final class MarvCompanionView extends View {
         canvas.restore();
     }
     private void drawPose(Canvas canvas, Pose value, float opacity) {
-        Bitmap image = value == Pose.THINKING || value == Pose.ATTENTIVE ? thinking : welcome;
-        float scale = Math.min(destination.width() / image.getWidth(), destination.height() / image.getHeight());
-        float width = image.getWidth() * scale, height = image.getHeight() * scale;
-        RectF bounds = new RectF(destination.centerX() - width / 2, destination.centerY() - height / 2,
-                destination.centerX() + width / 2, destination.centerY() + height / 2);
+        int width = atlas.getWidth() / 3, height = atlas.getHeight() / 2, index = value.ordinal();
+        source.set(index % 3 * width, index / 3 * height, (index % 3 + 1) * width, (index / 3 + 1) * height);
         paint.setAlpha(Math.round(255 * opacity));
-        canvas.drawBitmap(image, null, bounds, paint);
+        canvas.drawBitmap(atlas, source, destination, paint);
     }
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
