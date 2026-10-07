@@ -25,6 +25,7 @@ import com.example.app_marvel.MarvelApplication;
 import com.example.app_marvel.R;
 import com.example.app_marvel.databinding.FragmentCreateHeroBinding;
 import com.example.app_marvel.ui.common.UiState;
+import com.example.app_marvel.ui.components.MarvCompanionView.Pose;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -39,6 +40,7 @@ public final class CreateHeroFragment extends Fragment {
     private CreateHeroViewModel model;
     private OnBackPressedCallback back;
     private boolean synchronizing;
+    private int tipIndex;
     private androidx.appcompat.app.AlertDialog confirmationDialog;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle state) {
         binding = FragmentCreateHeroBinding.inflate(inflater, parent, false); return binding.getRoot();
@@ -51,6 +53,15 @@ public final class CreateHeroFragment extends Fragment {
                 return type.cast(new CreateHeroViewModel(container.getCatalog(), container.getTranslations(), SavedStateHandleSupport.createSavedStateHandle(extras), container.getHeroDrafts(), container.getHeroCreations()));
             }
         }).get(CreateHeroViewModel.class);
+        binding.heroMarv.bindLifecycle(getViewLifecycleOwner());
+        binding.heroMarvHint.setOnClickListener(v -> {
+            int[] tips = model.step() == 0
+                ? new int[]{R.string.marv_identity, R.string.marv_name, R.string.marv_birthday}
+                : new int[]{R.string.marv_description, R.string.marv_origin, R.string.marv_powers};
+            tipIndex = (tipIndex + 1) % tips.length;
+            companion(Pose.ATTENTIVE, tips[tipIndex]);
+            binding.heroMarv.react();
+        });
         field(binding.heroName, binding.heroNameInput, "heroName");
         field(binding.heroRealName, binding.heroRealNameInput, "realName");
         field(binding.heroDescription, binding.heroDescriptionInput, "description");
@@ -121,6 +132,11 @@ public final class CreateHeroFragment extends Fragment {
     private void field(TextInputEditText edit, TextInputLayout input, String key) {
         edit.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter("description".equals(key) ? 2000 : 100)});
         edit.setText(model.text(key));
+        edit.setOnFocusChangeListener((v, focused) -> {
+            int hint = "description".equals(key) ? R.string.marv_description : R.string.marv_name;
+            input.setHelperText(focused ? getString(hint) : null);
+            if (focused && !model.locked()) companion(Pose.ATTENTIVE, hint);
+        });
         edit.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence text, int start, int count, int after) { }
             public void onTextChanged(CharSequence text, int start, int before, int count) { model.text(key, text.toString()); input.setError(null); }
@@ -132,9 +148,8 @@ public final class CreateHeroFragment extends Fragment {
         syncFields();
         binding.heroStep.setText(getString(R.string.hero_step, step + 1));
         int[] titles = {R.string.hero_identity_title, R.string.hero_abilities_title, R.string.hero_review_title};
-        int[] guides = {R.string.hero_identity_guide, R.string.hero_abilities_guide, R.string.hero_review_guide};
-        binding.heroHeading.setText(titles[step]); binding.heroGuide.setText(guides[step]);
-        binding.heroMarv.setImageResource(step == 1 ? R.drawable.marv_thinking : R.drawable.marv_welcome);
+        binding.heroHeading.setText(titles[step]);
+        tipIndex = 0;
         binding.heroIdentity.setVisibility(step == 0 ? View.VISIBLE : View.GONE);
         binding.heroAbilities.setVisibility(step == 1 ? View.VISIBLE : View.GONE);
         binding.heroReviewSection.setVisibility(step == 2 ? View.VISIBLE : View.GONE);
@@ -154,7 +169,8 @@ public final class CreateHeroFragment extends Fragment {
             model.step(0);
             if (model.text("heroName").trim().isEmpty()) binding.heroNameInput.setError(getString(R.string.hero_required));
             if (model.text("realName").trim().isEmpty()) binding.heroRealNameInput.setError(getString(R.string.hero_required));
-            (model.text("heroName").trim().isEmpty() ? binding.heroName : binding.heroRealName).requestFocus(); return;
+            (model.text("heroName").trim().isEmpty() ? binding.heroName : binding.heroRealName).requestFocus();
+            companion(Pose.REASSURE, R.string.marv_required); return;
         }
         if (model.step() == 1) {
             List<String> missing = model.missing();
@@ -163,7 +179,7 @@ public final class CreateHeroFragment extends Fragment {
             binding.heroDescriptionInput.setError(missing.contains("description") ? getString(R.string.hero_required) : null);
             if (!missing.isEmpty()) {
                 View target = missing.contains("origin") ? binding.heroOrigin : missing.contains("powers") ? binding.heroPowersLabel : binding.heroDescription;
-                target.requestFocus(); target.requestRectangleOnScreen(new Rect(0, 0, target.getWidth(), target.getHeight()), false); return;
+                target.requestFocus(); companion(Pose.REASSURE, R.string.marv_required); target.requestRectangleOnScreen(new Rect(0, 0, target.getWidth(), target.getHeight()), false); return;
             }
         }
         InputMethodManager keyboard = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -190,6 +206,7 @@ public final class CreateHeroFragment extends Fragment {
     private void chooseOrigin() {
         UiState<List<CreateHeroViewModel.Choice>> state = model.origins().getValue();
         if (state.getStatus() != UiState.Status.CONTENT) return;
+        companion(Pose.ATTENTIVE, R.string.marv_origin);
         List<CreateHeroViewModel.Choice> choices = state.getData(); String[] labels = new String[choices.size()]; int selected = -1;
         for (int i = 0; i < choices.size(); i++) { labels[i] = choices.get(i).label; if (model.origin() != null && choices.get(i).id == model.origin().id) selected = i; }
         android.widget.ListView list=new android.widget.ListView(requireContext());
@@ -220,6 +237,7 @@ public final class CreateHeroFragment extends Fragment {
         }
         synchronizing = false;
         if (!model.selectedPowers().isEmpty()) binding.heroPowerError.setVisibility(View.GONE);
+        renderCompanion();
     }
     private void powers() {
         binding.heroPowerList.removeAllViews();
@@ -263,7 +281,7 @@ public final class CreateHeroFragment extends Fragment {
         boolean busy = model.saving() || model.creating();
         binding.heroSaveDraft.setEnabled(!busy); binding.heroPrevious.setEnabled(!busy);
         binding.heroDraftProgress.setVisibility(model.saving() ? View.VISIBLE : View.GONE);
-        binding.heroMarv.setImageResource(busy ? R.drawable.marv_thinking : model.step() == 1 ? R.drawable.marv_thinking : R.drawable.marv_welcome);
+
         int message;
         switch (model.draftStatus().getValue()) {
             case SAVING: message = R.string.hero_draft_saving; break;
@@ -284,6 +302,7 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroReviewNote.setText(model.localDraftsAvailable() ? R.string.hero_creation_review_note : R.string.hero_review_note);
         binding.heroDraftNote.setText(model.localDraftsAvailable() ? R.string.hero_local_draft_note : R.string.hero_draft_note);
         if (back != null) back.setEnabled(busy || model.step() > 0);
+        renderCompanion();
     }
     private void syncFields() {
         TextInputEditText[] inputs = {binding.heroName,binding.heroRealName,binding.heroDescription};
@@ -355,8 +374,31 @@ public final class CreateHeroFragment extends Fragment {
         binding.heroReloadImage.setVisibility(completed && imageError ? View.VISIBLE : View.GONE);
         binding.heroNewCharacter.setVisibility(completed || (job != null && "superseded".equals(job.state)) ? View.VISIBLE : View.GONE);
         binding.heroNewCharacter.setEnabled(!busy);
-        if (busy || model.activeCreation()) binding.heroMarv.setImageResource(R.drawable.marv_thinking);
+        renderCompanion();
         if (back != null) back.setEnabled(busy || model.step() > 0);
+    }
+    private void companion(Pose pose, int message) {
+        if (binding == null) return;
+        binding.heroMarv.setPose(pose);
+        String text = getString(message);
+        if (!text.contentEquals(binding.heroGuide.getText())) binding.heroGuide.setText(text);
+    }
+    private void renderCompanion() {
+        if (binding == null) return;
+        var job = model.creation().getValue();
+        var failure = model.creationFailure().getValue();
+        boolean completed = job != null && "completed".equals(job.state) && model.hero().getValue() != null;
+        boolean failedJob = job != null && (job.state.endsWith("_failed") || "generation_unknown".equals(job.state) || "image_expired".equals(job.state));
+        boolean working = model.creating() || model.saving() || model.activeCreation();
+        binding.heroMarvHint.setVisibility(!working && !completed && !model.locked() ? View.VISIBLE : View.GONE);
+        if (failure != null || failedJob) companion(Pose.REASSURE, R.string.marv_retry);
+        else if (completed) companion(Pose.CELEBRATE, R.string.marv_completed);
+        else if (working) companion(Pose.THINKING, R.string.marv_working);
+        else if (model.draftStatus().getValue() == CreateHeroViewModel.DraftStatus.SAVED) companion(Pose.CELEBRATE, R.string.marv_draft_saved);
+        else if (model.draftStatus().getValue() != CreateHeroViewModel.DraftStatus.IDLE) companion(Pose.REASSURE, R.string.marv_retry);
+        else if (model.step() == 2) companion(Pose.ATTENTIVE, R.string.marv_review);
+        else if (model.step() == 1) companion(Pose.ATTENTIVE, !model.selectedPowers().isEmpty() ? R.string.marv_powers_selected : model.origin() != null ? R.string.marv_powers : R.string.marv_origin);
+        else companion(Pose.WELCOME, R.string.marv_identity);
     }
     private void row(StringBuilder output, int label, String value) {
         if (output.length() > 0) output.append("\n\n"); output.append(getString(R.string.hero_review_item, getString(label), value));

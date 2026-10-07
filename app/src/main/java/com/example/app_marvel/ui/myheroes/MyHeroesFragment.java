@@ -38,6 +38,8 @@ public final class MyHeroesFragment extends Fragment {
                 return type.cast(new MyHeroesViewModel(container.getMyHeroes(),container.getHeroCreations(),SavedStateHandleSupport.createSavedStateHandle(extras)));
             }
         }).get(MyHeroesViewModel.class);
+        binding.collectionMascot.bindLifecycle(getViewLifecycleOwner());
+        binding.collectionMascot.setPose(com.example.app_marvel.ui.components.MarvCompanionView.Pose.WELCOME);
         model.openHero(getArguments()==null ? "" : getArguments().getString("heroId", ""));
         ViewCompat.setAccessibilityHeading(binding.collectionHeading,true);
         field(binding.editHeroName,"heroName");field(binding.editRealName,"realName");field(binding.editDescription,"description");
