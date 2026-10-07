@@ -51,12 +51,15 @@ def wait(resource, timeout=90):
         if node is not None:
             return node
         time.sleep(2)
+    snapshot=nodes()
+    print('Tela ao esperar '+resource+':',[(n.get('resource-id',''),n.get('text',''),n.get('bounds','')) for n in snapshot if n.get('resource-id') or n.get('text')],flush=True)
     raise AssertionError('Não apareceu: ' + resource)
 
 def tap(resource):
     node = wait(resource)
     x1, y1, x2, y2 = map(int, re.findall(r'\d+', node.get('bounds', '')))
     assert x2 > x1 and y2 > y1, resource
+    if resource=='search_name':print('Alvo da busca:',node.attrib,flush=True)
     adb('shell', 'input', 'tap', str((x1+x2)//2), str((y1+y2)//2))
     time.sleep(1)
 
@@ -68,21 +71,25 @@ def point(node):
     x1, y1, x2, y2 = map(int, re.findall(r'\d+', node.get('bounds', '')))
     return (x1+x2)//2, (y1+y2)//2
 
+def viewport(snapshot):
+    root=next((n for n in snapshot if n.get('class','').endswith('ScrollView')),None)
+    if root is None:root=find('main',snapshot)
+    assert root is not None, 'A tela do app não está em primeiro plano'
+    left,top_edge,right,bottom=map(int,re.findall(r'\d+',root.get('bounds','')))
+    header=find('header',snapshot); nav=find('bottom_navigation',snapshot)
+    if header is not None:top_edge=max(top_edge,int(re.findall(r'\d+',header.get('bounds',''))[3]))
+    bottom=min(bottom,int(re.findall(r'\d+',nav.get('bounds',''))[1])) if nav is not None else bottom-24
+    return left+4,top_edge,bottom
+
 def show(resource, timeout=90):
-    deadline = time.monotonic()+timeout
+    deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
         snapshot=nodes(); node=find(resource,snapshot)
-        root=find('main',snapshot)
-        assert root is not None, 'A tela do app não está em primeiro plano'
-        left,_,right,bottom=map(int,re.findall(r'\d+',root.get('bounds','')))
-        header=find('header',snapshot); nav=find('bottom_navigation',snapshot)
-        top_edge=int(re.findall(r'\d+',header.get('bounds',''))[3]) if header is not None else 95
-        bottom=int(re.findall(r'\d+',nav.get('bounds',''))[1]) if nav is not None else bottom-24
+        x,top_edge,bottom=viewport(snapshot)
         if node is not None:
             _,y=point(node)
-            if top_edge+15 < y < bottom-15:
-                return node
-        x=(left+right)//2; region=bottom-top_edge
+            if top_edge+15 < y < bottom-15:return node
+        region=bottom-top_edge
         adb('shell','input','swipe',str(x),str(top_edge+int(region*.8)),str(x),str(top_edge+int(region*.35)),'400')
         time.sleep(1)
     raise AssertionError('Controle não ficou visível: '+resource)
@@ -91,8 +98,10 @@ def tap_node(node):
     x,y=point(node); adb('shell', 'input', 'tap', str(x), str(y)); time.sleep(1)
 
 def top():
+    x,top_edge,bottom=viewport(nodes()); region=bottom-top_edge
+    # Use the padding: a swipe inside a tall clickable portrait can open its detail.
     for _ in range(5):
-        adb('shell', 'input', 'swipe', '195', '320', '195', '710', '250')
+        adb('shell','input','swipe',str(x),str(top_edge+int(region*.3)),str(x),str(top_edge+int(region*.85)),'250')
     time.sleep(1)
 
 def gallery():
@@ -122,31 +131,7 @@ try:
     for resource in ['header_back','origin_filter','gender_filter','team_filter','search_name']:
         target=wait(resource); x1,y1,x2,y2=map(int,re.findall(r'\d+',target.get('bounds','')))
         assert x2-x1>=44 and y2-y1>=44, 'Área de toque pequena: '+resource
-    tap_node(show('cover_title')); wait('details_name',30); capture('05-personagem-detalhe')
-    tap('header_back'); wait('cover_title'); tap('gender_filter'); wait('filter_apply'); capture('06-filtros')
-    adb('shell','input','keyevent','4'); tap('storiesFragment'); wait('identity_name',30)
-    capture('07-historias'); tap_node(show('identity_open')); wait('identity_name')
-    show('appearance_title',30); capture('08-aparicoes'); tap_node(show('appearance_open'))
-    wait('issue_heading'); tap('header_back'); top(); tap('header_back'); wait('identity_name')
-    for route,heading,label in [('open_comics','issue_heading','quadrinhos'),
-                               ('open_movies','movie_details_heading','filmes'),
-                               ('open_series','series_details_heading','series')]:
-        top(); tap_node(show(route)); show('cover_title',30); gallery(); capture('09-'+label)
-        tap_node(show('cover_title')); wait(heading,30); capture('10-'+label+'-detalhe')
-        tap('header_back'); wait('cover_title'); tap('header_back'); top(); wait('identity_name')
-    top(); tap_node(show('open_arcs')); wait('arc_name',30); capture('11-arcos')
-    tap_node(show('arc_source')); wait('arc_details_heading',30); capture('12-arco-detalhe')
-    show('appearance_title',30); tap_node(show('appearance_open')); wait('issue_heading')
-    tap('header_back'); top(); tap('header_back'); wait('arc_name'); top()
-    tap('arc_search'); adb('shell','input','text','zzpreviewzz'); tap_node(show('arcs_search_button'))
-    assert 'zzpreviewzz' in wait('status_title',30).get('text','').lower()
-    capture('13-arcos-vazio'); tap('retry_button'); wait('arc_name',30)
-    tap('header_back'); tap('createHeroFragment'); wait('hero_name'); capture('14-formulario')
-    tap('hero_name'); adb('shell','input','text','Aurora'); adb('shell','input','keyevent','4')
-    tap('hero_real_name'); adb('shell','input','text','Lia'); adb('shell','input','keyevent','4')
-    tap_node(show('hero_next')); wait('hero_origin'); tap('hero_origin'); wait('filter_heading')
-    capture('15-origens'); adb('shell','input','keyevent','4')
-    tap('charactersFragment'); top(); tap('search_name'); adb('shell','input','text','Estrela')
+    top(); tap('search_name'); adb('shell','input','text','Estrela')
     adb('shell','input','keyevent','66'); time.sleep(1); tap_node(show('cover_title'))
     assert 'Não informado' in wait('details_real_name').get('text','')
     assert 'Não informado' in wait('details_origin').get('text','')
@@ -179,6 +164,31 @@ try:
     assert x2-x1<=430, 'Conteúdo excedeu 430dp em tela larga'
     show('cover_title'); capture('20-tela-larga')
     adb('shell','wm','size','390x844')
+    top(); wait('search_name'); wait('cover_title'); gallery()
+    tap_node(show('cover_title')); wait('details_name',30); capture('05-personagem-detalhe')
+    tap('header_back'); wait('cover_title'); tap('gender_filter'); wait('filter_apply'); capture('06-filtros')
+    adb('shell','input','keyevent','4'); tap('storiesFragment'); wait('identity_name',30)
+    capture('07-historias'); tap_node(show('identity_open')); wait('identity_name')
+    show('appearance_title',30); capture('08-aparicoes'); tap_node(show('appearance_open'))
+    wait('issue_heading'); tap('header_back'); top(); tap('header_back'); wait('identity_name')
+    for route,heading,label in [('open_comics','issue_heading','quadrinhos'),
+                               ('open_movies','movie_details_heading','filmes'),
+                               ('open_series','series_details_heading','series')]:
+        top(); tap_node(show(route)); show('cover_title',30); gallery(); capture('09-'+label)
+        tap_node(show('cover_title')); wait(heading,30); capture('10-'+label+'-detalhe')
+        tap('header_back'); wait('cover_title'); tap('header_back'); top(); wait('identity_name')
+    top(); tap_node(show('open_arcs')); wait('arc_name',30); capture('11-arcos')
+    tap_node(show('arc_source')); wait('arc_details_heading',30); capture('12-arco-detalhe')
+    show('appearance_title',30); tap_node(show('appearance_open')); wait('issue_heading')
+    tap('header_back'); top(); tap('header_back'); wait('arc_name'); top()
+    tap('arc_search'); adb('shell','input','text','zzpreviewzz'); tap_node(show('arcs_search_button'))
+    assert 'zzpreviewzz' in wait('status_title',30).get('text','').lower()
+    capture('13-arcos-vazio'); tap('retry_button'); wait('arc_name',30)
+    tap('header_back'); tap('createHeroFragment'); wait('hero_name'); capture('14-formulario')
+    tap('hero_name'); adb('shell','input','text','Aurora'); adb('shell','input','keyevent','4')
+    tap('hero_real_name'); adb('shell','input','text','Lia'); adb('shell','input','keyevent','4')
+    tap_node(show('hero_next')); wait('hero_origin'); tap('hero_origin'); wait('filter_heading')
+    capture('15-origens'); adb('shell','input','keyevent','4')
     logs=adb('logcat','-d','-s','AndroidRuntime:E').decode(errors='replace')
     assert 'FATAL EXCEPTION' not in logs, logs
     (OUT/'verification.txt').write_text('Prévia sem credenciais e offline: início, personagens, quadrinhos, filmes, séries, arcos, detalhes, filtros, estado vazio, formulário e fonte 160% verificados.\n')
