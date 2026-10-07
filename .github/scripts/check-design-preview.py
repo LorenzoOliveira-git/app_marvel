@@ -145,10 +145,15 @@ try:
     assert 'Não informado' in wait('details_origin').get('text','')
     assert wait('details_description').get('text','')=='Descrição ainda não disponível.'
     capture('16-dados-ausentes'); tap('header_back'); top()
-    # Clear with the visible Material control; keyboard shortcuts may race the IME.
-    tap('search_name'); tap('text_input_end_icon'); wait('cover_title')
+    # Clear the focused input with bounded keys, then submit to close the IME.
+    tap('search_name')
+    field=wait('search_name')
+    print('Busca antes de limpar:',{key:field.get(key,'') for key in ('text','focused','bounds')},flush=True)
+    assert field.get('focused')=='true', 'Busca sem foco'
+    adb('shell','input','keyevent','123')  # MOVE_END
+    adb('shell','input','keyevent',*(['67']*(len(field.get('text',''))+1)))
     assert wait('search_name').get('text','') in ('','Buscar personagens')
-    adb('shell','input','keyevent','4'); time.sleep(2)
+    adb('shell','input','keyevent','66'); wait('bottom_navigation'); wait('cover_title')
     tap('homeFragment'); wait('user_name')
     adb('shell','settings','put','system','font_scale','1.6')
     wait('issue_title'); capture('17-fonte-ampliada')
