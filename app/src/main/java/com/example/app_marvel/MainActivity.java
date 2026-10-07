@@ -113,6 +113,14 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
             binding.navHost.post(contentInsetsUpdater);
         });
         binding.bottomNavigation.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updateContentInsets());
+        if (savedInstanceState == null && !BuildConfig.DESIGN_PREVIEW) {
+            binding.comicSplash.post(() -> {
+                if (!isFinishing() && !isDestroyed())
+                    binding.comicSplash.play(() -> binding.comicSplash.setVisibility(View.GONE));
+            });
+        } else {
+            binding.comicSplash.setVisibility(View.GONE);
+        }
     }
 
     private void renderUserHeader(AuthSession session) {
@@ -233,6 +241,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
 
     @Override
     protected void onDestroy() {
+        if (binding != null) binding.comicSplash.finishNow();
         if (binding != null) binding.navHost.removeCallbacks(contentInsetsUpdater);
         host = null;
         super.onDestroy();

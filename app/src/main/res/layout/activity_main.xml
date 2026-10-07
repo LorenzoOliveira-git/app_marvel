@@ -66,4 +66,12 @@
             app:labelVisibilityMode="unlabeled" app:itemHorizontalTranslationEnabled="false"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.example.app_marvel.ui.splash.ComicSplashView
+        android:id="@+id/comic_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/splash_skip"
+        android:importantForAccessibility="yes" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp" android:height="288dp"
+    android:viewportWidth="288" android:viewportHeight="288">
+    <path android:fillColor="@color/arquivo_vermelho"
+        android:pathData="M103,99 L143,108 L185,99 L185,181 L143,173 L103,181 Z" />
+    <path android:fillColor="@color/arquivo_folha"
+        android:pathData="M109,107 L139,114 L139,165 L109,159 Z M147,114 L179,107 L179,159 L147,165 Z" />
+    <path android:strokeColor="@color/arquivo_vermelho" android:strokeWidth="3"
+        android:strokeLineCap="round" android:pathData="M143,111 L143,174" />
+    <path android:strokeColor="@color/arquivo_vermelho" android:strokeWidth="2"
+        android:strokeLineCap="round" android:pathData="M115,122 L132,126 M115,133 L132,137 M154,126 L172,122 M154,137 L172,133" />
+</vector>
