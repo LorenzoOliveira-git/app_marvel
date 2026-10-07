@@ -68,10 +68,12 @@ public final class CharacterDetailsFragment extends Fragment {
             binding.detailsSource.setOnClickListener(v -> ComicVineNavigation.open(requireContext(), item.siteUrl));
         });
         model.getDescription().observe(getViewLifecycleOwner(), state -> {
-            binding.descriptionSection.setVisibility(state.getStatus() == UiState.Status.UNAVAILABLE ? View.GONE : View.VISIBLE);
+            boolean missing = state.getStatus() == UiState.Status.UNAVAILABLE;
+            binding.descriptionSection.setVisibility(View.VISIBLE);
             binding.descriptionState.render(state.getStatus(), model::translate);
-            binding.detailsDescription.setText(state.getStatus() == UiState.Status.CONTENT ? state.getData() : "");
-            binding.detailsDescription.setVisibility(state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
+            binding.detailsDescription.setText(missing ? getString(R.string.arquivo_description_unavailable)
+                    : state.getStatus() == UiState.Status.CONTENT ? state.getData() : "");
+            binding.detailsDescription.setVisibility(missing || state.getStatus() == UiState.Status.CONTENT ? View.VISIBLE : View.GONE);
         });
         model.getOrigin().observe(getViewLifecycleOwner(), state -> {
             binding.detailsOrigin.setText(getString(R.string.catalog_origin_value, state.getStatus() == UiState.Status.CONTENT ? state.getData() : getString(R.string.arquivo_not_informed)));

@@ -13,7 +13,7 @@
     <style name="TextAppearance.Marvel.Caption" parent="TextAppearance.Marvel.Body"><item name="android:textSize">@dimen/text_caption</item><item name="lineHeight">16sp</item><item name="android:textColor">@color/arquivo_texto_corpo</item></style>
     <style name="Widget.Marvel.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:minHeight">@dimen/touch_min</item><item name="android:textAllCaps">false</item>
-        <item name="android:fontFamily">@font/barlow_semibold</item><item name="fontFamily">@font/barlow_semibold</item><item name="android:textSize">@dimen/text_action</item><item name="android:textColor">@color/marvel_on_primary</item>
+        <item name="android:fontFamily">@font/barlow_semibold</item><item name="fontFamily">@font/barlow_semibold</item><item name="android:textSize">@dimen/text_action</item><item name="android:textColor">@color/button_text</item>
         <item name="backgroundTint">@color/button_background</item><item name="cornerRadius">@dimen/field_radius</item>
         <item name="rippleColor">@color/marvel_ripple</item>
     </style>
@@ -56,14 +56,14 @@
     <style name="Widget.Marvel.AuthButton" parent="Widget.Marvel.Button.Primary" />
     <style name="Widget.Marvel.AuthLink" parent="Widget.Material3.Button.TextButton">
         <item name="android:fontFamily">@font/barlow_semibold</item><item name="fontFamily">@font/barlow_semibold</item>
-        <item name="android:textSize">@dimen/text_action</item><item name="android:textColor">@color/arquivo_vermelho</item>
+        <item name="android:textSize">@dimen/text_action</item><item name="android:textColor">@color/arquivo_vermelho_texto</item>
         <item name="android:textAllCaps">false</item><item name="android:gravity">start|center_vertical</item>
         <item name="android:singleLine">false</item><item name="android:maxLines">3</item>
         <item name="android:paddingStart">0dp</item><item name="android:paddingEnd">0dp</item>
         <item name="android:minHeight">48dp</item><item name="rippleColor">@color/marvel_ripple</item>
     </style>
     <style name="Widget.Marvel.Button.Marvel" parent="Widget.Marvel.Button.Primary">
-        <item name="backgroundTint">@color/marvel_primary</item>
+        <item name="backgroundTint">@color/button_marvel_background</item>
     </style>
     <style name="TextAppearance.Marvel.Section" parent="TextAppearance.Marvel.Display">
         <item name="android:textSize">@dimen/text_section</item><item name="lineHeight">22sp</item>
@@ -93,11 +93,14 @@
     <style name="ThemeOverlay.Marvel.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorSurface">@color/arquivo_folha</item>
         <item name="alertDialogStyle">@style/Widget.Marvel.Dialog</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.Marvel.Highlight</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Marvel.Body</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Marvel.Dialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Widget.Marvel.Dialog.Body</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Marvel.Dialog.SafeAction</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.Marvel.Dialog.OtherAction</item>
     </style>
+    <!-- Title style is a view style: keep the required Material layout dimensions. -->
+    <style name="Widget.Marvel.Dialog.Title" parent="MaterialAlertDialog.Material3.Title.Text"><item name="android:textAppearance">@style/TextAppearance.Marvel.Highlight</item><item name="android:textColor">@color/arquivo_tinta</item><item name="android:fontFamily">@font/bebas_neue_regular</item><item name="android:textAllCaps">true</item></style>
+    <style name="Widget.Marvel.Dialog.Body" parent="MaterialAlertDialog.Material3.Body.Text"><item name="android:textAppearance">@style/TextAppearance.Marvel.Body</item><item name="android:textColor">@color/arquivo_texto_corpo</item></style>
     <style name="Widget.Marvel.Dialog" parent="MaterialAlertDialog.Material3"><item name="shapeAppearance">@style/ShapeAppearance.Marvel.Dialog</item></style>
     <style name="ShapeAppearance.Marvel.Dialog" parent=""><item name="cornerFamily">rounded</item><item name="cornerSize">12dp</item></style>
     <style name="Widget.Marvel.Dialog.SafeAction" parent="Widget.Material3.Button.TextButton.Dialog"><item name="android:textColor">@color/arquivo_sobre_vermelho</item><item name="backgroundTint">@color/arquivo_vermelho</item><item name="cornerRadius">8dp</item><item name="android:minHeight">48dp</item><item name="android:textAllCaps">false</item><item name="android:fontFamily">@font/barlow_semibold</item></style>

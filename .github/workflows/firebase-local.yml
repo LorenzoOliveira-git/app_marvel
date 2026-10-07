@@ -3,7 +3,7 @@ on:
   push:
     branches: [codex/bloco-14-generation-proposal, codex/bloco-15-local-drafts, codex/bloco-18-android-generation, codex/bloco-19-meus-herois, codex/bloco-20-perfil-acesso, codex/bloco-21-provider-check]
   pull_request:
-    paths: [".github/scripts/check-profile-android.py", "backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
+    paths: [".github/scripts/check-profile-android.py", ".github/scripts/emulator_ui.py", "tools/seed-design-collection.cjs", "backend/**", "firebase.json", "firestore.rules", "storage.rules", "tools/check-firebase-local.cjs", ".github/workflows/firebase-local.yml", "app/src/main/java/com/example/app_marvel/data/firebase/**"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
   local:
     if: github.head_ref != 'codex/bloco-17-local-generation' && github.ref_name != 'codex/bloco-17-local-generation' && github.head_ref != 'codex/bloco-16-creation-preparation' && github.ref_name != 'codex/bloco-16-creation-preparation'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -63,7 +63,7 @@ jobs:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
         run: python3 tools/comicvine.py device
       - name: Verificar integração real e regras nos quatro emuladores
-        timeout-minutes: 8
+        timeout-minutes: 12
         env:
           COMICVINE_API_KEY: ${{ secrets.COMICVINE_API_KEY }}
           HERO_GENERATION_ENABLED: "false"

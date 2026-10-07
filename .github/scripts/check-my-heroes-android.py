@@ -22,7 +22,7 @@ adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-f','0x10008000
 wait('submit');tap(resource='switch_form');wait('name')
 enter('name','Conta Colecao');enter('email',f'collection-{int(time.time())}@example.test');enter('password','local-emulator-only-928374');enter('confirmation','local-emulator-only-928374')
 tap(resource='submit');wait('user_name','Conta Colecao');tap(resource='profileFragment');tap(resource='account_my_heroes')
-wait('collection_status','Você ainda não tem heróis concluídos',timeout=90)
+wait('collection_empty_title',timeout=90)
 (OUT/'my-heroes-empty.png').write_bytes(adb('exec-out','screencap','-p').stdout)
 # Desconexão efetiva do Firestore; o estado vazio não é produzido pelo cache.
 firewall=['sudo','iptables','-I','INPUT','-p','tcp','--dport','8080','-j','REJECT']
@@ -32,9 +32,9 @@ try:
     (OUT/'my-heroes-network-error.png').write_bytes(adb('exec-out','screencap','-p').stdout)
 finally:
     subprocess.run(['sudo','iptables','-D',*firewall[3:]],check=True,capture_output=True)
-tap(resource='collection_refresh');wait('collection_status','Você ainda não tem heróis concluídos',timeout=90)
+tap(resource='collection_refresh');wait('collection_empty_title',timeout=90)
 adb('shell','settings','put','system','font_scale','2.0');time.sleep(2)
-wait('collection_status','Você ainda não tem heróis concluídos');tap(resource='collection_refresh');wait('collection_status','Você ainda não tem heróis concluídos',timeout=90)
+wait('collection_empty_title');tap(resource='collection_refresh');wait('collection_empty_title',timeout=90)
 top();(OUT/'my-heroes-empty-font200.png').write_bytes(adb('exec-out','screencap','-p').stdout)
 adb('shell','settings','put','system','font_scale','1.0');time.sleep(2)
 # Retorno conserva conta e sign-out remove acesso à coleção.

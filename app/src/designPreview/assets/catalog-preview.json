@@ -1,0 +1,2527 @@
+{
+ "publishers": [
+  {
+   "id": 1,
+   "name": "Marvel",
+   "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    },
+    {
+     "id": 104,
+     "name": "Sentinela Lunar",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-104/"
+    },
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço e os Guardiões do Horizonte Distante",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    },
+    {
+     "id": 402,
+     "name": "Guardiões da Cidade",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-402/"
+    }
+   ],
+   "volumes": [
+    {
+     "id": 201,
+     "name": "Crônicas do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-201/"
+    },
+    {
+     "id": 202,
+     "name": "Aurora: novos caminhos",
+     "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-202/"
+    },
+    {
+     "id": 203,
+     "name": "Arquivo de aventuras",
+     "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-203/"
+    }
+   ],
+   "story_arcs": [
+    {
+     "id": 601,
+     "name": "Civil War: exemplo visual",
+     "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-601/"
+    },
+    {
+     "id": 602,
+     "name": "O despertar da aurora",
+     "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-602/"
+    },
+    {
+     "id": 603,
+     "name": "Além do horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-603/"
+    },
+    {
+     "id": 604,
+     "name": "O último portal",
+     "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-604/"
+    }
+   ]
+  }
+ ],
+ "characters": [
+  {
+   "id": 101,
+   "name": "Spider-Man",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://character/101"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "real_name": "Peter Parker",
+   "gender": 1,
+   "origin": {
+    "id": 1,
+    "name": "Human"
+   },
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  },
+  {
+   "id": 102,
+   "name": "Aurora Escarlate",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://character/102"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "real_name": "Lia Torres",
+   "gender": 2,
+   "origin": {
+    "id": 1,
+    "name": "Human"
+   },
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  },
+  {
+   "id": 103,
+   "name": "Guardião do Horizonte",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://character/103"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "real_name": "Rafael Costa",
+   "gender": 1,
+   "origin": {
+    "id": 1,
+    "name": "Human"
+   },
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  },
+  {
+   "id": 104,
+   "name": "Sentinela Lunar",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-104/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://character/104"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "real_name": "Maya Alves",
+   "gender": 2,
+   "origin": {
+    "id": 1,
+    "name": "Human"
+   },
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  },
+  {
+   "id": 105,
+   "name": "Viajante do Tempo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://character/105"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "real_name": "Noah Silva",
+   "gender": 1,
+   "origin": {
+    "id": 1,
+    "name": "Human"
+   },
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  },
+  {
+   "id": 106,
+   "name": "Estrela de Aço e os Guardiões do Horizonte Distante",
+   "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": ""
+   },
+   "site_detail_url": "",
+   "deck": "",
+   "description": "",
+   "aliases": "Aventura de demonstração",
+   "real_name": "",
+   "gender": 2,
+   "origin": null,
+   "count_of_issue_appearances": 6,
+   "first_appeared_in_issue": {
+    "id": 301,
+    "name": "Capítulo 1: um novo começo",
+    "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+   },
+   "issue_credits": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ],
+   "powers": [
+    {
+     "id": 501,
+     "name": "Força",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+    },
+    {
+     "id": 502,
+     "name": "Voo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+    },
+    {
+     "id": 503,
+     "name": "Telepatia",
+     "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "character_friends": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "character_enemies": [
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  }
+ ],
+ "teams": [
+  {
+   "id": 401,
+   "name": "Liga do Horizonte",
+   "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://team/401"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    },
+    {
+     "id": 104,
+     "name": "Sentinela Lunar",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-104/"
+    }
+   ]
+  },
+  {
+   "id": 402,
+   "name": "Guardiões da Cidade",
+   "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-402/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://team/402"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "characters": [
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    },
+    {
+     "id": 104,
+     "name": "Sentinela Lunar",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-104/"
+    },
+    {
+     "id": 105,
+     "name": "Viajante do Tempo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-105/"
+    },
+    {
+     "id": 106,
+     "name": "Estrela de Aço",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-106/"
+    }
+   ]
+  }
+ ],
+ "volumes": [
+  {
+   "id": 201,
+   "name": "Crônicas do Horizonte",
+   "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-201/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://volume/201"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração"
+  },
+  {
+   "id": 202,
+   "name": "Aurora: novos caminhos",
+   "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-202/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://volume/202"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração"
+  },
+  {
+   "id": 203,
+   "name": "Arquivo de aventuras",
+   "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-203/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://volume/203"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração"
+  }
+ ],
+ "issues": [
+  {
+   "id": 301,
+   "name": "Capítulo 1: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/301"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 201,
+    "name": "Crônicas do Horizonte",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-201/"
+   },
+   "issue_number": "1",
+   "store_date": "2026-09-25",
+   "cover_date": "2026-09-25",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 302,
+   "name": "Capítulo 2: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/302"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 202,
+    "name": "Aurora: novos caminhos",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-202/"
+   },
+   "issue_number": "1",
+   "store_date": "2026-09-24",
+   "cover_date": "2026-09-24",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 303,
+   "name": "Capítulo 3: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/303"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 203,
+    "name": "Arquivo de aventuras",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-203/"
+   },
+   "issue_number": "1",
+   "store_date": "2026-09-23",
+   "cover_date": "2026-09-23",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 304,
+   "name": "Capítulo 4: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/304"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 201,
+    "name": "Crônicas do Horizonte",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-201/"
+   },
+   "issue_number": "2",
+   "store_date": "2026-09-22",
+   "cover_date": "2026-09-22",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 305,
+   "name": "Capítulo 5: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/305"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 202,
+    "name": "Aurora: novos caminhos",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-202/"
+   },
+   "issue_number": "2",
+   "store_date": "2026-09-21",
+   "cover_date": "2026-09-21",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 306,
+   "name": "Capítulo 6: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/306"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 203,
+    "name": "Arquivo de aventuras",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-203/"
+   },
+   "issue_number": "2",
+   "store_date": "2026-09-20",
+   "cover_date": "2026-09-20",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 307,
+   "name": "Capítulo 7: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-307/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/307"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 201,
+    "name": "Crônicas do Horizonte",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-201/"
+   },
+   "issue_number": "3",
+   "store_date": "2026-09-19",
+   "cover_date": "2026-09-19",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 308,
+   "name": "Capítulo 8: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-308/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/308"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 202,
+    "name": "Aurora: novos caminhos",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-202/"
+   },
+   "issue_number": "3",
+   "store_date": "2026-09-18",
+   "cover_date": "2026-09-18",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  },
+  {
+   "id": 309,
+   "name": "Capítulo 9: um novo começo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-309/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://issue/309"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "volume": {
+    "id": 203,
+    "name": "Arquivo de aventuras",
+    "api_detail_url": "https://comicvine.gamespot.com/api/volume/4050-203/"
+   },
+   "issue_number": "3",
+   "store_date": "2026-09-17",
+   "cover_date": "2026-09-17",
+   "character_credits": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "team_credits": [],
+   "person_credits": [
+    {
+     "id": 801,
+     "name": "Equipe da prévia",
+     "role": "roteiro"
+    }
+   ],
+   "story_arc_credits": [],
+   "location_credits": [],
+   "object_credits": [],
+   "concept_credits": []
+  }
+ ],
+ "story_arcs": [
+  {
+   "id": 601,
+   "name": "Civil War: exemplo visual",
+   "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-601/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://story_arc/601"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "issues": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ]
+  },
+  {
+   "id": 602,
+   "name": "O despertar da aurora",
+   "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-602/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://story_arc/602"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "issues": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ]
+  },
+  {
+   "id": 603,
+   "name": "Além do horizonte",
+   "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-603/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://story_arc/603"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "issues": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ]
+  },
+  {
+   "id": 604,
+   "name": "O último portal",
+   "api_detail_url": "https://comicvine.gamespot.com/api/story_arc/4045-604/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://story_arc/604"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "issues": [
+    {
+     "id": 301,
+     "name": "Capítulo 1: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-301/"
+    },
+    {
+     "id": 302,
+     "name": "Capítulo 2: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-302/"
+    },
+    {
+     "id": 303,
+     "name": "Capítulo 3: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-303/"
+    },
+    {
+     "id": 304,
+     "name": "Capítulo 4: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-304/"
+    },
+    {
+     "id": 305,
+     "name": "Capítulo 5: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-305/"
+    },
+    {
+     "id": 306,
+     "name": "Capítulo 6: um novo começo",
+     "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-306/"
+    }
+   ]
+  }
+ ],
+ "movies": [
+  {
+   "id": 17,
+   "name": "Horizonte: o filme",
+   "api_detail_url": "https://comicvine.gamespot.com/api/movie/4025-17/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://movie/17"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "runtime": 120,
+   "studios": [
+    {
+     "id": 1,
+     "name": "Marvel",
+     "api_detail_url": "https://comicvine.gamespot.com/api/studio/4040-1/"
+    }
+   ],
+   "rating": "12 anos",
+   "distributor": "Distribuidora fictícia",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "producers": [],
+   "writers": [],
+   "locations": [],
+   "objects": [],
+   "concepts": []
+  },
+  {
+   "id": 701,
+   "name": "Aurora e o segredo da cidade",
+   "api_detail_url": "https://comicvine.gamespot.com/api/movie/4025-701/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://movie/701"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "runtime": 128,
+   "studios": [
+    {
+     "id": 1,
+     "name": "Marvel",
+     "api_detail_url": "https://comicvine.gamespot.com/api/studio/4040-1/"
+    }
+   ],
+   "rating": "12 anos",
+   "distributor": "Distribuidora fictícia",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "producers": [],
+   "writers": [],
+   "locations": [],
+   "objects": [],
+   "concepts": []
+  },
+  {
+   "id": 702,
+   "name": "Guardiões do amanhã",
+   "api_detail_url": "https://comicvine.gamespot.com/api/movie/4025-702/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://movie/702"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "runtime": 136,
+   "studios": [
+    {
+     "id": 1,
+     "name": "Marvel",
+     "api_detail_url": "https://comicvine.gamespot.com/api/studio/4040-1/"
+    }
+   ],
+   "rating": "12 anos",
+   "distributor": "Distribuidora fictícia",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "producers": [],
+   "writers": [],
+   "locations": [],
+   "objects": [],
+   "concepts": []
+  },
+  {
+   "id": 703,
+   "name": "O portal das estrelas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/movie/4025-703/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://movie/703"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "runtime": 144,
+   "studios": [
+    {
+     "id": 1,
+     "name": "Marvel",
+     "api_detail_url": "https://comicvine.gamespot.com/api/studio/4040-1/"
+    }
+   ],
+   "rating": "12 anos",
+   "distributor": "Distribuidora fictícia",
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "teams": [
+    {
+     "id": 401,
+     "name": "Liga do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-401/"
+    }
+   ],
+   "producers": [],
+   "writers": [],
+   "locations": [],
+   "objects": [],
+   "concepts": []
+  }
+ ],
+ "series_list": [
+  {
+   "id": 1,
+   "name": "Agents of S.H.I.E.L.D.",
+   "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://series/1"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "start_year": "2024",
+   "count_of_episodes": 4,
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "episodes": [
+    {
+     "id": 911,
+     "name": "Episódio 1: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-911/",
+     "episode_number": "1",
+     "air_date": "2025-04-01",
+     "series": {
+      "id": 1,
+      "name": "Agents of S.H.I.E.L.D.",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 912,
+     "name": "Episódio 2: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-912/",
+     "episode_number": "2",
+     "air_date": "2025-04-02",
+     "series": {
+      "id": 1,
+      "name": "Agents of S.H.I.E.L.D.",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 913,
+     "name": "Episódio 3: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-913/",
+     "episode_number": "3",
+     "air_date": "2025-04-03",
+     "series": {
+      "id": 1,
+      "name": "Agents of S.H.I.E.L.D.",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 914,
+     "name": "Episódio 4: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-914/",
+     "episode_number": "4",
+     "air_date": "2025-04-04",
+     "series": {
+      "id": 1,
+      "name": "Agents of S.H.I.E.L.D.",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+     },
+     "site_detail_url": ""
+    }
+   ],
+   "first_episode": {
+    "id": 911,
+    "name": "Episódio 1: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-911/",
+    "episode_number": "1",
+    "air_date": "2025-04-01",
+    "series": {
+     "id": 1,
+     "name": "Agents of S.H.I.E.L.D.",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+    },
+    "site_detail_url": ""
+   },
+   "last_episode": {
+    "id": 914,
+    "name": "Episódio 4: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-914/",
+    "episode_number": "4",
+    "air_date": "2025-04-04",
+    "series": {
+     "id": 1,
+     "name": "Agents of S.H.I.E.L.D.",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+    },
+    "site_detail_url": ""
+   }
+  },
+  {
+   "id": 2,
+   "name": "Crônicas da Aurora",
+   "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://series/2"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "start_year": "2025",
+   "count_of_episodes": 4,
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "episodes": [
+    {
+     "id": 921,
+     "name": "Episódio 1: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-921/",
+     "episode_number": "1",
+     "air_date": "2025-04-01",
+     "series": {
+      "id": 2,
+      "name": "Crônicas da Aurora",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 922,
+     "name": "Episódio 2: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-922/",
+     "episode_number": "2",
+     "air_date": "2025-04-02",
+     "series": {
+      "id": 2,
+      "name": "Crônicas da Aurora",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 923,
+     "name": "Episódio 3: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-923/",
+     "episode_number": "3",
+     "air_date": "2025-04-03",
+     "series": {
+      "id": 2,
+      "name": "Crônicas da Aurora",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 924,
+     "name": "Episódio 4: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-924/",
+     "episode_number": "4",
+     "air_date": "2025-04-04",
+     "series": {
+      "id": 2,
+      "name": "Crônicas da Aurora",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+     },
+     "site_detail_url": ""
+    }
+   ],
+   "first_episode": {
+    "id": 921,
+    "name": "Episódio 1: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-921/",
+    "episode_number": "1",
+    "air_date": "2025-04-01",
+    "series": {
+     "id": 2,
+     "name": "Crônicas da Aurora",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+    },
+    "site_detail_url": ""
+   },
+   "last_episode": {
+    "id": 924,
+    "name": "Episódio 4: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-924/",
+    "episode_number": "4",
+    "air_date": "2025-04-04",
+    "series": {
+     "id": 2,
+     "name": "Crônicas da Aurora",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+    },
+    "site_detail_url": ""
+   }
+  },
+  {
+   "id": 3,
+   "name": "Horizonte: a série",
+   "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://series/3"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "start_year": "2026",
+   "count_of_episodes": 4,
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "episodes": [
+    {
+     "id": 931,
+     "name": "Episódio 1: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-931/",
+     "episode_number": "1",
+     "air_date": "2025-04-01",
+     "series": {
+      "id": 3,
+      "name": "Horizonte: a série",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 932,
+     "name": "Episódio 2: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-932/",
+     "episode_number": "2",
+     "air_date": "2025-04-02",
+     "series": {
+      "id": 3,
+      "name": "Horizonte: a série",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 933,
+     "name": "Episódio 3: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-933/",
+     "episode_number": "3",
+     "air_date": "2025-04-03",
+     "series": {
+      "id": 3,
+      "name": "Horizonte: a série",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 934,
+     "name": "Episódio 4: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-934/",
+     "episode_number": "4",
+     "air_date": "2025-04-04",
+     "series": {
+      "id": 3,
+      "name": "Horizonte: a série",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+     },
+     "site_detail_url": ""
+    }
+   ],
+   "first_episode": {
+    "id": 931,
+    "name": "Episódio 1: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-931/",
+    "episode_number": "1",
+    "air_date": "2025-04-01",
+    "series": {
+     "id": 3,
+     "name": "Horizonte: a série",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+    },
+    "site_detail_url": ""
+   },
+   "last_episode": {
+    "id": 934,
+    "name": "Episódio 4: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-934/",
+    "episode_number": "4",
+    "air_date": "2025-04-04",
+    "series": {
+     "id": 3,
+     "name": "Horizonte: a série",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+    },
+    "site_detail_url": ""
+   }
+  },
+  {
+   "id": 4,
+   "name": "Arquivo de heróis",
+   "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/",
+   "publisher": {
+    "id": 1,
+    "name": "Marvel",
+    "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4040-1/"
+   },
+   "image": {
+    "medium_url": "preview://series/4"
+   },
+   "site_detail_url": "",
+   "deck": "Conteúdo fictício para visualizar o layout. Um novo desafio reúne coragem, amizade e descobertas.",
+   "description": "<p>Esta história é um exemplo criado somente para a prévia do design.</p><p>Os personagens investigam um mistério na cidade e aprendem a trabalhar em equipe. Os dados apresentados não vêm da API.</p>",
+   "aliases": "Aventura de demonstração",
+   "start_year": "2027",
+   "count_of_episodes": 4,
+   "characters": [
+    {
+     "id": 101,
+     "name": "Spider-Man",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-101/"
+    },
+    {
+     "id": 102,
+     "name": "Aurora Escarlate",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-102/"
+    },
+    {
+     "id": 103,
+     "name": "Guardião do Horizonte",
+     "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-103/"
+    }
+   ],
+   "episodes": [
+    {
+     "id": 941,
+     "name": "Episódio 1: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-941/",
+     "episode_number": "1",
+     "air_date": "2025-04-01",
+     "series": {
+      "id": 4,
+      "name": "Arquivo de heróis",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 942,
+     "name": "Episódio 2: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-942/",
+     "episode_number": "2",
+     "air_date": "2025-04-02",
+     "series": {
+      "id": 4,
+      "name": "Arquivo de heróis",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 943,
+     "name": "Episódio 3: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-943/",
+     "episode_number": "3",
+     "air_date": "2025-04-03",
+     "series": {
+      "id": 4,
+      "name": "Arquivo de heróis",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+     },
+     "site_detail_url": ""
+    },
+    {
+     "id": 944,
+     "name": "Episódio 4: descobertas",
+     "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-944/",
+     "episode_number": "4",
+     "air_date": "2025-04-04",
+     "series": {
+      "id": 4,
+      "name": "Arquivo de heróis",
+      "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+     },
+     "site_detail_url": ""
+    }
+   ],
+   "first_episode": {
+    "id": 941,
+    "name": "Episódio 1: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-941/",
+    "episode_number": "1",
+    "air_date": "2025-04-01",
+    "series": {
+     "id": 4,
+     "name": "Arquivo de heróis",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+    },
+    "site_detail_url": ""
+   },
+   "last_episode": {
+    "id": 944,
+    "name": "Episódio 4: descobertas",
+    "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-944/",
+    "episode_number": "4",
+    "air_date": "2025-04-04",
+    "series": {
+     "id": 4,
+     "name": "Arquivo de heróis",
+     "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+    },
+    "site_detail_url": ""
+   }
+  }
+ ],
+ "episodes": [
+  {
+   "id": 911,
+   "name": "Episódio 1: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-911/",
+   "episode_number": "1",
+   "air_date": "2025-04-01",
+   "series": {
+    "id": 1,
+    "name": "Agents of S.H.I.E.L.D.",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 912,
+   "name": "Episódio 2: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-912/",
+   "episode_number": "2",
+   "air_date": "2025-04-02",
+   "series": {
+    "id": 1,
+    "name": "Agents of S.H.I.E.L.D.",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 913,
+   "name": "Episódio 3: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-913/",
+   "episode_number": "3",
+   "air_date": "2025-04-03",
+   "series": {
+    "id": 1,
+    "name": "Agents of S.H.I.E.L.D.",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 914,
+   "name": "Episódio 4: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-914/",
+   "episode_number": "4",
+   "air_date": "2025-04-04",
+   "series": {
+    "id": 1,
+    "name": "Agents of S.H.I.E.L.D.",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-1/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 921,
+   "name": "Episódio 1: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-921/",
+   "episode_number": "1",
+   "air_date": "2025-04-01",
+   "series": {
+    "id": 2,
+    "name": "Crônicas da Aurora",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 922,
+   "name": "Episódio 2: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-922/",
+   "episode_number": "2",
+   "air_date": "2025-04-02",
+   "series": {
+    "id": 2,
+    "name": "Crônicas da Aurora",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 923,
+   "name": "Episódio 3: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-923/",
+   "episode_number": "3",
+   "air_date": "2025-04-03",
+   "series": {
+    "id": 2,
+    "name": "Crônicas da Aurora",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 924,
+   "name": "Episódio 4: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-924/",
+   "episode_number": "4",
+   "air_date": "2025-04-04",
+   "series": {
+    "id": 2,
+    "name": "Crônicas da Aurora",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-2/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 931,
+   "name": "Episódio 1: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-931/",
+   "episode_number": "1",
+   "air_date": "2025-04-01",
+   "series": {
+    "id": 3,
+    "name": "Horizonte: a série",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 932,
+   "name": "Episódio 2: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-932/",
+   "episode_number": "2",
+   "air_date": "2025-04-02",
+   "series": {
+    "id": 3,
+    "name": "Horizonte: a série",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 933,
+   "name": "Episódio 3: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-933/",
+   "episode_number": "3",
+   "air_date": "2025-04-03",
+   "series": {
+    "id": 3,
+    "name": "Horizonte: a série",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 934,
+   "name": "Episódio 4: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-934/",
+   "episode_number": "4",
+   "air_date": "2025-04-04",
+   "series": {
+    "id": 3,
+    "name": "Horizonte: a série",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-3/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 941,
+   "name": "Episódio 1: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-941/",
+   "episode_number": "1",
+   "air_date": "2025-04-01",
+   "series": {
+    "id": 4,
+    "name": "Arquivo de heróis",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 942,
+   "name": "Episódio 2: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-942/",
+   "episode_number": "2",
+   "air_date": "2025-04-02",
+   "series": {
+    "id": 4,
+    "name": "Arquivo de heróis",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 943,
+   "name": "Episódio 3: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-943/",
+   "episode_number": "3",
+   "air_date": "2025-04-03",
+   "series": {
+    "id": 4,
+    "name": "Arquivo de heróis",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+   },
+   "site_detail_url": ""
+  },
+  {
+   "id": 944,
+   "name": "Episódio 4: descobertas",
+   "api_detail_url": "https://comicvine.gamespot.com/api/episode/4070-944/",
+   "episode_number": "4",
+   "air_date": "2025-04-04",
+   "series": {
+    "id": 4,
+    "name": "Arquivo de heróis",
+    "api_detail_url": "https://comicvine.gamespot.com/api/series/4075-4/"
+   },
+   "site_detail_url": ""
+  }
+ ],
+ "origins": [
+  {
+   "id": 1,
+   "name": "Human"
+  },
+  {
+   "id": 2,
+   "name": "Mutant"
+  },
+  {
+   "id": 3,
+   "name": "Alien"
+  }
+ ],
+ "powers": [
+  {
+   "id": 501,
+   "name": "Força",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-501/"
+  },
+  {
+   "id": 502,
+   "name": "Voo",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-502/"
+  },
+  {
+   "id": 503,
+   "name": "Telepatia",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-503/"
+  },
+  {
+   "id": 504,
+   "name": "Velocidade",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-504/"
+  },
+  {
+   "id": 505,
+   "name": "Controle de energia",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-505/"
+  },
+  {
+   "id": 506,
+   "name": "Invisibilidade",
+   "api_detail_url": "https://comicvine.gamespot.com/api/power/4035-506/"
+  }
+ ]
+}

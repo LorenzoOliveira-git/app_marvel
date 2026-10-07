@@ -33,13 +33,15 @@ public final class SeriesCoverAdapter extends RecyclerView.Adapter<SeriesCoverAd
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         var item = items.get(position);
         holder.binding.coverTitle.setText(item.title);
-        String meta = "";
+        String meta = item.startYear.isEmpty() ? "" : holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.series_year, item.startYear);
         holder.binding.coverMeta.setText(meta);
         holder.binding.coverMeta.setVisibility(meta.isEmpty() ? View.GONE : View.VISIBLE);
         ConstraintLayout.LayoutParams picture = (ConstraintLayout.LayoutParams) holder.binding.coverImage.getLayoutParams();
         picture.dimensionRatio = "2:3"; holder.binding.coverImage.setLayoutParams(picture);
         holder.binding.coverImage.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-        holder.itemView.setContentDescription(item.title);
+        holder.itemView.setContentDescription(holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.arquivo_series_named, item.title));
         holder.itemView.setOnClickListener(view -> {
             int index = holder.getBindingAdapterPosition(); if (index != RecyclerView.NO_POSITION) select.accept(index);
         });

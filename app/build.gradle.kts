@@ -26,6 +26,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("boolean", "FIREBASE_EMULATORS", "false")
+        buildConfigField("boolean", "DESIGN_PREVIEW", "false")
         buildConfigField("String", "FIREBASE_EMULATOR_HOST", "\"10.0.2.2\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -35,6 +36,14 @@ android {
         debug {
             buildConfigField("String", "FIREBASE_EMULATOR_HOST", "\"$firebaseEmulatorHost\"")
             buildConfigField("boolean", "FIREBASE_EMULATORS", providers.gradleProperty("firebaseEmulators").map { (it == "true").toString() }.orElse("false").get())
+        }
+        create("designPreview") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".preview"
+            versionNameSuffix = "-preview"
+            buildConfigField("boolean", "DESIGN_PREVIEW", "true")
+            buildConfigField("boolean", "FIREBASE_EMULATORS", "false")
+            matchingFallbacks += listOf("debug")
         }
         release {
             optimization {
@@ -140,4 +149,9 @@ tasks.register<LocalComicVineTask>("runLocalDebug") {
     description = "Compila, instala, configura a ComicVine pelo .env e abre o app no aparelho escolhido."
     dependsOn("assembleDebug")
     localConfiguration(); installAndLaunch.set(true)
+}
+
+// A prévia não usa Firebase e não precisa de um cliente Google para seu applicationId.
+tasks.matching { it.name == "processDesignPreviewGoogleServices" }.configureEach {
+    enabled = false
 }

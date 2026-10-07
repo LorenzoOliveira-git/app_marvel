@@ -33,13 +33,15 @@ public final class CharacterPortraitAdapter extends RecyclerView.Adapter<Charact
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         var item = items.get(position);
         holder.binding.coverTitle.setText(item.name);
-        String meta = item.realName;
+        String meta = item.realName.isEmpty() ? holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.arquivo_not_informed) : item.realName;
         holder.binding.coverMeta.setText(meta);
         holder.binding.coverMeta.setVisibility(meta.isEmpty() ? View.GONE : View.VISIBLE);
         ConstraintLayout.LayoutParams picture = (ConstraintLayout.LayoutParams) holder.binding.coverImage.getLayoutParams();
         picture.dimensionRatio = "4:5"; holder.binding.coverImage.setLayoutParams(picture);
         holder.binding.coverImage.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-        holder.itemView.setContentDescription(item.name);
+        holder.itemView.setContentDescription(holder.itemView.getContext().getString(
+                com.example.app_marvel.R.string.arquivo_character_named, item.name));
         holder.itemView.setOnClickListener(view -> {
             int index = holder.getBindingAdapterPosition(); if (index != RecyclerView.NO_POSITION) select.accept(index);
         });

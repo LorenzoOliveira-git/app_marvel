@@ -6,6 +6,7 @@ import subprocess
 import time
 import urllib.request
 import xml.etree.ElementTree as ET
+from emulator_ui import dismiss_launcher_anr
 
 PACKAGE = 'com.example.app_marvel'
 OUT = Path('firebase-local-check'); OUT.mkdir(exist_ok=True)
@@ -23,7 +24,10 @@ def nodes():
         start=raw.find(b'<?xml')
         if start<0: start=raw.find(b'<hierarchy')
         if start>=0:
-            try: return list(ET.fromstring(raw[start:]).iter('node'))
+            try:
+                snapshot=list(ET.fromstring(raw[start:]).iter('node'))
+                if dismiss_launcher_anr(snapshot, adb): continue
+                return snapshot
             except ET.ParseError: pass
         time.sleep(1)
     (OUT/'hero-draft-ui-failure.png').write_bytes(adb('exec-out','screencap','-p').stdout)

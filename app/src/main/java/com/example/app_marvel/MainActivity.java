@@ -50,7 +50,7 @@ public final class MainActivity extends AppCompatActivity implements AppNavigato
         navController = host.getNavController();
         boolean authenticated = ((MarvelApplication) getApplication()).getContainer().getAuth()
                 .getSession().getValue().isAuthenticated();
-        if (savedInstanceState == null && authenticated) resetGraph(R.id.homeFragment);
+        if (savedInstanceState == null && (authenticated || BuildConfig.DESIGN_PREVIEW)) resetGraph(R.id.homeFragment);
         else if (savedInstanceState != null && navController.getCurrentDestination() != null
                 && !isAuthDestination(navController.getCurrentDestination().getId())) {
             navController.getGraph().setStartDestination(R.id.homeFragment);

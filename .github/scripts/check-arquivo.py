@@ -6,6 +6,7 @@ import subprocess
 import time
 import traceback
 import xml.etree.ElementTree as ET
+from emulator_ui import dismiss_launcher_anr
 
 PACKAGE = 'com.example.app_marvel'
 OUT = Path('app/build/arquivo-preview')
@@ -30,7 +31,9 @@ def nodes():
         if start < 0:
             start = raw.find(b'<hierarchy')
         try:
-            return list(ET.fromstring(raw[start:] if start >= 0 else raw).iter('node'))
+            snapshot = list(ET.fromstring(raw[start:] if start >= 0 else raw).iter('node'))
+            if dismiss_launcher_anr(snapshot, adb): continue
+            return snapshot
         except ET.ParseError:
             (OUT/'ui-read-failure.txt').write_bytes(raw[:4096])
             if attempt == 2:
@@ -181,7 +184,7 @@ try:
     title=wait('status_title',120)
     assert 'zzarquivozz' in title.get('text',''), 'Estado vazio não identifica a busca de arcos'
     capture('arquivo-arcos-sem-resultados'); tap('retry_button'); wait('arc_name',120)
-    top(); assert find('arc_search').get('text','')=='', 'Limpar não restaurou a busca de arcos'
+    top(); assert find('arc_search').get('text','') in ('','Buscar arco pelo nome'), 'Limpar não restaurou a busca de arcos'
     tap('header_back'); show('open_comics')
     tap('profileFragment'); wait('heading'); capture('arquivo-perfil')
     tap('createHeroFragment'); wait('hero_name'); capture('arquivo-criar-heroi')

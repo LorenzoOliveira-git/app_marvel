@@ -1,0 +1,66 @@
+name: Validação visual Arquivo de Papel
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/src/designPreview/**"
+      - "app/src/main/**"
+      - "app/build.gradle.kts"
+      - ".github/scripts/check-design-tokens.py"
+      - ".github/scripts/emulator_ui.py"
+      - ".github/workflows/design-preview.yml"
+      - ".github/scripts/check-design-preview.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: design-preview-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - name: Instalar plataforma
+        run: sdkmanager "platforms;android-37.0" "build-tools;36.0.0"
+      - name: Verificar tokens e contraste
+        run: python3 .github/scripts/check-design-tokens.py
+      - name: Compilar e verificar prévia
+        run: bash gradlew :app:assembleDesignPreview :app:lintDesignPreview --no-daemon --console=plain
+      - name: Iniciar emulador sem credenciais
+        timeout-minutes: 12
+        run: |
+          sudo chmod a+rw /dev/kvm
+          for attempt in 1 2 3; do
+            sdkmanager "emulator" "system-images;android-35;google_apis;x86_64" && break
+            if [ "$attempt" = 3 ]; then exit 1; fi
+          done
+          printf 'no\n' | avdmanager create avd -n DesignPreview -k "system-images;android-35;google_apis;x86_64" --force
+          "$ANDROID_HOME/emulator/emulator" -avd DesignPreview -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader > /tmp/preview-emulator.log 2>&1 &
+          timeout 180 adb wait-for-device
+          for attempt in $(seq 1 90); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; then break; fi
+            sleep 2
+          done
+          adb shell input keyevent 82
+          adb install -r app/build/outputs/apk/designPreview/app-designPreview.apk
+      - name: Verificar cards e navegação offline
+        run: python3 .github/scripts/check-design-preview.py
+      - name: Disponibilizar capturas
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: validacao-arquivo-de-papel
+          path: app/build/design-preview/*
+          if-no-files-found: ignore
+          retention-days: 14
