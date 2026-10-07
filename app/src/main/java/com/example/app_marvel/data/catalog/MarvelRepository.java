@@ -664,9 +664,10 @@ public final class MarvelRepository {
                 Reference selected = null;
                 for (Reference ref : indexed.data) if (ref.id == details.character.id) selected = ref;
                 if (selected == null) { deliver(callback, Result.failed(Failure.DATA)); return; }
+                Reference canonical = selected;
                 withRelation(pub.data, "issue_credits", eligible -> {
                 if (eligible.failure != null) { deliver(callback, Result.failed(eligible.failure)); return; }
-                request(selected.path, params("field_list", "id,name,publisher,issue_credits"), DAY, result -> {
+                request(canonical.path, params("field_list", "id,name,publisher,issue_credits"), DAY, result -> {
                     JSONObject row = result.data == null ? null : result.data.optJSONObject("results");
                     JSONObject owner = row == null ? null : row.optJSONObject("publisher");
                     JSONArray refs = row == null ? null : row.optJSONArray("issue_credits");
