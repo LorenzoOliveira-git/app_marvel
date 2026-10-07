@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 /** Contrato validado com respostas reais. Relações são verificadas antes da exibição. */
 public final class MarvelRepository {
     private static final long DAY = 86_400_000L;
+    private static final String TEAM_START_DATE = "1961-01-01";
     private static final String CHARACTER_FIELDS = "id,name,real_name,publisher,origin,gender,image,deck,site_detail_url,aliases";
     private static final String ISSUE_FIELDS = "id,name,issue_number,volume,image,store_date,site_detail_url";
     private final ComicVineClient client;
@@ -1036,7 +1037,7 @@ public final class MarvelRepository {
     private void comicsPage(Map<Integer, Reference> volumes, int scope, boolean oldest, String today,
             ComicsCursor cursor, int attempt, Callback<ComicsPage> callback) {
         if (cursor.offset >= 0) { comicsBucket(volumes, scope, oldest, today, cursor, attempt, new ArrayList<>(), callback); return; }
-        String lower = oldest && !cursor.date.isEmpty() ? cursor.date : "1900-01-01";
+        String lower = oldest && !cursor.date.isEmpty() ? cursor.date : TEAM_START_DATE;
         String upper = !oldest && !cursor.date.isEmpty() ? cursor.date : today;
         if (lower.compareTo(upper) > 0) { deliver(callback, Result.success(new ComicsPage(Collections.emptyList(), cursor, false))); return; }
         int limit = scope == 0 ? 100 : 12;
@@ -1089,7 +1090,7 @@ public final class MarvelRepository {
                     SimpleDateFormat dates = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT); dates.setLenient(false);
                     Calendar date = Calendar.getInstance(); date.setTime(dates.parse(cursor.date)); date.add(Calendar.DAY_OF_MONTH, oldest ? 1 : -1);
                     String bound = dates.format(date.getTime()); next = new ComicsCursor(bound, -1, examined);
-                    more = bound.compareTo("1900-01-01") >= 0 && bound.compareTo(today) <= 0;
+                    more = bound.compareTo(TEAM_START_DATE) >= 0 && bound.compareTo(today) <= 0;
                 }
                 if (items.isEmpty() && more && attempt < 8) comicsPage(volumes, scope, oldest, today, next, attempt + 1, callback);
                 else deliver(callback, Result.success(new ComicsPage(items, next, more)));
