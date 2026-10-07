@@ -58,4 +58,5 @@
     <string name="arquivo_description_error">Não foi possível carregar o resumo.</string>
     <string name="arquivo_character_named">Retrato de %1$s</string>
     <string name="arquivo_cover_named">Capa do quadrinho %1$s</string>
+    <string name="splash_skip">Pular animação de abertura</string>
 </resources>
